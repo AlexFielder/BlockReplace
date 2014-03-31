@@ -154,3 +154,14 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
+
+#AutoCAD dwg files
+*.dwg
+*.bak
+*.tmp
+*tmp*
+*.dwl
+*.dwl2
+#7zip files
+*.7z
+

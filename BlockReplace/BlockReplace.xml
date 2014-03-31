@@ -18,12 +18,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>82.424553216065249</X>
-          <Y>73.105666826834039</Y>
+          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>203.51470921606526</X>
-          <Y>73.105666826834039</Y>
+          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -144,12 +144,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>82.424553216065249</X>
-          <Y>73.105666826834039</Y>
+          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>203.51470921606526</X>
-          <Y>73.105666826834039</Y>
+          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -270,12 +270,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>8.8724846136756241E-08</X>
-          <Y>44.4415550267994</Y>
+          <Y>43.4415550267994</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>413.00009208872484</X>
-          <Y>44.4415550267994</Y>
+          <Y>43.4415550267994</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -326,6 +326,204 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
           <point3d name="p4">
             <X>27.000000088724846</X>
             <Y>163.69257340002878</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>127.00000008872485</X>
+            <Y>25.441555026799392</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>127.00000008872485</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>192.06034841808159</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>192.06034841808159</X>
+            <Y>25.441555026799392</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>127.00000008872485</X>
+            <Y>5.9999970267993987</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>127.00000008872485</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>192.06034841808159</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>192.06034841808159</X>
+            <Y>5.9999970267993987</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>192.06034841808159</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>192.06034841808159</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>242.76233641808156</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>242.76233641808156</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>192.06034841808159</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>192.06034841808159</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>217.4113424180816</X>
+            <Y>25.441555026799396</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>217.4113424180816</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>217.41134241808157</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>217.41134241808157</X>
+            <Y>25.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>242.76233641808156</X>
+            <Y>25.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>242.76233641808156</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>192.06034841808159</X>
+            <Y>5.9999970267993987</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>192.06034841808159</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>242.76233641808156</X>
+            <Y>15.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>242.76233641808156</X>
+            <Y>5.9999970267993987</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SUB-CONTRACTOR" name="SUBCONTRACTOR">
+          <point3d name="p1">
+            <X>242.76233641808156</X>
+            <Y>34.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>242.76233641808156</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>296.00118140146242</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>296.00118140146242</X>
+            <Y>34.9415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>242.76233641808156</X>
+            <Y>25.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>242.76233641808156</X>
+            <Y>34.941555026799406</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>296.00118140146247</X>
+            <Y>34.941555026799406</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>296.00118140146247</X>
+            <Y>25.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>350.79455288811727</X>
+            <Y>36.441555026799392</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>350.79455288811727</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>413.00009208872484</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>413.00009208872484</X>
+            <Y>36.441555026799392</Y>
             <Z>0</Z>
           </point3d>
         </Attref>
@@ -461,12 +659,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>0.0701478256307837</X>
-          <Y>65.169220674615772</Y>
+          <Y>64.169220674615772</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>586.13545582563074</X>
-          <Y>65.169220674615772</Y>
+          <Y>64.169220674615772</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -652,12 +850,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>340.00830023321333</X>
-          <Y>68.383720626375592</Y>
+          <Y>67.383720626375592</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>825.85247723321322</X>
-          <Y>68.383720626375592</Y>
+          <Y>67.383720626375592</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -843,12 +1041,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>665.64546530803625</X>
-          <Y>67.893760947416425</Y>
+          <Y>66.893760947416425</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>1175.7829582458241</X>
-          <Y>67.893760947416425</Y>
+          <Y>66.893760947416425</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -3276,12 +3474,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>0</X>
-          <Y>75.5</Y>
+          <Y>74.5</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>202.5</X>
-          <Y>75.5</Y>
+          <Y>74.5</Y><!-- modified Y position by -1mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">

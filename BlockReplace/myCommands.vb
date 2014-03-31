@@ -1570,11 +1570,15 @@ Namespace BlockReplace
             Dim numOfEntsFound As Integer = 0
 
             Dim pmtSelRes As PromptSelectionResult = Nothing
-
-            Dim typedVal As TypedValue() = New TypedValue(0) {}
-            typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
-
-            Dim selFilter As New SelectionFilter(typedVal)
+            Dim acTypValAr(3) As TypedValue
+            acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "<or"), 0)
+            acTypValAr.SetValue(New TypedValue(DxfCode.Start, "Line"), 1)
+            acTypValAr.SetValue(New TypedValue(DxfCode.Start, "INSERT"), 2)
+            acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "or>"), 3)
+            Dim selFilter As New SelectionFilter(acTypValAr)
+            'Dim typedVal As TypedValue() = New TypedValue(0) {}
+            'typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
+            'Dim selFilter As New SelectionFilter(typedVal)
             pmtSelRes = ed.SelectCrossingPolygon(pntCol, selFilter)
             ' May not find entities in the UCS area
             ' between p1 and p3 if not PLAN view
@@ -1593,7 +1597,15 @@ Namespace BlockReplace
                         If ln IsNot Nothing Then
                             ln.UpgradeOpen()
                             ln.[Erase]()
-                        End If
+                        Else 'we want to look for and erase blockreferences that aren't our 5.2 border:
+                            Dim br As BlockReference = TryCast(obj, BlockReference)
+                            If br IsNot Nothing Then
+                                If Not br.Name Like "*5.2(block)" Then
+                                    br.UpgradeOpen()
+                                    br.[Erase]()
+                                End If
+                            End If
+                            End If
                     Next
                     myTrans.Commit()
                     ed.WriteMessage(vbCrLf & "Entities erased " & numOfEntsFound.ToString() & vbCrLf)
@@ -1786,8 +1798,30 @@ Namespace BlockReplace
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
             Using tr = db.TransactionManager.StartTransaction()
                 Dim pmtSelRes As PromptSelectionResult = Nothing
-                Dim acTypValAr(0) As TypedValue
-                acTypValAr.SetValue(New TypedValue(DxfCode.Start, "*"), 0)
+                'works:
+                'Dim acTypValAr(4) As TypedValue
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "*"), 0)
+                'doesn't work:
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "<or"), 0)
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "ATTDEF"), 1)
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "TEXT"), 2)
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "MTEXT"), 3)
+                'acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "or>"), 4)
+                'might work:
+                Dim acTypValAr() As TypedValue = New TypedValue() {
+                    New TypedValue(DxfCode.Operator, "<or"), _
+                    New TypedValue(DxfCode.Operator, "<and"), _
+                    New TypedValue(DxfCode.Start, "ATTDEF"), _
+                    New TypedValue(DxfCode.Operator, "and>"), _
+                    New TypedValue(DxfCode.Operator, "<and"), _
+                    New TypedValue(DxfCode.Start, "TEXT"), _
+                    New TypedValue(DxfCode.Operator, "and>"), _
+                    New TypedValue(DxfCode.Operator, "<and"), _
+                    New TypedValue(DxfCode.Start, "MTEXT"), _
+                    New TypedValue(DxfCode.Operator, "and>"), _
+                    New TypedValue(DxfCode.Operator, "or>")
+                    }
+
                 Dim selFilter As New SelectionFilter(acTypValAr)
                 pmtSelRes = ed.SelectCrossingPolygon(tmppntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then
@@ -2006,9 +2040,31 @@ Namespace BlockReplace
             End If
         End Function
 
+        ''' <summary>
+        ''' Gets the C##### number from the filename in the event that the drawing number currently
+        ''' contains "*" or "C" or is completely empty.
+        ''' </summary>
+        ''' <param name="inputstring"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Public Function GetCNumberFromFileName(inputstring As String) As String
             Dim r As New Regex("\w\d{5}")
             Return r.Match(inputstring).Captures.Item(0).ToString()
+        End Function
+
+        ''' <summary>
+        ''' Checks whether the drawing number is just "C"
+        ''' </summary>
+        ''' <param name="tmpstr"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function ContainsJustC(InputString As String) As Boolean
+            Dim r As New Regex("C")
+            If r.IsMatch(InputString) Then
+                Return True
+            Else
+                Return False
+            End If
         End Function
 
         ''' <summary>
@@ -2024,6 +2080,10 @@ Namespace BlockReplace
             If blockname Like "Border*" Then
                 If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
                     If ContainsStars(tmpstr) Then 'there's something weird about the drawing number
+                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                    ElseIf ContainsJustC(tmpstr) And tmpstr.Length = 1 Then
+                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                    ElseIf tmpstr.Length = 0 Then
                         tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                     End If
                     If blockname = "Border" Then
@@ -2428,6 +2488,8 @@ Namespace BlockReplace
         End Function
 
 #End Region
+
+
 
 
     End Class
