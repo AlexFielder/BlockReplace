@@ -1,0 +1,4660 @@
+﻿<?xml version="1.0" encoding="utf-8" ?> 
+<!-- This file defines the lines and crossing window we may need for each frame size
+Because the IL & DL files are already (from what I have seen anyway) in the 5.2 border they may be unecessary.
+All values are relative to the insertion point of the block being used. - if the block is inserted @0,0,0 
+there's no problem otherwise we need to translate these coordinates accordingly.
+Lines in the frames are relatively positioned from the <point3d name="p1"> coordinates.
+  -->
+<frames xmlns:mpe="http://MatrixPrecisionEngineering.com"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3schools.com/MatrixPrecisionEngineering BlockReplace.xsd">
+  <DrawingFrame name="SB-DL_995-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>82.424553216065249</X>
+          <Y>7.3799388268340351</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>82.424553216065249</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>203.51470921606526</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>203.51470921606526</X>
+          <Y>7.3799388268340351</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>2.4245552160652455</X>
+            <Y>7.379938826834028</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.4245552160652455</X>
+            <Y>73.105666826834039</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>203.51470921606526</X>
+            <Y>73.105666826834039</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>203.51470921606526</X>
+            <Y>7.379938826834028</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>2.4245552160652473</X>
+            <Y>169.97023006129922</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.4245552160652473</X>
+            <Y>283.10574282683405</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>22.424555216065244</X>
+            <Y>283.10574282683405</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>22.424555216065244</X>
+            <Y>169.97023006129922</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="DRAWING OFFICE REF">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>67.022333491833962</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>67.022333491834019</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>60.939000161834031</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB-CONTRACTOR">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>60.939000161834031</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606526</X>
+          <Y>54.855666826834025</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>54.855666826834025</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>48.772333496834094</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <DrawingFrame name="SB-IL_996-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>82.424553216065249</X>
+          <Y>7.3799388268340351</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>82.424553216065249</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>203.51470921606526</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>203.51470921606526</X>
+          <Y>7.3799388268340351</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>2.4245552160652455</X>
+            <Y>7.379938826834028</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.4245552160652455</X>
+            <Y>73.105666826834039</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>203.51470921606526</X>
+            <Y>73.105666826834039</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>203.51470921606526</X>
+            <Y>7.379938826834028</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>2.4245552160652473</X>
+            <Y>169.97023006129922</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.4245552160652473</X>
+            <Y>283.10574282683405</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>22.424555216065244</X>
+            <Y>283.10574282683405</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>22.424555216065244</X>
+            <Y>169.97023006129922</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="DRAWING OFFICE REF">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>73.105666826834039</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>67.022333491833962</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>67.022333491834019</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>60.939000161834031</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB CONTRACTOR">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>60.939000161834031</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606526</X>
+          <Y>54.855666826834025</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>132.35491921606521</X>
+          <Y>54.855666826834025</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>203.51470921606523</X>
+          <Y>48.772333496834094</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <DrawingFrame name="SB-A3_993-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>8.8724846136756241E-08</X>
+          <Y>2.6799398256116547E-08</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>8.8724846136756241E-08</X>
+          <Y>44.4415550267994</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>413.00009208872484</X>
+          <Y>44.4415550267994</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>413.00009208872484</X>
+          <Y>2.6799398256116547E-08</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>27.000000088724846</X>
+            <Y>6.0000000267993983</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>27.000000088724846</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>413.00009208872484</X>
+            <Y>44.4415550267994</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>413.00009208872484</X>
+            <Y>6.0000000267993983</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>7.0000000887248461</X>
+            <Y>163.69257340002878</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>7.0000000887248461</X>
+            <Y>276.00009202679945</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>27.000000088724846</X>
+            <Y>276.00009202679945</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>27.000000088724846</X>
+            <Y>163.69257340002878</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="MATERIAL">
+        <LineStart>
+          <X>127.00000008872485</X>
+          <Y>44.4415550267994</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>192.06034841808159</X>
+          <Y>25.441555026799396</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="PROTECTIVE FINISH">
+        <LineStart>
+          <X>127.00000008872485</X>
+          <Y>25.441555026799392</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>192.06034841808159</X>
+          <Y>6.0000000267993983</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="TOLERANCE">
+        <LineStart>
+          <X>192.06034841808159</X>
+          <Y>44.4415550267994</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>242.76233641808156</X>
+          <Y>25.4415550267994</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="DIMS IN">
+        <LineStart>
+          <X>192.06034841808159</X>
+          <Y>25.441555026799396</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>217.41134241808157</X>
+          <Y>15.9415550267994</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SCALE">
+        <LineStart>
+          <X>217.4113424180816</X>
+          <Y>25.441555026799396</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>242.76233641808156</X>
+          <Y>15.9415550267994</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SURFACE TEXTURE">
+        <LineStart>
+          <X>192.06034841808159</X>
+          <Y>15.9415550267994</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>242.76233641808156</X>
+          <Y>5.9999970267993987</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB-CONTRACTOR">
+        <LineStart>
+          <X>242.76233641808156</X>
+          <Y>44.4415550267994</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>296.00118140146247</X>
+          <Y>34.941555026799406</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>242.76233641808156</X>
+          <Y>34.9415550267994</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>296.00118140146247</X>
+          <Y>25.441555026799403</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>350.79455288811727</X>
+          <Y>44.441555026799406</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>413.00009208872484</X>
+          <Y>36.4415550267994</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <DrawingFrame name="SB-A2_992-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>0.0701478256307837</X>
+          <Y>2.9762088615825633E-07</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>0.0701478256307837</X>
+          <Y>65.169220674615772</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>586.13545582563074</X>
+          <Y>65.169220674615772</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>586.13545582563074</X>
+          <Y>2.9762088615825633E-07</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>34.647582825630778</X>
+            <Y>9.1692122976208861</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>34.647582825630778</X>
+            <Y>65.169220674615772</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>586.13545582563074</X>
+            <Y>65.169220674615772</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>586.13545582563074</X>
+            <Y>9.1692122976208861</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>9.6475808256307829</X>
+            <Y>199.97053105388611</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>9.6475808256307829</X>
+            <Y>388.67108231397441</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>34.647582825630778</X>
+            <Y>388.67108231397441</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>34.647582825630778</X>
+            <Y>199.97053105388611</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="MATERIAL">
+        <LineStart>
+          <X>192.78927887778639</X>
+          <Y>65.169220331800673</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>269.78927137778646</X>
+          <Y>39.169201301038861</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="PROTECTIVE FINISH">
+        <LineStart>
+          <X>192.78927887778644</X>
+          <Y>39.169201301038854</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>269.78927137778646</X>
+          <Y>9.1692120827077872</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="TOLERANCE">
+        <LineStart>
+          <X>269.78927137778641</X>
+          <Y>65.169220451526826</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>336.78926387778637</X>
+          <Y>39.169201301038861</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="DIMS IN">
+        <LineStart>
+          <X>269.78927137778646</X>
+          <Y>39.169201301038861</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>303.28927887778633</X>
+          <Y>23.756710599169779</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SCALE">
+        <LineStart>
+          <X>303.28927887778633</X>
+          <Y>39.169201301038861</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>336.78926387778637</X>
+          <Y>23.756710649997927</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SURFACE TEXTURE">
+        <LineStart>
+          <X>269.78927137778646</X>
+          <Y>23.756710524573336</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>336.78926387778637</X>
+          <Y>9.1692166806021476</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB-CONTRACTOR">
+        <LineStart>
+          <X>336.78926387778637</X>
+          <Y>65.169220680602137</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>417.75421902464115</X>
+          <Y>52.169210934125964</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>336.78926387778637</X>
+          <Y>52.169210934125971</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>417.75421902464115</X>
+          <Y>39.169201301038868</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>498.64754044606752</X>
+          <Y>65.16922061480939</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>586.13545582563086</X>
+          <Y>52.96920467718418</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <DrawingFrame name="SB-A1_991-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>340.00830023321333</X>
+          <Y>9.3837236263755983</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>340.00830023321333</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>825.85247723321322</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>825.85247723321322</X>
+          <Y>9.3837236263755983</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>10.341640233213205</X>
+            <Y>273.91704451432383</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>10.341640233213205</X>
+            <Y>546.91704451432383</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>38.388099233213204</X>
+            <Y>546.91704451432383</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>38.388099233213204</X>
+            <Y>273.91704451432383</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>340.00830023321333</X>
+            <Y>9.3837236263755983</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>340.00830023321333</X>
+            <Y>68.383720626375592</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>825.85247723321322</X>
+            <Y>68.383720626375592</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>825.85247723321322</X>
+            <Y>9.3837236263755983</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="MATERIAL">
+        <LineStart>
+          <X>453.88490879152226</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>520.1847137915222</X>
+          <Y>41.0335356263756</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="PROTECTIVE FINISH">
+        <LineStart>
+          <X>453.88490879152226</X>
+          <Y>41.0335356263756</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>520.18471379152231</X>
+          <Y>9.3837396263756</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="TOLERANCE">
+        <LineStart>
+          <X>520.1847137915222</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>583.1847137915222</X>
+          <Y>41.033535626375595</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="DIMS IN">
+        <LineStart>
+          <X>520.1847137915222</X>
+          <Y>41.0335356263756</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>550.2805447518474</X>
+          <Y>23.971218626375588</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SCALE">
+        <LineStart>
+          <X>550.2805447518474</X>
+          <Y>41.033535626375595</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>583.1847137915222</X>
+          <Y>23.971218626375602</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SURFACE TEXTURE">
+        <LineStart>
+          <X>520.18471379152231</X>
+          <Y>23.971218626375602</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>583.1847137915222</X>
+          <Y>9.3837396263755934</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB-CONTRACTOR">
+        <LineStart>
+          <X>583.1847137915222</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>666.93088589072931</X>
+          <Y>54.708628126375586</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>583.1847137915222</X>
+          <Y>54.708628126375594</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>666.93088589072931</X>
+          <Y>41.033535626375588</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>733.38812223321327</X>
+          <Y>68.383720626375592</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>825.85247723321322</X>
+          <Y>56.383720626375592</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <DrawingFrame name="SB-A0_990-5.2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>665.64546530803625</X>
+          <Y>8.8010849474164274</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>665.64546530803625</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>1175.7829582458241</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>1175.7829582458241</X>
+          <Y>8.8010849474164274</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>11.110055245824256</X>
+            <Y>299.53551444908004</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>11.110055245824256</X>
+            <Y>788.08081094741647</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>44.110068245824259</X>
+            <Y>788.08081094741647</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>44.110068245824259</X>
+            <Y>299.53551444908004</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>665.64546530803625</X>
+            <Y>8.8010849474164274</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>665.64546530803625</X>
+            <Y>67.893760947416425</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1175.7829582458241</X>
+            <Y>67.893760947416425</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1175.7829582458241</X>
+            <Y>8.8010849474164274</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines>
+      <Line name="MATERIAL">
+        <LineStart>
+          <X>777.4720059949301</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>853.77181099493009</X>
+          <Y>38.1914218427095</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="PROTECTIVE FINISH">
+        <LineStart>
+          <X>777.47200599493021</X>
+          <Y>38.1914218427095</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>853.77181099493</X>
+          <Y>8.8010849474164274</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="TOLERANCE">
+        <LineStart>
+          <X>853.77181099493021</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>927.703066932718</X>
+          <Y>38.191421842709495</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="DIMS IN">
+        <LineStart>
+          <X>853.77181099493009</X>
+          <Y>38.1914218427095</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>890.77181099493009</X>
+          <Y>23.186240842709495</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SCALE">
+        <LineStart>
+          <X>890.77181099493021</X>
+          <Y>38.1914218427095</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>927.703066932718</X>
+          <Y>23.186240842709495</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SURFACE TEXTURE">
+        <LineStart>
+          <X>853.77181099493009</X>
+          <Y>23.186240842709495</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>927.70306693271812</X>
+          <Y>8.8010849474164274</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="SUB-CONTRACTOR">
+        <LineStart>
+          <X>927.703066932718</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>1009.3656308257503</X>
+          <Y>52.941421842709495</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="RESPONSIBLE AUTHORITY">
+        <LineStart>
+          <X>927.703066932718</X>
+          <Y>52.941421842709488</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>1009.3656308257503</X>
+          <Y>38.191421842709495</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+      <Line name="CAD REF">
+        <LineStart>
+          <X>1078.9017840848817</X>
+          <Y>67.893760947416425</Y>
+          <Z>0</Z>
+        </LineStart>
+        <LineEnd>
+          <X>1175.7829582458241</X>
+          <Y>55.893760947416425</Y>
+          <Z>0</Z>
+        </LineEnd>
+        <Layer>FRAME</Layer>
+      </Line>
+    </Lines>
+  </DrawingFrame>
+  <!-- Non-Current Frames -->
+  <DrawingFrame name="Border A0">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>744</X>
+          <Y>15</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>744</X>
+          <Y>70</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>1177</X>
+          <Y>70</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>1177</X>
+          <Y>15</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>10</X>
+            <Y>209.82677705684156</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>10</X>
+            <Y>799</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>40</X>
+            <Y>799</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>40</X>
+            <Y>209.82677705684156</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>40</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>40</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>138</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>138</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>849</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>884</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>884</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>884</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>884</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>905</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>849</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>905</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>905</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1010</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1010</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>905</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1010</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1010</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="Border A1">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>419</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>419</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>832</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>832</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>8</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>8</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>28</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>28</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>28</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>28</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>136</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>136</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>62.000023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>62.000023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="Border A2">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>8</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>8</X>
+          <Y>62.000000000000007</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>587</X>
+          <Y>62.000000000000007</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>587</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>8</X>
+            <Y>200.52688794004669</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>8</X>
+            <Y>375</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>28</X>
+            <Y>375</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>28</X>
+            <Y>200.52688794004669</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>28</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>28</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>141</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>141</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>279</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>314</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>314</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>314</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>314</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>335</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>279</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>335</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>335</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>440</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>440</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>335</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>440</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>440</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="Border A3">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>25</X>
+          <Y>12</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>25</X>
+          <Y>60</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>415</X>
+          <Y>60</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>415</X>
+          <Y>12</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>5</X>
+            <Y>192.63</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>5</X>
+            <Y>258.56</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>25</X>
+            <Y>258.56</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>25</X>
+            <Y>192.63</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>25</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>25</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>95</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>95</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>52.35</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>52.35</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>199</X>
+            <Y>25.3</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292</X>
+            <Y>25.3</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="Border A4">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>32.5</X>
+          <Y>10</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>32.5</X>
+          <Y>99.750023</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>222.5</X>
+          <Y>99.750023</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>222.5</X>
+          <Y>10</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>32.5</X>
+            <Y>219.59229133597984</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>32.5</X>
+            <Y>272</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>52.5</X>
+            <Y>272</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>52.5</X>
+            <Y>219.59229133597984</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>32.5</X>
+            <Y>19</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>32.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>97.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>97.5</X>
+            <Y>19</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>52.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>52.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>117.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>117.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>52.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>52.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>97.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>97.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>117.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>117.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>147.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>147.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>147.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>147.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>177.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>177.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>192.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>192.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>207.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>207.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>207.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>207.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>222.5</X>
+            <Y>99.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>222.5</X>
+            <Y>79.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>97.5</X>
+            <Y>54.25</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>97.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>222.5</X>
+            <Y>62.750018999999995</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>222.5</X>
+            <Y>54.25</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>97.5</X>
+            <Y>45.750023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>97.5</X>
+            <Y>54.25</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>157.5</X>
+            <Y>54.25</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>157.5</X>
+            <Y>45.750023</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="HR-A0_800-6.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>744</X>
+          <Y>15</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>744</X>
+          <Y>70</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>1177</X>
+          <Y>70</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>1177</X>
+          <Y>15</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>10</X>
+            <Y>209.82677705684156</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>10</X>
+            <Y>799</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>40</X>
+            <Y>799</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>40</X>
+            <Y>209.82677705684156</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>40</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>40</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>138</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>138</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>744</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>744</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>849</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>849</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>849</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>884</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>884</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>884</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>884</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>905</X>
+            <Y>57</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>849</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>849</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>905</X>
+            <Y>15</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>905</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1010</X>
+            <Y>70</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1010</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>905</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>905</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1010</X>
+            <Y>44</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1010</X>
+            <Y>29</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="HR-A1_801-6.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>419</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>419</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>832</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>832</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>8</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>8</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>28</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>28</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>28</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>28</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>136</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>136</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="HR-A2_802-6.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>28</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>28</X>
+          <Y>62.000000000000007</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>587</X>
+          <Y>62.000000000000007</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>587</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>8</X>
+            <Y>200.52688794004669</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>8</X>
+            <Y>375</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>28</X>
+            <Y>375</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>28</X>
+            <Y>200.52688794004669</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>28</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>28</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>141</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>141</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>174</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>174</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>279</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>279</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>279</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>314</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>314</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>314</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>314</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>335</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>279</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>279</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>335</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>335</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>440</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>440</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>335</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>335</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>440</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>440</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+  <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="HR-A3_803-6.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>25</X>
+          <Y>12</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>25</X>
+          <Y>60</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>415</X>
+          <Y>60</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>415</X>
+          <Y>12</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>5</X>
+            <Y>192.63</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>5</X>
+            <Y>258.56</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>25</X>
+            <Y>258.56</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>25</X>
+            <Y>192.63</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>25</X>
+            <Y>20</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>25</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>95</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>95</X>
+            <Y>20</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>45</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>95</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>95</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161</X>
+            <Y>30</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>52.35</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>52.35</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>44.65</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>161</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199</X>
+            <Y>12</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292</X>
+            <Y>60</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>199</X>
+            <Y>25.3</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292</X>
+            <Y>37</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292</X>
+            <Y>25.3</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="HR-IL_806-7.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>0</X>
+          <Y>0</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>0</X>
+          <Y>75.5</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>202.5</X>
+          <Y>75.5</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>202.5</X>
+          <Y>0</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>2.5</X>
+            <Y>10</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.5</X>
+            <Y>75.5</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>67.4</X>
+            <Y>75.5</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>67.4</X>
+            <Y>10</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>67.4</X>
+            <Y>41</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>67.4</X>
+            <Y>49.5</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>202.5</X>
+            <Y>49.5</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>202.5</X>
+            <Y>41</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>67.4</X>
+            <Y>32.5</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>67.4</X>
+            <Y>41.000019</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>127.381226</X>
+            <Y>41.000019</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>127.381226</X>
+            <Y>32.5</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>2.2737702363466497</X>
+            <Y>199.05930247777562</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>2.2737702363466497</X>
+            <Y>285.00006099999996</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>22.381218</X>
+            <Y>285.00006099999996</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>22.381218</X>
+            <Y>199.05930247777562</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="DSS_A4V">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>10</X>
+          <Y>10</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>10</X>
+          <Y>57.999933078885078</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>200</X>
+          <Y>57.999933078885078</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>200</X>
+          <Y>10</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>25</X>
+            <Y>24</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>25</X>
+            <Y>38</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>56</X>
+            <Y>38</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>56</X>
+            <Y>24</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>10</X>
+            <Y>10</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>10</X>
+            <Y>129</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>25</X>
+            <Y>129</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>25</X>
+            <Y>10</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="A3BORD">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>94.99997524373363</X>
+          <Y>11.999999828778755</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>94.99997524373363</X>
+          <Y>59.999999828778755</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>415.000067243733629</X>
+          <Y>59.999999828778755</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>415.000067243733629</X>
+          <Y>11.999999828778755</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>4.99997524373363</X>
+            <Y>192.63220123588189</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>4.99997524373363</X>
+            <Y>258.50006082877871</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>24.99997524373363</X>
+            <Y>258.50006082877871</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>24.99997524373363</X>
+            <Y>192.63220123588189</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>94.99997524373363</X>
+            <Y>44.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>94.99997524373363</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161.00002124373363</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161.00002124373363</X>
+            <Y>44.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>24.99997524373363</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>24.99997524373363</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>94.99997524373363</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>94.99997524373363</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>94.99997524373363</X>
+            <Y>29.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>94.99997524373363</X>
+            <Y>44.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161.00002124373363</X>
+            <Y>44.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161.00002124373363</X>
+            <Y>29.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>94.99997524373363</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>94.99997524373363</X>
+            <Y>29.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>161.00002124373363</X>
+            <Y>29.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>161.00002124373363</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>161.00002124373363</X>
+            <Y>44.650001828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161.00002124373363</X>
+            <Y>52.350009828778752</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199.00003624373365</X>
+            <Y>52.350009828778752</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199.00003624373365</X>
+            <Y>44.650001828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>161.00002124373363</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161.00002124373363</X>
+            <Y>44.650001828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199.00003624373365</X>
+            <Y>44.650001828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199.00003624373365</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>161.00002124373363</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>161.00002124373363</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>199.00003624373365</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>199.00003624373365</X>
+            <Y>11.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>199.00003624373365</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199.00003624373365</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292.00006724373363</X>
+            <Y>59.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292.00006724373363</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>199.00003624373365</X>
+            <Y>25.299998828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>199.00003624373365</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>292.00006724373363</X>
+            <Y>36.999999828778755</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>292.00006724373363</X>
+            <Y>25.299998828778755</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="SB-A3_993-5.1(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>27</X>
+          <Y>6</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>27</X>
+          <Y>44.441555</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>413.000092</X>
+          <Y>44.441555</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>413.000092</X>
+          <Y>6</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>7</X>
+            <Y>163.69257337322938</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>7</X>
+            <Y>276.000092</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>27</X>
+            <Y>276.000092</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>27</X>
+            <Y>163.69257337322938</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>55</X>
+            <Y>6</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>55</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>129.155098</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>129.155098</X>
+            <Y>6</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>129.15509800000004</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>129.15509800000004</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>189.155098</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>189.155098</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>129.155098</X>
+            <Y>5.9999970000000005</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>129.155098</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>189.155098</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>189.155098</X>
+            <Y>5.9999970000000005</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>189.155098</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>189.155098</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>249.85708599999998</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>249.85708599999998</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>189.155098</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>189.155098</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>219.15509800000004</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>219.15509800000004</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>219.15509800000004</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>219.15509800000004</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>249.85708599999998</X>
+            <Y>25.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>249.85708599999998</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>189.155098</X>
+            <Y>6</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>189.155098</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>249.85708599999998</X>
+            <Y>15.941555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>249.85708599999998</X>
+            <Y>6</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>330.18981899999994</X>
+            <Y>36.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>330.18981899999994</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>413.000092</X>
+            <Y>44.441555</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>413.000092</X>
+            <Y>36.441555</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="Border">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>419</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>419</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>832</X>
+          <Y>62</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>832</X>
+          <Y>7</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>8</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>8</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>28</X>
+            <Y>553</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>28</X>
+            <Y>207.8208830086331</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>28</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>28</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>136</X>
+            <Y>80</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>136</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>62.000023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>62.000023</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>419</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>419</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>524</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>559</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>559</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>49</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="" name="">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>524</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>524</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>580</X>
+            <Y>7</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>62</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>580</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>580</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685</X>
+            <Y>36</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685</X>
+            <Y>21</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="A2 BORDER">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>530.6580972474701</X>
+          <Y>166.1462868856801</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>530.6580972474701</X>
+          <Y>195.6837018916041</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>890.42938649779421</X>
+          <Y>195.6837018916041</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>890.42938649779421</X>
+          <Y>166.1462868856801</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>308.26880060614718</X>
+            <Y>350.03036563365259</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>308.26880060614718</X>
+            <Y>560.20845815905227</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>324.76382410418421</X>
+            <Y>560.20845815905227</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>324.76382410418421</X>
+            <Y>350.03036563365259</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>530.6580972474701</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>530.6580972474701</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>591.47971956867809</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>591.47971956867809</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>591.47971956867821</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>591.47971956867821</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>634.61659079812307</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>634.61659079812307</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>591.47971956867809</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>591.47971956867809</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>634.61659079812307</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>634.61659079812307</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>591.47971956867809</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>591.47971956867809</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>634.61659079812307</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>634.61659079812307</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>634.61659079812307</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>634.61659079812307</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685.42122016506914</X>
+            <Y>195.6837018916041</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685.42122016506914</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>634.61659079812307</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>634.61659079812307</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685.42122016506914</X>
+            <Y>181.96641376406811</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685.42122016506914</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>634.61659079812307</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>634.61659079812307</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>685.42122016506914</X>
+            <Y>173.43783167393511</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>685.42122016506914</X>
+            <Y>166.1462868856801</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <DrawingFrame name="SB-A0_990-5 2(block)">
+    <SearchBoxBounds>
+      <Points>
+        <point3d name="p1">
+          <X>665.64546822106</X>
+          <Y>8.8010858521991064</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p2">
+          <X>665.64546822106</X>
+          <Y>67.8937618521991</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p3">
+          <X>1175.7829611588479</X>
+          <Y>67.8937618521991</Y>
+          <Z>0</Z>
+        </point3d>
+        <point3d name="p4">
+          <X>1175.7829611588479</X>
+          <Y>8.8010858521991064</Y>
+          <Z>0</Z>
+        </point3d>
+      </Points>
+      <Attrefs>
+        <Attref name="USED_ON">
+          <point3d name="p1">
+            <X>11.110058158848068</X>
+            <Y>299.53551535386271</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>11.110058158848068</X>
+            <Y>788.08081185219919</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>44.110071158848072</X>
+            <Y>788.08081185219919</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>44.110071158848072</X>
+            <Y>299.53551535386271</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref name="REVISIONS">
+          <point3d name="p1">
+            <X>665.64546822106</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>665.64546822106</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>777.47200890795386</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>777.47200890795386</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="MATERIAL" name="MATERIAL">
+          <point3d name="p1">
+            <X>777.472008907954</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>777.472008907954</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>853.771813907954</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>853.771813907954</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="PROTECTIVE FINISH" name="PROTECTIVE_FINISH">
+          <point3d name="p1">
+            <X>777.472008907954</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>777.472008907954</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>853.77181390795386</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>853.77181390795386</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="TOLERANCE" name="TOLERANCES">
+          <point3d name="p1">
+            <X>853.77181390795386</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>853.77181390795386</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>927.70306984574177</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>927.70306984574177</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="DIMS IN" name="DIMSIN">
+          <point3d name="p1">
+            <X>853.77181390795386</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>853.77181390795386</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>890.771813907954</X>
+            <Y>38.191422747492183</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>890.771813907954</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SCALE" name="SCALE">
+          <point3d name="p1">
+            <X>890.77181390795386</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>890.77181390795386</X>
+            <Y>38.191422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>927.70306984574177</X>
+            <Y>38.191422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>927.70306984574177</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="SURFACE TEXTURE" name="SURFACE_TEXTURE">
+          <point3d name="p1">
+            <X>853.77181390795374</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>853.77181390795374</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>927.70306984574177</X>
+            <Y>23.186241747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>927.70306984574177</X>
+            <Y>8.8010858521991064</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
+          <point3d name="p1">
+            <X>927.70306984574177</X>
+            <Y>38.191422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>927.70306984574177</X>
+            <Y>52.941422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1009.365633738774</X>
+            <Y>52.941422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1009.365633738774</X>
+            <Y>38.191422747492176</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+        <Attref AttributeName="CAD REF" name="CAD_REF">
+          <point3d name="p1">
+            <X>1078.9017869979059</X>
+            <Y>55.893761852199106</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p2">
+            <X>1078.9017869979059</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p3">
+            <X>1175.7829611588479</X>
+            <Y>67.8937618521991</Y>
+            <Z>0</Z>
+          </point3d>
+          <point3d name="p4">
+            <X>1175.7829611588479</X>
+            <Y>55.893761852199106</Y>
+            <Z>0</Z>
+          </point3d>
+        </Attref>
+      </Attrefs>
+    </SearchBoxBounds>
+    <Lines />
+  </DrawingFrame>
+  <!-- End of Non-Current Frames -->
+</frames>

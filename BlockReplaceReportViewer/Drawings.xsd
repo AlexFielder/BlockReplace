@@ -1,0 +1,24 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema id="Drawings" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+  <xs:element name="Drawings" msdata:IsDataSet="true" msdata:Locale="en-US">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="Drawing">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="path" type="xs:string" minOccurs="0" />
+              <xs:element name="revision" type="xs:string" minOccurs="0" />
+              <xs:element name="revisiondatestr" type="xs:string" minOccurs="0" />
+              <xs:element name="name" type="xs:string" minOccurs="0" />
+              <xs:element name="oldname" type="xs:string" minOccurs="0" />
+              <xs:element name="oldpath" type="xs:string" minOccurs="0" />
+              <xs:element name="DrawingID" type="xs:string" minOccurs="0" />
+              <xs:element name="BeforeImgURL" type="xs:string" minOccurs="0" />
+              <xs:element name="AfterImgURL" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,190 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!--
+		
+            Licensed under the Apache License v2.0
+            http://www.apache.org/licenses/LICENSE-2.0
+
+            http://srivarenya.com
+            http://twitter.com/SriVarenya
+            -->
+        <meta charset="utf-8">
+        <title>Free HTML5 Template</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="A fully featured, responsive, HTML5, Bootstrap  template.">
+        <meta name="author" content="Sireesh Pangaluri">
+        
+        <!-- The styles -->
+        <link id="bs-css" href="Content/bootstrap.css" rel="stylesheet">
+        <link href="Content/bootstrap-responsive.css" rel="stylesheet"> 
+        <link href="Content/svtheme-app.css" rel="stylesheet"> 
+        <link href="Content/site.css" rel="stylesheet"> 
+        <link href="Content/jquery-ui-1.10.3.redmond.min.css" rel="stylesheet"> 
+        <link href="Content/jquery.jqGrid/ui.jqgrid.css" rel="stylesheet"> 
+        <link href="Content/fullcalendar.css" rel="stylesheet"> 
+        <link href="Content/fullcalendar.print.css" rel="stylesheet"> 
+        <link href="Content/chosen.css" rel="stylesheet"> 
+        <link href="Content/colorbox.css" rel="stylesheet"> 
+        <link href="Content/jquery.cleditor.css" rel="stylesheet"> 
+        <link href="Content/jquery.noty.css" rel="stylesheet"> 
+        <link href="Content/noty_theme_default.css" rel="stylesheet"> 
+        <link href="Content/elfinder.min.css" rel="stylesheet"> 
+        <link href="Content/elfinder.theme.css" rel="stylesheet"> 
+        <link href="Content/jquery.iphone.toggle.css" rel="stylesheet"> 
+        <link href="Content/opa-icons.css" rel="stylesheet"> 
+        <link href="Content/uploadify.css" rel="stylesheet"> 
+    
+        <!-- Header.js to Load Scripts -->
+        <script type="text/javascript" src="Scripts/head.js"> </script>
+        
+        <!-- The fav icon -->
+        <link rel="shortcut icon" href="Images/favicon.ico">
+        
+        <!-- Replace  SriVarenya.com with Desktop Site & m.SriVarenya.com with Mobile site-->
+        <script type="text/javascript"
+                src="http://detect.deviceatlas.com/redirect.js?d=SriVarenya.com&m= m.SriVarenya.com"> </script>
+    </head>
+    <body>
+        <header>
+            <div class="navbar navbar-fixed-top">
+                <div class="navbar-inner">
+                    <a class="brand" href="http://srivarenya.com"> <img alt="Sri Varenya Logo" src="Images/Logo.png" /> <span>Sri Varenya HTML5 Template</span></a>
+                
+                    <ul class="nav nav-pills">
+                        <!--search Bar -->
+                        <li><a href="#">Search</a></li>
+                        <li>
+                            <form class="navbar-search pull-left" method="get" action="http://www.google.com/search">
+                                <input placeholder="Search" class="search-query span2" name="query" type="text">
+                            </form>
+                        </li>
+                        <li class="divider-vertical"></li>
+
+                        <li><a href="#">Home</a></li>
+                     
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                Dropdown Menu
+                                <b class="caret"></b>
+                            </a>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+                                <li><a tabindex="-1" href="#">Action</a></li>
+                                <li><a tabindex="-1" href="#">Another action</a></li>
+                                <li class="disabled"><a tabindex="-1" href="#">Disabled Link</a></li>
+                                <li class="divider"></li>
+                                <li class="dropdown-submenu">
+                                    <a tabindex="-1" href="#">More options</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a tabindex="-1" href="#">Second level link</a></li>
+                                        <li><a tabindex="-1" href="#">Second level link</a></li>
+                                        <li><a tabindex="-1" href="#">Second level link</a></li>
+                                        <li><a tabindex="-1" href="#">Second level link</a></li>
+                                        <li><a tabindex="-1" href="#">Second level link</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+              
+                    <!-- theme selector starts -->
+                    <div class="btn-group pull-right" >
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">Change Theme / Skin<span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" id="themes">
+                            <li><a data-value="amelia" href="#">Amelia</a></li>
+                            <li><a data-value="cerulean" href="#"> Cerulean</a></li>
+                            <li><a data-value="cosmo" href="#"> Cosmo</a></li>
+                            <li><a data-value="cyborg" href="#">Cyborg</a></li>
+                            <li><a data-value="flatly" href="#">Flatly</a></li>
+                            <li><a data-value="journal" href="#">Journal</a></li>
+                            <li><a data-value="readable" href="#">Readable</a></li>
+                            <li><a data-value="simplex" href="#">Simplex</a></li>
+                            <li><a data-value="slate" href="#">Slate</a></li>
+                            <li><a data-value="spacelab" href="#"> Spacelab</a></li>
+                            <li><a data-value="spruce" href="#"> Spruce</a></li>
+                            <li><a data-value="superhero" href="#">Superhero</a></li>
+                            <li><a data-value="united" href="#">United</a></li>
+                        </ul>
+                    </div>
+                    <!-- theme selector ends -->
+                
+                    <!-- user dropdown starts -->
+                    <div class="btn-group pull-right" >
+                        <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+                            <i class="icon-user"></i><span class="hidden-phone"> admin</span>
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Profile</a></li>
+                            <li class="divider"></li>
+                            <li><a href="login.html">Logout</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- language Selector -->
+                    <div class=" btn-group pull-right" id="google_translate_element"></div>
+                    <!-- language Selector Ends-->
+                </div>
+            </div> <!-- topbar / NavBar ends -->
+        </header>  
+       
+       
+        <!-- Content  -->
+        <div class="container-fluid margin-top">
+            <div class="row-fluid">
+				<!-- left menu starts -->
+                <div class="span2">
+                    <div class="well">
+                        <ul class="nav nav-tabs nav-stacked">
+                            <li class="nav-header hidden-tablet">Left Menu Option</li>
+                            <li><a  href="Default.html"><i class="icon-home"></i><span class="hidden-tablet"> Home</span></a></li>
+                            <li><a href="icon.html"><i class="icon-globe"></i><span class="hidden-tablet"> Application Icons</span></a></li>
+                            <li><a href="Form.html"><i class="icon-edit"></i><span class="hidden-tablet"> Form Example</span></a></li>
+                            <li><a href="login.html"><i class="icon-lock"></i><span class="hidden-tablet"> Login Page</span></a></li>
+                            <li><a  href="http://twitter.github.io/bootstrap/base-css.html"><i class="icon-eye-open"></i><span class="hidden-tablet"> Base CSS</span></a></li>
+                            <li><a  href="http://twitter.github.io/bootstrap/scaffolding.html"><i class="icon-edit"></i><span class="hidden-tablet"> Scaffolding</span></a></li>
+                            <li><a  href="http://twitter.github.io/bootstrap/components.html"><i class="icon-list-alt"></i><span class="hidden-tablet"> Components</span></a></li>
+                            <li><a  href="http://twitter.github.io/bootstrap/javascript.htmll"><i class="icon-font"></i><span class="hidden-tablet"> Java Script</span></a></li>
+                            <li class="nav-header hidden-tablet">References</li>
+                            <li><a  href="http://bootswatch.com/"><i class="icon-align-justify"></i><span class="hidden-tablet"> Bootstarp Themes</span></a></li>
+                            <li><a  href="http://bootstrapstyler.com/"><i class="icon-calendar"></i><span class="hidden-tablet"> Bootstrap Styler</span></a></li>
+                            <li><a  href="http://stage.getkickstrap.com/"><i class="icon-th"></i><span class="hidden-tablet"> Kickstrap HTML, LESS</span></a></li>
+                            <li><a  href="http://icomoon.io/"><i class="icon-th"></i><span class="hidden-tablet"> Icon Moon Icons</span></a></li>
+                            <li><a  href="http://www.highcharts.com/demo/"><i class="icon-th"></i><span class="hidden-tablet"> Charts Demo</span></a></li>
+                        </ul>
+                        <label id="for-is-ajax" class="hidden-tablet" for="is-ajax"><input id="is-ajax" type="checkbox"> Ajax on menu</label>
+                    </div><!--/.well -->
+                </div><!--/span-->
+                <!-- left menu ends -->
+			
+                <noscript>
+                    <div class="alert alert-block span10">
+                        <h4 class="alert-heading">Warning!</h4>
+                        <p>You need to have <a href="http://en.wikipedia.org/wiki/JavaScript" target="_blank">JavaScript</a> enabled to use this site.</p>
+                    </div>
+                </noscript>
+			
+                <div id="content" class="span10">
+                    <!-- content starts -->
+                    <div>
+                        Add Content here
+                    </div>
+   
+                    <!-- content ends -->
+                </div><!--/#content.span10-->
+            </div><!--/fluid-row-->
+
+            <footer>
+                <div class="navbar-fixed-bottom">
+                    <p class="pull-left">&copy; <a href="http://srivarenya.com" target="_blank">Sri Varenya</a> 2013</p>		
+                </div>	
+            </footer>
+		
+        </div><!--/.fluid-container-->
+        
+        <!-- ADD ALL SCRIPTS IN referenceScripts.js with head.js -->
+        <script src="Scripts/DesktopReferenceScripts.js"> </script>
+      
+    </body>
+</html>

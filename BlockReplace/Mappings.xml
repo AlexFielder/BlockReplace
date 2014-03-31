@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<mappings xmlns:mpe="http://MatrixPrecisionEngineering.com"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3schools.com/MatrixPrecisionEngineering BlockReplace.xsd">
+  <oldblock name="SB-A3_993-5.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF (PATH)" newname="CAD REF"/>
+      <attribute name="BUILDING(S) COVERED 1" newname="BUILDING(S) COVERED 1"/>
+      <attribute name="BUILDING(S) COVERED 2" newname="BUILDING(S) COVERED 2"/>
+      <attribute name="BUILDING(S) COVERED 3" newname="BUILDING(S) COVERED 3"/>
+      <attribute name="BUILDING(S) COVERED 4" newname="BUILDING(S) COVERED 4"/>
+      <attribute name="BUILDING(S) COVERED 5" newname="BUILDING(S) COVERED 5"/>
+      <attribute name="BUILDING(S) COVERED 6" newname="BUILDING(S) COVERED 6"/>
+      <attribute name="BUILDING(S) COVERED 7" newname="BUILDING(S) COVERED 7"/>
+      <attribute name="BUILDING(S) COVERED 8" newname="BUILDING(S) COVERED 8"/>
+      <attribute name="SERVICE CODE(S) 1" newname="SERVICE CODE(S) 1"/>
+      <attribute name="SERVICE CODE(S) 2" newname="SERVICE CODE(S) 2"/>
+      <attribute name="SERVICE CODE(S) 3" newname="SERVICE CODE(S) 3"/>
+      <attribute name="SERVICE CODE(S) 4" newname="SERVICE CODE(S) 4"/>
+      <attribute name="SERVICE CODE(S) 5" newname="SERVICE CODE(S) 5"/>
+      <attribute name="SERVICE CODE(S) 6" newname="SERVICE CODE(S) 6"/>
+      <attribute name="SERVICE CODE(S) 7" newname="SERVICE CODE(S) 7"/>
+      <attribute name="SERVICE CODE(S) 8" newname="SERVICE CODE(S) 8"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="DRAWING OFFICE REF" newname="DRAWING OFFICE REF"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="SUB-CONTRACTOR" newname="SUB-CONTRACTOR"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="HR-A0_800-6.1(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF (PATH)" newname="CAD REF"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="CHANGE NO 8" newname="CHANGE NO 8"/>
+      <attribute name="DATE 8" newname="DATE 8"/>
+      <attribute name="ISSUE 8" newname="ISSUE 8"/>
+      <attribute name="CHANGE NO 9" newname="CHANGE NO 9"/>
+      <attribute name=" DATE 9" newname="DATE 9"/>
+      <attribute name="ISSUE 9" newname="ISSUE 9"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="HR-A1_801-6.1(block)" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF (PATH)" newname="CAD REF"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="CHANGE NO 8" newname="CHANGE NO 8"/>
+      <attribute name="DATE 8" newname="DATE 8"/>
+      <attribute name="ISSUE 8" newname="ISSUE 8"/>
+      <attribute name="CHANGE NO 9" newname="CHANGE NO 9"/>
+      <attribute name=" DATE 9" newname="DATE 9"/>
+      <attribute name="ISSUE 9" newname="ISSUE 9"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="HR-A2_802-6.1(block)" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF (PATH)" newname="CAD REF"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="CHANGE NO 8" newname="CHANGE NO 8"/>
+      <attribute name="DATE 8" newname="DATE 8"/>
+      <attribute name="ISSUE 8" newname="ISSUE 8"/>
+      <attribute name="CHANGE NO 9" newname="CHANGE NO 9"/>
+      <attribute name=" DATE 9" newname="DATE 9"/>
+      <attribute name="ISSUE 9" newname="ISSUE 9"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="HR-A3_803-6.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF (PATH)" newname="CAD REF"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="CHANGE NO 8" newname="CHANGE NO 8"/>
+      <attribute name="DATE 8" newname="DATE 8"/>
+      <attribute name="ISSUE 8" newname="ISSUE 8"/>
+      <attribute name="CHANGE NO 9" newname="CHANGE NO 9"/>
+      <attribute name=" DATE 9" newname="DATE 9"/>
+      <attribute name="ISSUE 9" newname="ISSUE 9"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <!-- everything after this line added by AF 05-03-2014-->
+  <oldblock name="HR-IL_806-7.1(block)" newname="SB-IL_996-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-IL_996-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="CHANGE NO 8" newname="CHANGE NO 8"/>
+      <attribute name="DATE 8" newname="DATE 8"/>
+      <attribute name="ISSUE 8" newname="ISSUE 8"/>
+      <attribute name="CHANGE NO 9" newname="CHANGE NO 9"/>
+      <attribute name="DATE 9" newname="DATE 9"/>
+      <attribute name="ISSUE 9" newname="ISSUE 9"/>
+      <attribute name="CHANGE NO 10" newname="CHANGE NO 10"/>
+      <attribute name="DATE 10" newname="DATE 10"/>
+      <attribute name="ISSUE 10" newname="ISSUE 10"/>
+      <attribute name="CHANGE NO 11" newname="CHANGE NO 11"/>
+      <attribute name="DATE 11" newname="DATE 11"/>
+      <attribute name="ISSUE 11" newname="ISSUE 11"/>
+      <attribute name="CHANGE NO 12" newname="CHANGE NO 12"/>
+      <attribute name="DATE 12" newname="DATE 12"/>
+      <attribute name="ISSUE 12" newname="ISSUE 12"/>
+      <attribute name="CHANGE NO 13" newname="CHANGE NO 13"/>
+      <attribute name="DATE 13" newname="DATE 13"/>
+      <attribute name="ISSUE 13" newname="ISSUE 13"/>
+      <attribute name="CHANGE NO 14" newname="CHANGE NO 14"/>
+      <attribute name="DATE 14" newname="DATE 14"/>
+      <attribute name="ISSUE 14" newname="ISSUE 14"/>
+      <attribute name="CONTRACTOR DRG NO" newname="CAD REF"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="SB-A0_990-5 2(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="TITLE 1" newname="TITLE 1"/>
+      <attribute name="TITLE 2" newname="TITLE 2"/>
+      <attribute name="TITLE 3" newname="TITLE 3"/>
+      <attribute name="CAD REF" newname="CAD REF"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="DRAWING OFFICE ID" newname="DRAWING OFFICE ID"/>
+      <attribute name="DRAWING OFFICE LOCATION" newname="DRAWING OFFICE LOCATION"/>
+      <attribute name="ESTABLISHMENT (A OR B)" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="DRAWING OFFICE REF" newname="DRAWING OFFICE REF"/>
+      <attribute name="COPYRIGHT YEAR" newname="COPYRIGHT YEAR"/>
+      <attribute name="RESPONSIBLE AUTHORITY" newname="RESPONSIBLE AUTHORITY"/>
+      <attribute name="SUB-CONTRACTOR" newname="SUB-CONTRACTOR"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
+      <attribute name="BUILDING(S) COVERED 1" newname="BUILDING(S) COVERED 1"/>
+      <attribute name="SERVICE CODE(S) 1" newname="SERVICE CODE(S) 1"/>
+      <attribute name="BUILDING(S) COVERED 2" newname="BUILDING(S) COVERED 2"/>
+      <attribute name="SERVICE CODE(S) 2" newname="SERVICE CODE(S) 2"/>
+      <attribute name="BUILDING(S) COVERED 3" newname="BUILDING(S) COVERED 3"/>
+      <attribute name="SERVICE CODE(S) 3" newname="SERVICE CODE(S) 3"/>
+      <attribute name="BUILDING(S) COVERED 4" newname="BUILDING(S) COVERED 4"/>
+      <attribute name="SERVICE CODE(S) 4" newname="SERVICE CODE(S) 4"/>
+      <attribute name="BUILDING(S) COVERED 5" newname="BUILDING(S) COVERED 5"/>
+      <attribute name="SERVICE CODE(S) 5" newname="SERVICE CODE(S) 5"/>
+      <attribute name="BUILDING(S) COVERED 6" newname="BUILDING(S) COVERED 6"/>
+      <attribute name="SERVICE CODE(S) 6" newname="SERVICE CODE(S) 6"/>
+      <attribute name="BUILDING(S) COVERED 7" newname="BUILDING(S) COVERED 7"/>
+      <attribute name="SERVICE CODE(S) 7" newname="SERVICE CODE(S) 7"/>
+      <attribute name="BUILDING(S) COVERED 8" newname="BUILDING(S) COVERED 8"/>
+      <attribute name="SERVICE CODE(S) 8" newname="SERVICE CODE(S) 8"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="USED ON 01 - PREFIX" newname="USED ON 01 - PREFIX"/>
+      <attribute name="USED ON 01 - DRG NUMBER" newname="USED ON 01 - DRG NUMBER"/>
+      <attribute name="USED ON 02 - PREFIX" newname="USED ON 02 - PREFIX"/>
+      <attribute name="USED ON 02 - DRG NUMBER" newname="USED ON 02 - DRG NUMBER"/>
+      <attribute name="USED ON 03 - PREFIX" newname="USED ON 03 - PREFIX"/>
+      <attribute name="USED ON 03 - DRG NUMBER" newname="USED ON 03 - DRG NUMBER"/>
+      <attribute name="USED ON 04 - PREFIX" newname="USED ON 04 - PREFIX"/>
+      <attribute name="USED ON 04 - DRG NUMBER" newname="USED ON 04 - DRG NUMBER"/>
+      <attribute name="USED ON 05 - PREFIX" newname="USED ON 05 - PREFIX"/>
+      <attribute name="USED ON 05 - DRG NUMBER" newname="USED ON 05 - DRG NUMBER"/>
+      <attribute name="USED ON 06 - PREFIX" newname="USED ON 06 - PREFIX"/>
+      <attribute name="USED ON 06 - DRG NUMBER" newname="USED ON 06 - DRG NUMBER"/>
+      <attribute name="USED ON 07 - PREFIX" newname="USED ON 07 - PREFIX"/>
+      <attribute name="USED ON 07 - DRG NUMBER" newname="USED ON 07 - DRG NUMBER"/>
+      <attribute name="USED ON 08 - PREFIX" newname="USED ON 08 - PREFIX"/>
+      <attribute name="USED ON 08 - DRG NUMBER" newname="USED ON 08 - DRG NUMBER"/>
+      <attribute name="USED ON 09 - PREFIX" newname="USED ON 09 - PREFIX"/>
+      <attribute name="USED ON 09 - DRG NUMBER" newname="USED ON 09 - DRG NUMBER"/>
+      <attribute name="USED ON 10 - PREFIX" newname="USED ON 10 - PREFIX"/>
+      <attribute name="USED ON 10 - DRG NUMBER" newname="USED ON 10 - DRG NUMBER"/>
+      <attribute name="USED ON 11 - PREFIX" newname="USED ON 11 - PREFIX"/>
+      <attribute name="USED ON 11 - DRG NUMBER" newname="USED ON 11 - DRG NUMBER"/>
+      <attribute name="USED ON 12 - PREFIX" newname="USED ON 12 - PREFIX"/>
+      <attribute name="USED ON 12 - DRG NUMBER" newname="USED ON 12 - DRG NUMBER"/>
+      <attribute name="USED ON 13 - PREFIX" newname="USED ON 13 - PREFIX"/>
+      <attribute name="USED ON 13 - DRG NUMBER" newname="USED ON 13 - DRG NUMBER"/>
+      <attribute name="USED ON 14 - PREFIX" newname="USED ON 14 - PREFIX"/>
+      <attribute name="USED ON 14 - DRG NUMBER" newname="USED ON 14 - DRG NUMBER"/>
+      <attribute name="USED ON 15 - PREFIX" newname="USED ON 15 - PREFIX"/>
+      <attribute name="USED ON 15 - DRG NUMBER" newname="USED ON 15 - DRG NUMBER"/>
+      <attribute name="USED ON 16 - PREFIX" newname="USED ON 16 - PREFIX"/>
+      <attribute name="USED ON 16 - DRG NUMBER" newname="USED ON 16 - DRG NUMBER"/>
+      <attribute name="USED ON 17 - PREFIX" newname="USED ON 17 - PREFIX"/>
+      <attribute name="USED ON 17 - DRG NUMBER" newname="USED ON 17 - DRG NUMBER"/>
+      <attribute name="USED ON 18 - PREFIX" newname="USED ON 18 - PREFIX"/>
+      <attribute name="USED ON 18 - DRG NUMBER" newname="USED ON 18 - DRG NUMBER"/>
+      <attribute name="USED ON 19 - PREFIX" newname="USED ON 19 - PREFIX"/>
+      <attribute name="USED ON 19 - DRG NUMBER" newname="USED ON 19 - DRG NUMBER"/>
+      <attribute name="USED ON 20 - PREFIX" newname="USED ON 20 - PREFIX"/>
+      <attribute name="USED ON 20 - DRG NUMBER" newname="USED ON 20 - DRG NUMBER"/>
+      <attribute name="USED ON 21 - PREFIX" newname="USED ON 21 - PREFIX"/>
+      <attribute name="USED ON 21 - DRG NUMBER" newname="USED ON 21 - DRG NUMBER"/>
+      <attribute name="USED ON 22 - PREFIX" newname="USED ON 22 - PREFIX"/>
+      <attribute name="USED ON 22 - DRG NUMBER" newname="USED ON 22 - DRG NUMBER"/>
+      <attribute name="USED ON 23 - PREFIX" newname="USED ON 23 - PREFIX"/>
+      <attribute name="USED ON 23 - DRG NUMBER" newname="USED ON 23 - DRG NUMBER"/>
+      <attribute name="USED ON 24 - PREFIX" newname="USED ON 24 - PREFIX"/>
+      <attribute name="USED ON 24 - DRG NUMBER" newname="USED ON 24 - DRG NUMBER"/>
+      <attribute name="USED ON 25 - PREFIX" newname="USED ON 25 - PREFIX"/>
+      <attribute name="USED ON 25 - DRG NUMBER" newname="USED ON 25 - DRG NUMBER"/>
+      <attribute name="USED ON 26 - PREFIX" newname="USED ON 26 - PREFIX"/>
+      <attribute name="USED ON 26 - DRG NUMBER" newname="USED ON 26 - DRG NUMBER"/>
+      <attribute name="USED ON 27 - PREFIX" newname="USED ON 27 - PREFIX"/>
+      <attribute name="USED ON 27 - DRG NUMBER" newname="USED ON 27 - DRG NUMBER"/>
+      <attribute name="USED ON 28 - PREFIX" newname="USED ON 28 - PREFIX"/>
+      <attribute name="USED ON 28 - DRG NUMBER" newname="USED ON 28 - DRG NUMBER"/>
+      <attribute name="USED ON 29 - PREFIX" newname="USED ON 29 - PREFIX"/>
+      <attribute name="USED ON 29 - DRG NUMBER" newname="USED ON 29 - DRG NUMBER"/>
+      <attribute name="USED ON 30 - PREFIX" newname="USED ON 30 - PREFIX"/>
+      <attribute name="USED ON 30 - DRG NUMBER" newname="USED ON 30 - DRG NUMBER"/>
+      <attribute name="USED ON 31 - PREFIX" newname="USED ON 31 - PREFIX"/>
+      <attribute name="USED ON 31 - DRG NUMBER" newname="USED ON 31 - DRG NUMBER"/>
+      <attribute name="USED ON 32 - PREFIX" newname="USED ON 32 - PREFIX"/>
+      <attribute name="USED ON 32 - DRG NUMBER" newname="USED ON 32 - DRG NUMBER"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border A0" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="SUB-CONTRACTOR"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border A1" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="SUB-CONTRACTOR"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border A2" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="SUB-CONTRACTOR"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border A3" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="SUB-CONTRACTOR"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border A4" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="CAD REF"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="Border" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAW_NAME" newname="CAD REF"/>
+      <attribute name="PATH_NAME" newname="CAD REF"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="A3BORD" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
+      <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
+      <attribute name="CHANGE_NO3" newname="CHANGE NO 3"/>
+      <attribute name="CHANGE_NO4" newname="CHANGE NO 4"/>
+      <attribute name="CHANGE_NO5" newname="CHANGE NO 5"/>
+      <attribute name="CHANGE_NO6" newname="CHANGE NO 6"/>
+      <attribute name="CHANGE_NO7" newname="CHANGE NO 7"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="EST" newname="ESTABLISHMENT (A OR B)"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="DO_NO" newname="DRAWING OFFICE ID"/>
+      <attribute name="BLDG" newname="DRAWING OFFICE REF"/>
+      <attribute name="DATE7" newname="DATE 7"/>
+      <attribute name="ISSUE7" newname="ISSUE 7"/>
+      <attribute name="DATE2" newname="DATE 2"/>
+      <attribute name="DATE1" newname="DATE 1"/>
+      <attribute name="DATE3" newname="DATE 3"/>
+      <attribute name="DATE4" newname="DATE 4"/>
+      <attribute name="DATE5" newname="DATE 5"/>
+      <attribute name="DATE6" newname="DATE 6"/>
+      <attribute name="ISSUE2" newname="ISSUE 2"/>
+      <attribute name="ISSUE1" newname="ISSUE 1"/>
+      <attribute name="ISSUE3" newname="ISSUE 3"/>
+      <attribute name="ISSUE4" newname="ISSUE 4"/>
+      <attribute name="ISSUE5" newname="ISSUE 5"/>
+      <attribute name="ISSUE6" newname="ISSUE 6"/>
+      <attribute name="DRAW_NAME" newname=""/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DIMS_IN" newname="DIMS IN"/>
+      <attribute name="PATH_NAME" newname="CAD REF"/>
+      <attribute name="TITLE_1" newname="TITLE 1"/>
+      <attribute name="L/R_HR" newname="DRAWING NUMBER 2"/>
+      <attribute name="L/R_CLASS" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="TITLE_2" newname="TITLE 2"/>
+      <attribute name="TITLE_3" newname="TITLE 3"/>
+      <attribute name="L/R_NOSHT" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="L/R_SHTNO" newname="SHEET NUMBER 2"/>
+      <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
+      <attribute name="U/L_HR" newname="DRAWING NUMBER 1"/>
+      <attribute name="U/L_CLASS" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="U/L_SHTNO" newname="SHEET NUMBER 1"/>
+      <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 1"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="DSS_A4V" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+    <attributes>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="DRG_TITLE_3" newname="TITLE 3"/>
+      <attribute name="DRG_TITLE_1" newname="TITLE 1"/>
+      <attribute name="DRG_TITLE_2" newname="TITLE 2"/>
+      <attribute name="DRG_NO" newname="DRAWING NUMBER 1"/>
+      <attribute name="MM" newname="DIMS IN"/>
+      <attribute name="YY" newname="COPYRIGHT YEAR"/>
+      <attribute name="DRG_BY" newname="DRAWN"/>
+      <attribute name="D_DATE" newname="CHANGE NO 1"/>
+      <attribute name="APP_BY" newname="CHECKED"/>
+      <attribute name="A_DATE" newname="DATE NO 1"/>
+      <attribute name="ISS_A" newname="ISSUE 1"/>
+    </attributes>
+  </oldblock>
+  <oldblock name="A2 BORDER" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+    <attributes>
+      <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
+      <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
+      <attribute name="DRAWING NUMBER 1" newname="DRAWING NUMBER 1"/>
+      <attribute name="DRAWING NUMBER 2" newname="DRAWING NUMBER 2"/>
+      <attribute name="TITLE" newname="TITLE 2"/>
+      <attribute name="SHEET NUMBER 1" newname="SHEET NUMBER 1"/>
+      <attribute name="SHEET NUMBER 2" newname="SHEET NUMBER 2"/>
+      <attribute name="NUMBER OF SHEETS 1" newname="NUMBER OF SHEETS 1"/>
+      <attribute name="NUMBER OF SHEETS 2" newname="NUMBER OF SHEETS 2"/>
+      <attribute name="CERTIFIED" newname="CERTIFIED"/>
+      <attribute name="CHECKED" newname="CHECKED"/>
+      <attribute name="DRAWN" newname="DRAWN"/>
+      <attribute name="MATERIAL" newname="MATERIAL"/>
+      <attribute name="TOLERANCE" newname="TOLERANCE"/>
+      <attribute name="SCALE" newname="SCALE"/>
+      <attribute name="PROTECTIVE FINISH" newname="PROTECTIVE FINISH"/>
+      <attribute name="DIMS IN" newname="DIMS IN"/>
+      <attribute name="SURFACE TEXTURE" newname="SURFACE TEXTURE"/>
+      <attribute name="CHANGE NO 1" newname="CHANGE NO 1"/>
+      <attribute name="ISSUE 1" newname="ISSUE 1"/>
+      <attribute name="DATE 1" newname="DATE 1"/>
+      <attribute name="CHANGE NO 2" newname="CHANGE NO 2"/>
+      <attribute name="ISSUE 2" newname="ISSUE 2"/>
+      <attribute name="DATE 2" newname="DATE 2"/>
+      <attribute name="CHANGE NO 3" newname="CHANGE NO 3"/>
+      <attribute name="ISSUE 3" newname="ISSUE 3"/>
+      <attribute name="DATE 3" newname="DATE 3"/>
+      <attribute name="CHANGE NO 4" newname="CHANGE NO 4"/>
+      <attribute name="ISSUE 4" newname="ISSUE 4"/>
+      <attribute name="DATE 4" newname="DATE 4"/>
+      <attribute name="CHANGE NO 5" newname="CHANGE NO 5"/>
+      <attribute name="ISSUE 5" newname="ISSUE 5"/>
+      <attribute name="DATE 5" newname="DATE 5"/>
+      <attribute name="CHANGE NO 6" newname="CHANGE NO 6"/>
+      <attribute name="ISSUE 6" newname="ISSUE 6"/>
+      <attribute name="DATE 6" newname="DATE 6"/>
+      <attribute name="CHANGE NO 7" newname="CHANGE NO 7"/>
+      <attribute name="ISSUE 7" newname="ISSUE 7"/>
+      <attribute name="DATE 7" newname="DATE 7"/>
+      <attribute name="COPYRIGHT" newname="COPYRIGHT"/>
+      <attribute name="PROJECT" newname="PROJECT"/>
+    </attributes>
+  </oldblock>
+  
+
+</mappings>

@@ -1,0 +1,307 @@
+﻿<xs:schema attributeFormDefault="unqualified" 
+           elementFormDefault="qualified" 
+           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="frames">
+    <xs:annotation>
+      <xs:documentation>
+        This file defines the lines and crossing window we may need for each frame size
+        Because the IL &amp; DL files are already (from what I have seen anyway) in the 5.2 border they may be unecessary.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DrawingFrame" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SearchBoxBounds">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Points" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="point3d" minOccurs="2" maxOccurs="4">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element type="xs:double" name="X" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Y" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Z" minOccurs="1"/>
+                              </xs:sequence>
+                              <xs:attribute name="name" use="required"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="Attrefs" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="Attref" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="point3d" minOccurs="2" maxOccurs="4">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element type="xs:double" name="X" minOccurs="1"/>
+                                      <xs:element type="xs:double" name="Y" minOccurs="1"/>
+                                      <xs:element type="xs:double" name="Z" minOccurs="1"/>
+                                    </xs:sequence>
+                                    <xs:attribute name="name" use="required"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                              <xs:attribute type="xs:string" name="name" use="required"/>
+                              <xs:attribute type="xs:string" name="AttributeName" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="Lines" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="Line" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="LineStart">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element type="xs:double" name="X" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Y" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Z" minOccurs="1"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="LineEnd">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element type="xs:double" name="X" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Y" minOccurs="1"/>
+                                <xs:element type="xs:double" name="Z" minOccurs="1"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element type="xs:string" name="Layer"/>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="name" use="optional"/>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="name" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="mappings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="oldblock" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="attributes" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="attribute" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="name" use="optional"/>
+                            <xs:attribute type="xs:string" name="newname" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="name" use="optional"/>
+            <xs:attribute type="xs:string" name="newname" use="optional"/>
+            <xs:attribute type="xs:string" name="path" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--<xs:element name="Reports">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Drawing" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="snapshots">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="snapshot" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="capturedarea">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="point3d" maxOccurs="unbounded" minOccurs="0">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element type="xs:double" name="X"/>
+                                      <xs:element type="xs:double" name="Y"/>
+                                      <xs:element type="xs:double" name="Z"/>
+                                    </xs:sequence>
+                                    <xs:attribute type="xs:string" name="name" use="optional"/>
+                                  </xs:complexType>
+                                </xs:element>
+                              </xs:sequence>
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element type="xs:string" name="ImgUrl"/>
+                        </xs:sequence>
+                        <xs:attribute type="xs:string" name="name" use="required"/>
+                        <xs:attribute type="xs:string" name="tag" use="optional"/> --><!-- optional in case we don't need a tag here --><!--
+                        <xs:attribute type="xs:string" name="textstring" use="optional"/> --><!-- optional in case there's no attribute here i.e. Revisions --><!--
+                        <xs:attribute type="xs:string" name="objectIdAsString" use="optional"/> --><!-- optional in case there's no attribute here i.e. Revisions --><!--
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="name" use="optional"/>
+            <xs:attribute type="xs:string" name="oldname" use="optional"/>
+            <xs:attribute type="xs:string" name="oldpath" use="optional"/>
+            <xs:attribute type="xs:string" name="path" use="optional"/>
+            <xs:attribute type="xs:string" name="revision" use="optional"/>
+            <xs:attribute type="xs:string" name="revisiondatestr" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>-->
+  <!--<xs:element name="Drawings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Drawing" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="xs:string">
+                <xs:attribute type="xs:string" name="path" use="optional"/>
+                <xs:attribute type="xs:string" name="revision" use="optional"/>
+                <xs:attribute type="xs:string" name="revisiondatestr" use="optional"/>
+                <xs:attribute type="xs:string" name="name" use="optional"/>
+                <xs:attribute type="xs:string" name="oldname" use="optional"/>
+                <xs:attribute type="xs:string" name="oldpath" use="optional"/>
+                <xs:attribute type="xs:string" name="DrawingID" use="required"/>
+                <xs:attribute type="xs:string" name="BeforeImgURL" use="required"/>
+                <xs:attribute type="xs:string" name="AfterImgURL" use="required"/>
+              </xs:extension>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>-->
+  <xs:element name="Drawings">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Drawing" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="path"/>
+              <xs:element type="xs:string" name="revision"/>
+              <xs:element type="xs:string" name="revisiondatestr"/>
+              <xs:element type="xs:string" name="name"/>
+              <xs:element type="xs:string" name="oldname"/>
+              <xs:element type="xs:string" name="oldpath"/>
+              <xs:element type="xs:string" name="DrawingID"/>
+              <xs:element type="xs:string" name="BeforeImgURL"/>
+              <xs:element type="xs:string" name="AfterImgURL"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--<xs:element name="Snapshots">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SnapshotDetails" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="snapshot" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="capturedarea">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="point3d" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element type="xs:double" name="X"/>
+                                <xs:element type="xs:double" name="Y"/>
+                                <xs:element type="xs:double" name="Z"/>
+                              </xs:sequence>
+                              <xs:attribute type="xs:string" name="name" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element type="xs:string" name="ImgUrl"/>
+                  </xs:sequence>
+                  <xs:attribute type="xs:string" name="name" use="optional"/>
+                  <xs:attribute type="xs:string" name="tag" use="optional"/>
+                  <xs:attribute type="xs:string" name="textstring" use="optional"/>
+                  <xs:attribute type="xs:string" name="objectIdAsString" use="optional"/>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:string" name="DrawingID" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>-->
+  <xs:element name="Snapshots">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="SnapshotDetails" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="DrawingID"/>
+              <xs:element name="snapshot" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element type="xs:string" name="textstring"/>
+                    <xs:element type="xs:string" name="objectIdAsString"/>
+                    <xs:element type="xs:string" name="name"/>
+                    <xs:element type="xs:string" name="tag"/>
+                    <xs:element type="xs:string" name="ImgUrl"/>
+                    <xs:element name="capturedarea">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="point3d" maxOccurs="unbounded" minOccurs="0">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element type="xs:double" name="X"/>
+                                <xs:element type="xs:double" name="Y"/>
+                                <xs:element type="xs:double" name="Z"/>
+                              </xs:sequence>
+                              <xs:attribute type="xs:string" name="name" use="optional"/>
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

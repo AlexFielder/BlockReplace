@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ApplicationPackage 
+  SchemaVersion="1.0" 
+  AutodeskProduct="AutoCAD" 
+  ProductType="Application" 
+  Name="Block Replace" 
+  AppVersion="1.0.0" 
+  Description="This plug-in enables fast replacement of blocks." 
+  Author="Matrix Precision Engineering Ltd" 
+  HelpFile="./Contents/Resources/en-US/BlockReplaceHelp.htm" 
+  AppNameSpace="appstore.exchange.autodesk.com" 
+  ProductCode="{F970A570-F40E-43AF-9DBD-B796CE0C8F58}" 
+  UpgradeCode="{A0BE196D-2410-4FB7-944C-1F88BFBAA444}" 
+  Icon="./Contents/Resources/Matrix.png">
+  <CompanyDetails Name="Matrix Precision Engineering Ltd" Email="alex@matrixprecision.com" />
+  <Components>
+    <RuntimeRequirements OS="Win64" Platform="AutoCAD*" SeriesMin="R19.0" SeriesMax="R19.1" />
+    <ComponentEntry AppName="Block Replace" Version="1.0.0" ModuleName="./Contents/MatrixPrecision BlockReplace.dll" AppDescription="TThis plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True">
+      <Commands>
+        <Command Local="UpdateAtts" Global="UpdateAtts" />
+        <Command Local="UpdateAttributes" Global="UpdateAttributes" />
+        <Command Local="SortRevisions" Global="SortRevisions" />
+        <Command Local="SortRevs" Global="SortRevs" />
+        <Command Local="STXT" Global="STXT" />
+        <Command Local="CTXT" Global="CTXT" />
+        <Command Local="DELSEL" Global="DELSEL" />
+        <Command Local="GetPointsFromUser" Global="GetPointsFromUser" />
+      </Commands>
+    </ComponentEntry>
+    <ComponentEntry AppName="Block Replace" Version="1.0.0" ModuleName="./Contents/MatrixPrecision BlockReplace.pdb" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True">
+      <Commands>
+        <Command Local="UpdateAtts" Global="UpdateAtts" />
+        <Command Local="UpdateAttributes" Global="UpdateAttributes" />
+        <Command Local="SortRevisions" Global="SortRevisions" />
+        <Command Local="SortRevs" Global="SortRevs" />
+        <Command Local="CTXT" Global="CTXT" />
+        <Command Local="DELSEL" Global="DELSEL" />
+        <Command Local="GetPointsFromUser" Global="GetPointsFromUser" />
+      </Commands>
+    </ComponentEntry>
+    <ComponentEntry AppName="Block Replace Lisp" Version="1.0.0" ModuleName="./Contents/MatrixPrecisionCommands.lsp" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True" LoadOnCommandInvocation="True" LoadOnProxy="True">
+      <Commands>
+        <Command Local="uatts" Global="uatts" />
+        <Command Local="atout" Global="atout" />
+        <Command Local="atin" Global="atin" />
+        <Command Local="save14" Global="save14" />
+        <Command Local="client" Global="client" />
+        <Command Local="srevs" Global="srevs" />
+      </Commands>
+    </ComponentEntry>
+    <ComponentEntry AppName="Block Replace" Version="1.0.0" ModuleName="./Contents/Resources/Mappings.xml" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True">
+      <Commands>
+        <Command Local="UpdateAtts" Global="UpdateAtts" />
+      </Commands>
+    </ComponentEntry>
+    <ComponentEntry AppName="Block Replace" Version="1.0.0" ModuleName="./Contents/Resources/BlockReplace.xml" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True">
+      <!--<Commands>
+        <Command Local="UpdateAtts" Global="UpdateAtts" />
+      </Commands>-->
+    </ComponentEntry>
+  </Components>
+</ApplicationPackage>

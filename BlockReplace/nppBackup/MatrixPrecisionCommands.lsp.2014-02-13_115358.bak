@@ -1,0 +1,75 @@
+﻿
+;(setq MPECmdsVersion "1.0")
+(defun c:atout ( / dn pa padn ss)
+(vl-load-com)
+(load "attout")
+(setq dn (vl-filename-base (getvar "dwgname")))
+(setq pa (getvar "dwgprefix"))
+(setq padn (strcat pa dn ".txt"))
+(setq ss (ssget "_X" (list (cons 0 "INSERT")'(66 . 1))))
+(bns_attout padn ss)
+);atout
+(defun c:atin (/ dn pa padn)
+(vl-load-com)
+(load "attout")
+(setq dn (vl-filename-base (getvar "dwgname")))
+(setq pa (getvar "dwgprefix"))
+(setq padn (strcat pa dn ".txt"))
+(bns_attin padn false)
+);atin
+(defun c:uatts (/ ss)
+(setq ss (ssget "_X" (list (cons 0 "INSERT")'(66 . 1))))
+(updateatts ss)
+);uatts
+;;;(defun c:client ( dwgnum sht rev / newdn )
+(defun c:client ()
+  (setq old-echo (getvar "CMDECHO"))
+  (setvar "cmdecho" 1)
+  (setvar "draworderctl" 1)
+;;;Step 1. A quick save of the current drawing. (works)
+  (command "qsave")
+;;;Step 2. A save as to a drawing with file name "CLIENT_export.dwg" in the same directory as the current drawing.
+(setq DwgName (strcat (getvar "dwgprefix") "EXPORT_"(getvar "dwgname")))
+(if (findfile DwgName);Check the file exists
+	(command "_.saveas" "" DwgName "Y");Replace the File
+	(command "_.saveas" "" DwgName)
+  );if
+;;;Step 3. Explode all objects once.
+  (setvar "qaflags" 1)
+  (command "explode" "all" "")
+  (setvar "qaflags" 0)
+;;;Step 4. Explode all blocks with name beginning "*U". Looping until no more are left. ;;;   This step requires the user to select all drawing objects.
+  (if (setq ss (ssget "x" '((2 . "`*U*"))))
+    (foreach item (mapcar 'cadr (ssnamex ss))
+      (command "Explode" item)
+      (while
+       (setq ss1 (ssget "_P" '((2 . "`*U*"))))
+         (foreach item1 (mapcar 'cadr (ssnamex ss1))
+           (command "Explode" item1)
+         )
+      )
+    )
+  )
+  (setq ss nil)
+  (setq ss1 nil)
+  (princ)
+;;;Step 5. Runs the cad standards file "CLIENT.dws" to translate the layers.
+  (arxload "LAYTRANS.ARX")(acet-laytrans "C:/Civil3d/CLIENT.dws" 0)
+  (princ)
+;;;Step 6. Purges the drawing of all unused items.
+  (command "purge" "all" "*" "no")
+  (setvar "CMDECHO" old-echo)
+   (setvar "DRAWORDERCTL" 3)
+)
+;(vl-load-com)
+;(princ
+;    (strcat
+;        "\n:: MatrixPrecisionCommands.lsp | Version "
+;        MPECmdsVersion
+;        " | © Matrix Precision "
+;        (menucmd "m=$(edtime,$(getvar,DATE),YYYY)")
+;        " www.matrixprecision.com ::"
+;        "\n:: Type \"atout\" OR \"atin\" OR \"uatts\" to Invoke ::"
+;    )
+;)
+;(princ)
