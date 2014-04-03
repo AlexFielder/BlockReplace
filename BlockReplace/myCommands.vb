@@ -31,6 +31,7 @@ Namespace BlockReplace
         Dim KeepAddingAttRefs As Boolean
         Dim KeepAddingCrossingLines As Boolean
         Dim UsedOnImgUrl As String
+        Dim DrawingHasMultiLineTolerances As Boolean
 
         Private Property DrawingID As String
 
@@ -340,13 +341,16 @@ Namespace BlockReplace
                                 For Each Pnt3d In att.point3d
                                     tmppntcoll.Add(New Point3d(Pnt3d.X + myBrefB.Position.X, Pnt3d.Y + myBrefB.Position.Y, 0))
                                 Next
-                                tmpstr = CollectTextFromArea(tmppntcoll, False)
+                                tmpstr = CollectTextFromArea(tmppntcoll, att.name, False)
                                 Dim attr As AttributeReference = (From tmpatt As ObjectId In myAttsB
                                                                   Let attref As AttributeReference = tmpatt.GetObject(OpenMode.ForWrite)
                                                                   Where attref.Tag = att.AttributeName
                                                                   Select attref).SingleOrDefault()
                                 If Not attr = Nothing Then
                                     attr.TextString = tmpstr
+                                    If attr.IsMTextAttribute Then
+                                        attr.AlignmentPoint = DetermineOverlap(attr.ObjectId, myBrefB.ObjectId)
+                                    End If
                                     snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
                                                 Where sn.name = att.name
                                                 Select sn).SingleOrDefault()
@@ -1788,7 +1792,7 @@ Namespace BlockReplace
         ''' <param name="reverseSort"></param>
         ''' <returns>String value found with tmppntcoll boundary</returns>
         ''' <remarks></remarks>
-        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, Optional reverseSort As Boolean = False) As String
+        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, locName As String, Optional reverseSort As Boolean = False) As String
             Dim doc = Application.DocumentManager.MdiActiveDocument
             Dim db = doc.Database
             Dim ed = doc.Editor
@@ -1798,29 +1802,13 @@ Namespace BlockReplace
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
             Using tr = db.TransactionManager.StartTransaction()
                 Dim pmtSelRes As PromptSelectionResult = Nothing
-                'works:
-                'Dim acTypValAr(4) As TypedValue
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "*"), 0)
-                'doesn't work:
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "<or"), 0)
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "ATTDEF"), 1)
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "TEXT"), 2)
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Start, "MTEXT"), 3)
-                'acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "or>"), 4)
-                'might work:
                 Dim acTypValAr() As TypedValue = New TypedValue() {
-                    New TypedValue(DxfCode.Operator, "<or"), _
-                    New TypedValue(DxfCode.Operator, "<and"), _
-                    New TypedValue(DxfCode.Start, "ATTDEF"), _
-                    New TypedValue(DxfCode.Operator, "and>"), _
-                    New TypedValue(DxfCode.Operator, "<and"), _
-                    New TypedValue(DxfCode.Start, "TEXT"), _
-                    New TypedValue(DxfCode.Operator, "and>"), _
-                    New TypedValue(DxfCode.Operator, "<and"), _
-                    New TypedValue(DxfCode.Start, "MTEXT"), _
-                    New TypedValue(DxfCode.Operator, "and>"), _
-                    New TypedValue(DxfCode.Operator, "or>")
-                    }
+                    New TypedValue(DxfCode.Start, "ATTDEF,TEXT,MTEXT")}
+
+                ' in case you want to see what the filter looks like
+                'For Each tv As TypedValue In acTypValAr
+                '    ed.WriteMessage(String.Format("\nFilter Pair: {0}", tv.ToString()))
+                'Next
 
                 Dim selFilter As New SelectionFilter(acTypValAr)
                 pmtSelRes = ed.SelectCrossingPolygon(tmppntcoll, selFilter)
@@ -1880,9 +1868,22 @@ Namespace BlockReplace
                     End If
                     For Each pt As FloatingText In sorted
                         If tmpstr.Length > 0 Then
-                            tmpstr = tmpstr & " " & pt.StringValue
+                            If locName.ToUpper() = "TOLERANCES" Then
+                                'Tolerance strings seem to be split better than the other long strings we're seeing.
+                                'hence we don't necessarily need to checklengthandsplit them.
+                                DrawingHasMultiLineTolerances = True
+                                tmpstr = tmpstr & vbCrLf & pt.StringValue
+                            ElseIf locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE TEXTURE" Or locName.ToUpper() = "PROTECTIVE FINISH" Then
+                                tmpstr = checkLengthAndSplit(tmpstr)
+                            Else
+                                tmpstr = tmpstr & " " & pt.StringValue
+                            End If
                         Else
-                            tmpstr = pt.StringValue
+                            If locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE TEXTURE" Or locName.ToUpper() = "PROTECTIVE FINISH" Then
+                                tmpstr = checkLengthAndSplit(pt.StringValue)
+                            Else
+                                tmpstr = pt.StringValue
+                            End If
                         End If
                     Next
                     ed.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
@@ -2109,6 +2110,106 @@ Namespace BlockReplace
                 End If
             End If
             Return tmpstr
+        End Function
+
+        ''' <summary>
+        ''' Allows us to first get the bounding box of a piece of text and then 
+        ''' determine if (using the rectangle created) it overlaps anything.
+        ''' </summary>
+        ''' <param name="objectId">ObjectId of the object we're checking.</param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function DetermineOverlap(objectId As ObjectId, blkrefId As ObjectId) As Point3d
+            Dim doc = Application.DocumentManager.MdiActiveDocument
+            Dim db = doc.Database
+            Dim ed = doc.Editor
+            
+            Using tr = db.TransactionManager.StartTransaction()
+                Dim ent As Entity = DirectCast(tr.GetObject(objectId, OpenMode.ForWrite), Entity)
+                Dim blkrefent As Entity = DirectCast(tr.GetObject(blkrefId, OpenMode.ForRead), Entity)
+                Dim ext As Extents3d = ent.GeometricExtents
+                Dim pnt As Point3d
+                Dim pmtSelRes As PromptSelectionResult = Nothing
+                Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
+                Dim selFilter As New SelectionFilter(acTypValAr)
+                Dim pntcoll As Point3dCollection = New Point3dCollection
+                pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
+                pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
+                pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                'pntcoll.Add(ext.MinPoint)
+                'pntcoll.Add(ext.MaxPoint)
+                pmtSelRes = ed.SelectCrossingPolygon(pntcoll, selFilter)
+                If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
+                    For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
+                        Dim points As New Point3dCollection
+                        ent.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                        If points.Count > 0 Then ' we have an overlap?
+                            Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
+                            'move our alignment point up by 1mm
+                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 
+                            'pnt = tmppnt
+                            'then recursively check again.
+                            'try to scale the height of the attributereference and then check again?
+                            DirectCast(ent, AttributeReference).Height = DirectCast(ent, AttributeReference).Height * 0.9
+                            DirectCast(ent, AttributeReference).AlignmentPoint = DetermineOverlap(ent.ObjectId, blkrefId)
+                            Return DirectCast(ent, AttributeReference).AlignmentPoint
+                        Else 'no overlap?
+                            pnt = DirectCast(ent, AttributeReference).AlignmentPoint
+                            Return pnt
+                        End If
+                        'Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
+                        'Dim ln As Line = TryCast(obj, Line)
+                        'If ln IsNot Nothing Then ' we need to move our attributereference up?
+                        '    Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
+                        '    tmppnt = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 'move our point up by 1mm
+                        '    pnt = tmppnt
+                        '    'then recursively check again.
+                        '    pnt = DetermineOverlap(ent.ObjectId, blkrefId)
+                        '    Return pnt
+                        'Else
+                        '    pnt = DirectCast(ent, AttributeReference).AlignmentPoint
+                        '    Return pnt
+                        'End If
+                    Next
+                Else
+                    pnt = DirectCast(ent, AttributeReference).AlignmentPoint
+                    Return pnt
+                End If
+                tr.Commit()
+            End Using
+            
+            'Dim points As New Point3dCollection
+            'ent.IntersectWith(blkrefent, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+            'If points.Count > 0 Then ' we have an overlap?
+            '    Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).Position
+            '    tmppnt = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 'move our point up by 1mm
+            '    pnt = tmppnt
+            '    'then recursively check again.
+            '    pnt = DetermineOverlap(ent.ObjectId, blkrefId)
+            '    Return pnt
+            'Else 'no overlap?
+            '    pnt = DirectCast(ent, AttributeReference).Position
+            '    Return pnt
+            'End If
+        End Function
+
+        ''' <summary>
+        ''' Gets an entity from an objectId
+        ''' </summary>
+        ''' <param name="objectId"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function GetEntity(objectId As ObjectId) As Entity
+            Dim doc = Application.DocumentManager.MdiActiveDocument
+            Dim db = doc.Database
+            Dim ed = doc.Editor
+            Dim ent As Entity
+            Using tr As Transaction = db.TransactionManager.StartTransaction()
+                ent = DirectCast(tr.GetObject(objectId, OpenMode.ForRead), Entity)
+                tr.Commit()
+            End Using
+            Return ent
         End Function
 
 #Region "Kean's Sort a point2dcollection or point3dcollection code"
@@ -2488,6 +2589,31 @@ Namespace BlockReplace
         End Function
 
 #End Region
+
+        Private Function checkLengthAndSplit(tmpstr As String) As String
+            'need to determine the max length for this field
+            If tmpstr.Length > 30 Then
+                Dim part1 As String = tmpstr.Substring(0, CInt(tmpstr.Length / 2))
+                Dim part2 As String = tmpstr.Substring(CInt(tmpstr.Length / 2))
+                Dim p1 As Integer = part1.LastIndexOf(" ")
+                Dim p2 As Integer = part2.IndexOf(" ")
+                If tmpstr.Length - p1 = 0 OrElse p2 = 0 Then
+                    Return part1 & vbCrLf & part2
+                ElseIf p1 <> -1 AndAlso tmpstr.Length - p1 < p2 Then
+                    Return part1.Substring(0, p1) & vbCrLf & part1.Substring(p1) & part2
+                ElseIf p2 <> -1 AndAlso tmpstr.Length - p1 > p2 Then
+                    Return part1 & part2.Substring(0, p2) & vbCrLf & part2.Substring(p2)
+                Else
+                    Return tmpstr
+                End If
+            Else
+                Return tmpstr
+            End If
+        End Function
+
+        
+
+        
 
 
 
