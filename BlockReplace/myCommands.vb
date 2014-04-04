@@ -31,7 +31,15 @@ Namespace BlockReplace
         Dim KeepAddingAttRefs As Boolean
         Dim KeepAddingCrossingLines As Boolean
         Dim UsedOnImgUrl As String
-        Dim DrawingHasMultiLineTolerances As Boolean
+        Dim SelEntId As ObjectId
+        Dim tmpblkname As String
+        Dim tmpm As New mappings
+        Dim d As New Drawings
+        Dim drawing As New DrawingsDrawing
+        Dim Snapshots As New Snapshots ' new snapshot details parent collection
+        Dim snDetails As New SnapshotsSnapshotDetails ' new snapshots collection
+        Dim snapshot As SnapshotsSnapshotDetailsSnapshot ' new snapshot detail
+        Dim tmppntcoll As Point3dCollection
 
         Private Property DrawingID As String
 
@@ -41,13 +49,11 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("UpdateAttributes")> _
         Public Sub UpdateAttributes()
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myEd As Editor = myDoc.Editor
             Dim prmptSelOpts As New PromptSelectionOptions()
             Dim prmptSelRes As PromptSelectionResult
             Dim rbfResult As ResultBuffer
 
-            prmptSelRes = myEd.GetSelection(prmptSelOpts)
+            prmptSelRes = Active.Editor.GetSelection(prmptSelOpts)
             If prmptSelRes.Status <> PromptStatus.OK Then
                 'the user didn't select anything.
                 Exit Sub
@@ -79,67 +85,62 @@ Namespace BlockReplace
                 Throw New ArgumentException("Bad argument type - requires a selection set")
             End If
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myEd As Editor = myDoc.Editor
-            Dim selEntID As ObjectId
             Dim selEntIDs As ObjectId()
             Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
             Dim tmpserializer As New XmlSerializer(GetType(mappings))
             Dim tmpfs As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
             Dim tmpreader As XmlReader = XmlReader.Create(tmpfs)
-            Dim tmpm As mappings
-            Dim d As New Drawings
-            Dim drawing As New DrawingsDrawing
-            Dim originalfilename As String = myDoc.Database.Filename
+
+            Dim originalfilename As String = Active.Database.Filename
             Dim g As Guid = Guid.NewGuid()
             DrawingID = g.ToString()
             drawing.DrawingID = DrawingID
             Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(originalfilename) & "_Before.png"
-            Dim acCurDb As Database = myDoc.Database
-            Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(acCurDb.Pextmin, acCurDb.Pextmax), New Extents3d(acCurDb.Extmin, acCurDb.Extmax))
+            Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
             drawing.BeforeImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
-            Dim Snapshots As New Snapshots ' new snapshot details parent collection
-            Dim snDetails As New SnapshotsSnapshotDetails ' new snapshots collection
-            Dim snapshot As SnapshotsSnapshotDetailsSnapshot ' new snapshot detail
+            
             tmpm = CType(tmpserializer.Deserialize(tmpreader), mappings)
             tmpfs.Close()
             Dim tmpblkname As String = ""
-            Using tmptrans As Transaction = myDoc.Database.TransactionManager.StartTransaction
+            Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
                 If ss.Count > 1 Then
-                    For Each id As ObjectId In ss.GetObjectIds()
-                        Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForWrite)
-                        If tmpblkref.Name.StartsWith("*") Then 'dynamic block
-                            Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
-                            tmpblkname = tmpbtr.Name
-                            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                                      Where s.name = tmpblkname
-                                                      Select s).SingleOrDefault()
-                            If Not ob Is Nothing Then
-                                selEntID = id
-                            End If
-                        Else 'normal block
-                            If Not tmpblkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
-                                tmpblkname = tmpblkref.Name
-                                Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                                              Where s.name = tmpblkname
-                                                              Select s).SingleOrDefault()
-                                If Not ob Is Nothing Then
-                                    ob = Nothing
-                                    selEntID = id
-                                    Exit For
-                                End If
-                            Else 'we don't need to do anything to this block, just capture it's id.
-                                selEntID = id
-                            End If
-                        End If
-                    Next
+                    ForEach(Of BlockReference)(Active.Database, AddressOf ProcessBlockReferences)
+                                               
+
+                    'For Each id As ObjectId In ss.GetObjectIds()
+                    '    Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForWrite)
+                    '    If tmpblkref.Name.StartsWith("*") Then 'dynamic block
+                    '        Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
+                    '        tmpblkname = tmpbtr.Name
+                    '        Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                    '                                  Where s.name = tmpblkname
+                    '                                  Select s).SingleOrDefault()
+                    '        If Not ob Is Nothing Then
+                    '            selEntID = id
+                    '        End If
+                    '    Else 'normal block
+                    '        If Not tmpblkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
+                    '            tmpblkname = tmpblkref.Name
+                    '            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                    '                                          Where s.name = tmpblkname
+                    '                                          Select s).SingleOrDefault()
+                    '            If Not ob Is Nothing Then
+                    '                ob = Nothing
+                    '                selEntID = id
+                    '                Exit For
+                    '            End If
+                    '        Else 'we don't need to do anything to this block, just capture it's id.
+                    '            selEntID = id
+                    '        End If
+                    '    End If
+                    'Next
                 Else
                     selEntIDs = ss.GetObjectIds() 'currently this doesn't play nice if there happens to be a second attributed block in the drawing!
                     selEntID = selEntIDs(0)
                 End If
                 If Not selEntID = Nothing Then
                     'capture a screenshot of each existing area where text might be located:
-                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'myDoc.Database.Filename
+                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
                     drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
                     Dim serializerf As New XmlSerializer(GetType(frames))
                     Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
@@ -156,9 +157,9 @@ Namespace BlockReplace
                               Where s.name = tmpblkname
                               Let sbb = s.SearchBoxBounds
                               Select sbb).SingleOrDefault()
-                        Dim tmppntcoll As Point3dCollection
+
                         For Each att As framesDrawingFrameSearchBoxBoundsAttref In sb.Attrefs
-                            Snapshot = New SnapshotsSnapshotDetailsSnapshot
+                            snapshot = New SnapshotsSnapshotDetailsSnapshot
                             tmppntcoll = New Point3dCollection
                             For Each Pnt3d In att.point3d
                                 tmppntcoll.Add(New Point3d(Pnt3d.X + brefa.Position.X, Pnt3d.Y + brefa.Position.Y, 0))
@@ -173,12 +174,12 @@ Namespace BlockReplace
                                 pnt2 = New Point3d(att.point3d.Item(2).X + brefa.Position.X, att.point3d.Item(2).Y + brefa.Position.Y, att.point3d.Item(2).Z)
                             End If
 
-                            fn = "C:\temp\" & Path.GetFileNameWithoutExtension(myDoc.Database.Filename) & "_" & att.name & ".png"
-                            Snapshot.name = att.name
+                            fn = "C:\temp\" & Path.GetFileNameWithoutExtension(Active.Database.Filename) & "_" & att.name & ".png"
+                            snapshot.name = att.name
                             'snapshot.ImgUrl = CaptureSnapShot(pnt1, pnt2, fn)
-                            Snapshot.ImgUrl = ScreenShotToFile(pnt1, pnt2, fn)
+                            snapshot.ImgUrl = ScreenShotToFile(pnt1, pnt2, fn)
                             If att.name = "USED_ON" Then
-                                UsedOnImgUrl = Snapshot.ImgUrl
+                                UsedOnImgUrl = snapshot.ImgUrl
                             End If
                             Dim pntmin As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt1.X, .Y = pnt1.Y, .Z = 0}
                             Dim pntmax As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt2.X, .Y = pnt2.Y, .Z = 0}
@@ -187,17 +188,17 @@ Namespace BlockReplace
                             snDetails.DrawingID = DrawingID
                             snDetails.snapshot.Add(snapshot)
                         Next
-                        myEd.WriteMessage(vbCrLf & "Done Capturing Area Screenshots" & vbCrLf)
+                        Active.WriteMessage(vbCrLf & "Done Capturing Area Screenshots" & vbCrLf)
                     Else
-                        myEd.WriteMessage("This isn't a drawing we have had prior knowledge of!" & vbCrLf & "Suggest you run the GetPointsFromUser tool and try again!")
+                        Active.WriteMessage("This isn't a drawing we have had prior knowledge of!" & vbCrLf & "Suggest you run the GetPointsFromUser tool and try again!")
                         Exit Sub
                     End If
                 End If
             End Using
             tmpfs.Dispose()
-            Dim selEntID2 As ObjectId '= myEd.GetEntity("Select New block:").ObjectId
-            Using doclock As DocumentLock = myDoc.LockDocument 'lock the document whilst we edit it.
-                Using myTrans As Transaction = myDoc.Database.TransactionManager.StartTransaction
+            Dim selEntID2 As ObjectId '=  Active.editor.GetEntity("Select New block:").ObjectId
+            Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
+                Using myTrans As Transaction = Active.Database.TransactionManager.StartTransaction
                     Dim myBrefA As BlockReference = selEntID.GetObject(OpenMode.ForWrite)
                     Dim myBrefB As BlockReference '= selEntID2.GetObject(OpenMode.ForWrite)
                     Dim myAttsA As AttributeCollection = myBrefA.AttributeCollection
@@ -214,7 +215,7 @@ Namespace BlockReplace
                     Dim readerM As XmlReader = XmlReader.Create(fsm)
                     Dim f As frames
                     Dim m As mappings
-                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'myDoc.Database.Filename
+                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
                     drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
 
                     f = CType(serializerf.Deserialize(readerBR), frames)
@@ -232,7 +233,7 @@ Namespace BlockReplace
                         Dim ob As mappingsOldblock = (From s In m.oldblock
                                                       Where s.name = blockNameA
                                                       Select s).SingleOrDefault()
-                        Dim myBT As BlockTable = myDoc.Database.BlockTableId.GetObject(OpenMode.ForWrite)
+                        Dim myBT As BlockTable = Active.Database.BlockTableId.GetObject(OpenMode.ForWrite)
                         If myBT.Has(ob.newname) = False Then
                             'insert DWG file as a Block
                             Dim myDWG As New IO.FileInfo(ob.path)
@@ -245,7 +246,7 @@ Namespace BlockReplace
                             'Read a DWG file into the blank database
                             dwgDB.ReadDwgFile(myDWG.FullName, FileOpenMode.OpenForReadAndAllShare, True, "")
                             'insert the dwg file into the current file's block table
-                            myDoc.Database.Insert(ob.newname, dwgDB, True)
+                            Active.Database.Insert(ob.newname, dwgDB, True)
                             'close/dispose of the previously blank database.
                             dwgDB.Dispose()
                         End If
@@ -257,7 +258,7 @@ Namespace BlockReplace
                         Else
                             blockPos = myBrefA.Position
                         End If
-                        selEntID2 = InsertBlock(myDoc.Database, _
+                        selEntID2 = InsertBlock(Active.Database, _
                                                 myBrefA.BlockName, _
                                                 blockPos, _
                                                 ob.newname, _
@@ -267,6 +268,7 @@ Namespace BlockReplace
                         myBrefB = selEntID2.GetObject(OpenMode.ForWrite)
                         blockNameB = myBrefB.Name
                         myAttsB = myBrefB.AttributeCollection
+
                         For Each att In ob.attributes
                             For Each myAttID As ObjectId In myAttsA
                                 Dim myAtt As AttributeReference = myAttID.GetObject(OpenMode.ForRead)
@@ -274,7 +276,7 @@ Namespace BlockReplace
                                     For Each myAttBID As ObjectId In myAttsB
                                         Dim myAttB As AttributeReference = myAttBID.GetObject(OpenMode.ForWrite)
                                         If myAttB.Tag.ToUpper = att.newname.ToUpper Then
-                                            myAttB.TextString = getCorrectedDrawingNumber(myDoc, myAtt, myAttB.Tag, blockNameA)
+                                            myAttB.TextString = getCorrectedDrawingNumber(Active.Document, myAtt, myAttB.Tag, blockNameA)
                                             'myAttB.TextString = myAtt.TextString
                                         End If
                                     Next
@@ -348,8 +350,39 @@ Namespace BlockReplace
                                                                   Select attref).SingleOrDefault()
                                 If Not attr = Nothing Then
                                     attr.TextString = tmpstr
-                                    If attr.IsMTextAttribute Then
-                                        attr.AlignmentPoint = DetermineOverlap(attr.ObjectId, myBrefB.ObjectId)
+                                    If attr.Tag = "TOLERANCE" And Not attr.TextString = "" Then 'always going to be this one that overlaps now.
+                                        Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+                                            Dim ent As Entity = DirectCast(tr.GetObject(attr.ObjectId, OpenMode.ForWrite), Entity)
+                                            Dim blkrefent As Entity = DirectCast(tr.GetObject(myBrefB.ObjectId, OpenMode.ForRead), Entity)
+                                            ext = ent.GeometricExtents
+                                            Dim pnt As Point3d
+                                            Dim pmtSelRes As PromptSelectionResult = Nothing
+                                            Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
+                                            Dim selFilter As New SelectionFilter(acTypValAr)
+                                            Dim pntcoll As Point3dCollection = New Point3dCollection
+                                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
+                                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
+                                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                                            pmtSelRes = Active.Editor.SelectCrossingPolygon(pntcoll, selFilter)
+                                            If pmtSelRes.Status = PromptStatus.OK Then ' we found something that our boundingbox is overlapping.
+                                                For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
+                                                    Dim points As New Point3dCollection
+                                                    ent.IntersectWith(DirectCast(tr.GetObject(objId, OpenMode.ForRead), Entity), _
+                                                                      Intersect.OnBothOperands, _
+                                                                      points, _
+                                                                      IntPtr.Zero, _
+                                                                      IntPtr.Zero)
+                                                    If points.Count > 0 Then 'we've got an overlap
+                                                        pnt = attr.AlignmentPoint
+                                                        attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
+                                                        Exit For 'exit the loop once we've moved it 2*height (which should be ample!)
+                                                    End If
+                                                Next
+                                            End If
+                                            tr.Commit()
+                                        End Using
+                                        attr.UpdateMTextAttribute()
                                     End If
                                     snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
                                                 Where sn.name = att.name
@@ -381,12 +414,13 @@ Namespace BlockReplace
                     For Each pnt In sblines.Points
                         pnts.Add(New Point3d(pnt.X + myBrefB.Position.X, pnt.Y + myBrefB.Position.Y, 0))
                     Next
-                    DeleteMySelection(pnts)
-                    myEd.WriteMessage(vbCrLf & "Done deleting old lines!" & vbCrLf)
+                    DeleteMySelection(pnts, False)
+                    Active.WriteMessage(vbCrLf & "Done deleting old lines!" & vbCrLf)
                     Dim lines = (From ln In f.DrawingFrame
                                  Where ln.name = blockNameB
                                  Let sbl = ln.Lines
                                  Select sbl).SingleOrDefault()
+
                     For Each Xline As framesDrawingFrameLine In lines
                         Dim tmpattr As AttributeReference = (From a As ObjectId In myAttsB
                                                              Let attr As AttributeReference = a.GetObject(OpenMode.ForRead)
@@ -397,7 +431,7 @@ Namespace BlockReplace
                                 Dim linestart As Point3d = New Point3d(Xline.LineStart.X + myBrefB.Position.X, Xline.LineStart.Y + myBrefB.Position.Y, 0)
                                 Dim lineend As Point3d = New Point3d(Xline.LineEnd.X + myBrefB.Position.X, Xline.LineEnd.Y + myBrefB.Position.Y, 0)
                                 Dim ln = New Line(linestart, lineend)
-                                Dim btr = DirectCast(myTrans.GetObject(myDoc.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
+                                Dim btr = DirectCast(myTrans.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
                                 btr.AppendEntity(ln)
                                 ln.Layer = Xline.Layer
                                 myTrans.AddNewlyCreatedDBObject(ln, True)
@@ -491,14 +525,12 @@ Namespace BlockReplace
         ''' <returns>Returns the filename output for inclusiong in reports.xml</returns>
         ''' <remarks></remarks>
         Private Shared Function ScreenShotToFile(pt1 As Point3d, pt2 As Point3d, filename As String) As String
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim db As Database = doc.Database
-            Dim ed As Editor = doc.Editor
+            'Dim ed As Editor = Active.Editor
             Dim cvport = CShort(Application.GetSystemVariable("CVPORT"))
             Dim img As System.Drawing.Image
-            Dim view As ViewTableRecord = ed.GetCurrentView()
+            Dim view As ViewTableRecord = Active.Editor.GetCurrentView()
             'start transaction
-            Using trans As Transaction = db.TransactionManager.StartTransaction()
+            Using trans As Transaction = Active.Database.TransactionManager.StartTransaction()
                 'get the entity' extends
                 'configure the new current view
                 view.Width = pt2.X - pt1.X
@@ -507,12 +539,12 @@ Namespace BlockReplace
                   pt1.X + (view.Width / 2), _
                   pt1.Y + (view.Height / 2))
                 'update the view
-                ed.SetCurrentView(view)
+                Active.Editor.SetCurrentView(view)
                 trans.Commit()
             End Using
-            Using tr As Transaction = doc.TransactionManager.StartTransaction()
+            Using tr As Transaction = Active.document.TransactionManager.StartTransaction()
                 Dim vst As GraphicsInterface.VisualStyleType = GraphicsInterface.VisualStyleType.Basic
-                Dim gsm As GraphicsSystem.Manager = doc.GraphicsManager
+                Dim gsm As GraphicsSystem.Manager = Active.document.GraphicsManager
                 Using gfxview As GraphicsSystem.View = New GraphicsSystem.View
                     gsm.SetViewFromViewport(gfxview, cvport)
                     gfxview.VisualStyle = New GraphicsInterface.VisualStyle(vst)
@@ -525,8 +557,8 @@ Namespace BlockReplace
                         dev.Add(gfxview)
                         dev.Update()
                         Using model As GraphicsSystem.Model = gsm.CreateAutoCADModel
-                            Using trans As Transaction = doc.TransactionManager.StartTransaction()
-                                Dim btr As BlockTableRecord = trans.GetObject(doc.Database.CurrentSpaceId, OpenMode.ForRead)
+                            Using trans As Transaction = Active.document.TransactionManager.StartTransaction()
+                                Dim btr As BlockTableRecord = trans.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForRead)
                                 gfxview.Add(btr, model)
                                 trans.Commit()
                             End Using
@@ -545,7 +577,7 @@ Namespace BlockReplace
                             If filename IsNot Nothing AndAlso filename <> "" Then
                                 processed.Save(filename, ImageFormat.Png)
 
-                                ed.WriteMessage(vbCrLf & "Image captured and saved to ""{0}"".", filename)
+                                Active.WriteMessage(vbCrLf & "Image captured and saved to ""{0}"".", filename)
                             End If
                             'cleanup
                             processed.Dispose()
@@ -565,14 +597,12 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("GetPointsFromUser")> _
         Public Sub GetPointsFromUser()
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myEd As Editor = myDoc.Editor
             Dim prmptSelOpts As New PromptSelectionOptions()
             prmptSelOpts.MessageForAdding = "Select drawing frame block reference to capture Dumb Text coordinates from:"
             Dim prmptSelRes As PromptSelectionResult
             Dim rbfResult As ResultBuffer
 
-            prmptSelRes = myEd.GetSelection(prmptSelOpts)
+            prmptSelRes = Active.Editor.GetSelection(prmptSelOpts)
             If prmptSelRes.Status <> PromptStatus.OK Then
                 'the user didn't select anything.
                 Exit Sub
@@ -602,20 +632,17 @@ Namespace BlockReplace
             If values(0).TypeCode <> CInt(LispDataType.SelectionSet) Then
                 Throw New ArgumentException("Bad argument type - requires a selection set")
             End If
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myDb As Database = myDoc.Database
-            Dim myEd As Editor = myDoc.Editor
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
             Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
             Dim tmpblkname As String = ""
             Dim selEntID As ObjectId
             Dim selEntIDs As ObjectId()
-            Using tmptrans As Transaction = myDoc.Database.TransactionManager.StartTransaction
+            Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
                 If ss.Count > 1 Then
                     For Each id As ObjectId In ss.GetObjectIds()
                         Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForRead)
                         If Not tmpblkref.Position = Point3d.Origin Then
-                            myEd.WriteMessage("This tool only works correctly if the block was inserted @ 0,0,0 coordinates!" & _
+                            Active.WriteMessage("This tool only works correctly if the block was inserted @ 0,0,0 coordinates!" & _
                                               vbCrLf & "Move the block to 0,0,0 and try again!")
                             Exit Sub
                         End If
@@ -634,7 +661,7 @@ Namespace BlockReplace
                     Dim tmpblkref As BlockReference = selEntID.GetObject(OpenMode.ForRead)
                     tmpblkname = tmpblkref.Name
                     If Not tmpblkref.Position = Point3d.Origin Then
-                        myEd.WriteMessage("This tool only works correctly if the block was inserted @ 0,0,0 coordinates!" & _
+                        Active.WriteMessage("This tool only works correctly if the block was inserted @ 0,0,0 coordinates!" & _
                                           vbCrLf & "Move the block to 0,0,0 and try again!")
                         Exit Sub
                     End If
@@ -651,7 +678,7 @@ Namespace BlockReplace
                 pko.Keywords.Add("No")
                 pko.Keywords.[Default] = "Yes"
 
-                Dim pkr As PromptResult = myEd.GetKeywords(pko)
+                Dim pkr As PromptResult = Active.Editor.GetKeywords(pko)
                 pko = Nothing
                 If pkr.Status <> PromptStatus.OK OrElse pkr.StringResult = "No" Then
                     Return
@@ -659,12 +686,12 @@ Namespace BlockReplace
 
                 Dim pPtRes As PromptPointResult
                 If pkr.Status = PromptStatus.OK Then
-                    Using acTrans As Transaction = myDb.TransactionManager.StartTransaction()
+                    Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
                         Dim acBlkTbl As BlockTable
                         Dim acBlkTblRec As BlockTableRecord
 
                         '' Open Model space for write
-                        acBlkTbl = acTrans.GetObject(myDb.BlockTableId, OpenMode.ForRead)
+                        acBlkTbl = acTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead)
 
                         acBlkTblRec = acTrans.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), OpenMode.ForWrite)
 
@@ -673,7 +700,7 @@ Namespace BlockReplace
                         Dim frame As New framesDrawingFrame
                         '' Prompt for the start point
                         pPtOpts.Message = vbLf & "Enter the bottom left corner point of the SearchBox: "
-                        pPtRes = myEd.GetPoint(pPtOpts)
+                        pPtRes = Active.Editor.GetPoint(pPtOpts)
                         Dim ptStart As Point3d = pPtRes.Value
 
                         '' Exit if the user presses ESC or cancels the command
@@ -683,7 +710,7 @@ Namespace BlockReplace
                         pPtOpts.Message = vbLf & "Enter the top right corner point of the SearchBox: "
                         pPtOpts.UseBasePoint = True
                         pPtOpts.BasePoint = ptStart
-                        pPtRes = myEd.GetPoint(pPtOpts)
+                        pPtRes = Active.editor.GetPoint(pPtOpts)
                         Dim ptEnd As Point3d = pPtRes.Value
 
                         If pPtRes.Status = PromptStatus.Cancel Then Exit Sub
@@ -703,14 +730,14 @@ Namespace BlockReplace
                             pko.Keywords.Add("Yes")
                             pko.Keywords.Add("No")
                             pko.Keywords.[Default] = "Yes"
-                            pkr = myEd.GetKeywords(pko)
+                            pkr = Active.editor.GetKeywords(pko)
                             pko = Nothing
                             If pkr.Status = PromptStatus.OK And Not pkr.StringResult = "No" Then
                                 Dim attref As New framesDrawingFrameSearchBoxBoundsAttref
                                 '' Prompt for the start point
                                 Dim tmppPtOpts As PromptPointOptions = New PromptPointOptions(vbLf & "Enter the bottom left point of the line: ")
                                 Dim tmppPtRes As PromptPointResult
-                                tmppPtRes = myEd.GetPoint(tmppPtOpts)
+                                tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
                                 Dim tmpptStart As Point3d = tmppPtRes.Value
 
                                 '' Exit if the user presses ESC or cancels the command
@@ -720,7 +747,7 @@ Namespace BlockReplace
                                 tmppPtOpts.Message = vbLf & "Enter the top right point of the line: "
                                 tmppPtOpts.UseBasePoint = True
                                 tmppPtOpts.BasePoint = tmpptStart
-                                tmppPtRes = myEd.GetPoint(tmppPtOpts)
+                                tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
                                 tmppPtOpts = Nothing
                                 Dim tmpptEnd As Point3d = tmppPtRes.Value
                                 If tmppPtRes.Status = PromptStatus.Cancel Then Exit Do
@@ -740,7 +767,7 @@ Namespace BlockReplace
 
 
 
-                                Dim pStrAttRefRes As PromptResult = myEd.GetKeywords(pStrAttRefOpts)
+                                Dim pStrAttRefRes As PromptResult = Active.editor.GetKeywords(pStrAttRefOpts)
 
                                 Select Case pStrAttRefRes.StringResult
                                     Case "CADREF"
@@ -799,14 +826,14 @@ Namespace BlockReplace
                                 pko.Keywords.Add("Yes")
                                 pko.Keywords.Add("No")
                                 pko.Keywords.[Default] = "Yes"
-                                pkr = myEd.GetKeywords(pko)
+                                pkr = Active.editor.GetKeywords(pko)
                                 pko = Nothing
                                 If pkr.Status = PromptStatus.OK And Not pkr.StringResult = "No" Then
                                     Dim tmppPtOpts As PromptPointOptions = New PromptPointOptions(vbLf & "Enter the top left point of the line: ")
                                     Dim tmppPtRes As PromptPointResult
                                     'Dim lines As New framesDrawingFrameLine()
                                     Dim line As New framesDrawingFrameLine
-                                    tmppPtRes = myEd.GetPoint(tmppPtOpts)
+                                    tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
                                     Dim tmpptStart As Point3d = tmppPtRes.Value
 
                                     '' Exit if the user presses ESC or cancels the command
@@ -816,7 +843,7 @@ Namespace BlockReplace
                                     tmppPtOpts.Message = vbLf & "Enter the bottom right point of the line: "
                                     tmppPtOpts.UseBasePoint = True
                                     tmppPtOpts.BasePoint = tmpptStart
-                                    tmppPtRes = myEd.GetPoint(tmppPtOpts)
+                                    tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
                                     tmppPtOpts = Nothing
                                     Dim tmpptEnd As Point3d = tmppPtRes.Value
                                     If tmppPtRes.Status = PromptStatus.Cancel Then Exit Do
@@ -833,7 +860,7 @@ Namespace BlockReplace
                                     pStrAttRefOpts.Keywords.Add("SCALE")
                                     pStrAttRefOpts.Keywords.Add("DIMSIN")
 
-                                    Dim pStrAttRefRes As PromptResult = myEd.GetKeywords(pStrAttRefOpts)
+                                    Dim pStrAttRefRes As PromptResult = Active.editor.GetKeywords(pStrAttRefOpts)
 
                                     Select Case pStrAttRefRes.StringResult
                                         Case "DRAWINGOFFICEREF"
@@ -870,7 +897,7 @@ Namespace BlockReplace
                         frame.name = tmpblkname
                         f.DrawingFrame.Add(frame)
                         'f.SaveToFile(asmpath & "\Resources\test.xml")
-                        myEd.WriteMessage(f.ToString)
+                        Active.WriteMessage(f.ToString)
                         Dim fs As FileStream
                         If Not File.Exists(asmpath & "\Resources\" & frame.name & ".xml") Then
                             fs = New FileStream(asmpath & "\Resources\" & frame.name & ".xml", FileMode.Create)
@@ -899,15 +926,12 @@ Namespace BlockReplace
         ''' </summary>
         ''' <remarks></remarks>
         Public Sub GetPointsFromUser(ByVal pnts As Point3dCollection)
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myDb As Database = myDoc.Database
-            Dim myEd As Editor = myDoc.Editor
             Dim pPtRes As PromptPointResult
             Dim pPtOpts As PromptPointOptions = New PromptPointOptions("")
 
             '' Prompt for the start point
             pPtOpts.Message = vbLf & "Enter the start point of the line: "
-            pPtRes = myEd.GetPoint(pPtOpts)
+            pPtRes = Active.editor.GetPoint(pPtOpts)
             Dim ptStart As Point3d = pPtRes.Value
 
             '' Exit if the user presses ESC or cancels the command
@@ -917,19 +941,19 @@ Namespace BlockReplace
             pPtOpts.Message = vbLf & "Enter the end point of the line: "
             pPtOpts.UseBasePoint = True
             pPtOpts.BasePoint = ptStart
-            pPtRes = myEd.GetPoint(pPtOpts)
+            pPtRes = Active.editor.GetPoint(pPtOpts)
             Dim ptEnd As Point3d = pPtRes.Value
 
             If pPtRes.Status = PromptStatus.Cancel Then Exit Sub
 
             '' Start a transaction
-            Using acTrans As Transaction = myDb.TransactionManager.StartTransaction()
+            Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
 
                 Dim acBlkTbl As BlockTable
                 Dim acBlkTblRec As BlockTableRecord
 
                 '' Open Model space for write
-                acBlkTbl = acTrans.GetObject(myDb.BlockTableId, OpenMode.ForRead)
+                acBlkTbl = acTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead)
 
                 acBlkTblRec = acTrans.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), OpenMode.ForWrite)
 
@@ -973,7 +997,7 @@ Namespace BlockReplace
                 frame.SearchBoxBounds.Points.Add(pnt3d4)
                 Dim pStrOpts As PromptStringOptions = New PromptStringOptions(vbLf & "Enter the frame name: ")
                 pStrOpts.AllowSpaces = True
-                Dim pStrRes As PromptResult = myEd.GetString(pStrOpts)
+                Dim pStrRes As PromptResult = Active.Editor.GetString(pStrOpts)
                 Dim attrefs As New framesDrawingFrameSearchBoxBoundsAttref()
 
 
@@ -982,7 +1006,7 @@ Namespace BlockReplace
                 f.DrawingFrame.Add(frame)
                 Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
                 'f.SaveToFile(asmpath & "\Resources\test.xml")
-                myEd.WriteMessage(f.ToString)
+                Active.WriteMessage(f.ToString)
                 Dim fs As FileStream
                 If Not File.Exists(asmpath & "\Resources\" & pStrRes.StringResult & ".xml") Then
                     fs = New FileStream(asmpath & "\Resources\" & pStrRes.StringResult & ".xml", FileMode.Create)
@@ -1006,7 +1030,7 @@ Namespace BlockReplace
         <CommandMethod("SEL")> _
         Public Sub MySelection()
             Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = doc.Editor
+            Dim ed As Editor = Active.document.Editor
 
             Dim p1 As New Point3d(10.0, 10.0, 0.0)
             Dim p2 As New Point3d(10.0, 11.0, 0.0)
@@ -1027,19 +1051,19 @@ Namespace BlockReplace
             typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
 
             Dim selFilter As New SelectionFilter(typedVal)
-            pmtSelRes = ed.SelectCrossingPolygon(pntCol, selFilter)
+            pmtSelRes = Active.editor.SelectCrossingPolygon(pntCol, selFilter)
             ' May not find entities in the UCS area
             ' between p1 and p3 if not PLAN view
             ' pmtSelRes =
-            '    ed.SelectCrossingWindow(p1, p3, selFilter);
+            '    Active.editor.SelectCrossingWindow(p1, p3, selFilter);
 
             If pmtSelRes.Status = PromptStatus.OK Then
                 For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                     numOfEntsFound += 1
                 Next
-                ed.WriteMessage("Entities found " & numOfEntsFound.ToString())
+                Active.WriteMessage("Entities found " & numOfEntsFound.ToString())
             Else
-                ed.WriteMessage(vbLf & "Did not find entities")
+                Active.WriteMessage(vbLf & "Did not find entities")
             End If
         End Sub
 
@@ -1051,14 +1075,14 @@ Namespace BlockReplace
         <CommandMethod("SelectObjectsOnscreen")> _
         Public Sub SelectObjectsOnscreen()
             '' Get the current document and database
-            Dim acDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim acCurDb As Database = acDoc.Database
+            'Dim acDoc As Document = Application.DocumentManager.MdiActiveDocument
+            'Dim acCurDb As Database = acDoc.Database
 
             '' Start a transaction
-            Using acTrans As Transaction = acCurDb.TransactionManager.StartTransaction()
+            Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
 
                 '' Request for objects to be selected in the drawing area
-                Dim acSSPrompt As PromptSelectionResult = acDoc.Editor.GetSelection()
+                Dim acSSPrompt As PromptSelectionResult = Active.Editor.GetSelection()
 
                 '' If the prompt status is OK, objects were selected
                 If acSSPrompt.Status = PromptStatus.OK Then
@@ -1162,8 +1186,6 @@ Namespace BlockReplace
             If revisions Is Nothing Then
                 revisions = New List(Of Revision)()
             End If
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myEd As Editor = myDoc.Editor
             Dim prmptSelOpts As New PromptSelectionOptions()
             prmptSelOpts.SingleOnly = True
             prmptSelOpts.SinglePickInSpace = True
@@ -1175,15 +1197,15 @@ Namespace BlockReplace
             Dim prmptDateStrOpts As PromptStringOptions = New PromptStringOptions(vbLf + "Enter desired date")
             prmptDateStrOpts.DefaultValue = System.DateTime.Now.ToString("dd-MMM-yy")
             prmptDateStrOpts.UseDefaultValue = True
-            Dim prdate As PromptResult = myEd.GetString(prmptDateStrOpts)
+            Dim prdate As PromptResult = Active.editor.GetString(prmptDateStrOpts)
             If Not prdate.Status = PromptStatus.OK Then
                 Exit Sub
             End If
-            Dim pr As PromptResult = myEd.GetString(prmptRNStrOpts)
+            Dim pr As PromptResult = Active.editor.GetString(prmptRNStrOpts)
             If Not pr.Status = PromptStatus.OK Then
                 Exit Sub
             End If
-            prmptSelRes = myEd.GetSelection(prmptSelOpts)
+            prmptSelRes = Active.editor.GetSelection(prmptSelOpts)
             If prmptSelRes.Status <> PromptStatus.OK Then
                 'the user didn't select anything.
                 Exit Sub
@@ -1229,8 +1251,6 @@ Namespace BlockReplace
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
             Dim ReleaseNote As String = DirectCast(values(1).Value, String)
             Dim ReleaseDate As String = DirectCast(values(2).Value, String)
-            Dim myDoc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim myEd As Editor = myDoc.Editor
             Dim strdrawingfilename As String = Application.GetSystemVariable("DWGNAME")
             Dim drawingpath As String = Application.GetSystemVariable("DWGPREFIX")
             Dim supercededPath As String
@@ -1242,15 +1262,15 @@ Namespace BlockReplace
             Else
                 supercededPath = GetParentDirectory(drawingpath, 2) & "\Superceded\"
             End If
-            Dim originalfilename As String = myDoc.Database.Filename
+            Dim originalfilename As String = Active.Database.Filename
             Dim dwgnum As String = ""
             Dim shtnum As String = ""
             Dim IssueChar As String = ""
             Dim selEntID As ObjectId = Nothing
             Dim selEntIDs As ObjectId()
             Dim tmpblkname As String
-            Using doclock As DocumentLock = myDoc.LockDocument 'lock the document whilst we edit it.
-                Using tmptrans As Transaction = myDoc.Database.TransactionManager.StartTransaction
+            Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
+                Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
                     If ss.Count > 1 Then
                         'get the objectId from the blockname
                         For Each id As ObjectId In ss.GetObjectIds()
@@ -1275,12 +1295,12 @@ Namespace BlockReplace
                         selEntID = selEntIDs(0)
                     End If
                     If selEntID = Nothing Then 'we're not running this tool on a "*5.2(block)" named drawing frame.
-                        myEd.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
+                        Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
                         Exit Sub
                     End If
                     Dim blkref As BlockReference = selEntID.GetObject(OpenMode.ForWrite)
                     If Not blkref.Name Like ("*5.2(block)") Then
-                        myEd.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
+                        Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
                         Exit Sub
                     End If
                     Dim attcoll As AttributeCollection = blkref.AttributeCollection
@@ -1299,7 +1319,7 @@ Namespace BlockReplace
                                                    Group By groupKey = n(n.Length - 1)
                                                    Into groupName = Group
                     For Each gGroup In queryMatchingAll
-                        'myEd.WriteMessage(vbLf + "querymatchingall: " + (gGroup.groupKey) + vbLf)
+                        'Active.WriteMessage(vbLf + "querymatchingall: " + (gGroup.groupKey) + vbLf)
                         Dim rev As New Revision
                         Dim chngNote As AttRef = Nothing
                         Dim issDate As AttRef = Nothing
@@ -1354,7 +1374,7 @@ Namespace BlockReplace
                             rev.RevIssue = issue
                             revisions.Add(rev)
                         End If
-                        'myEd.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
+                        'Active.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
                     Next
                     queryMatchingAll = Nothing
                     'First check for non-standard revisions.
@@ -1370,6 +1390,12 @@ Namespace BlockReplace
                     'Dim RNChngNote As Integer = revisions.FindLastIndex(Function(rev As Revision) rev.RevChangeNote.attRefText Like "RN*")
                     If Not RNChngNote = -1 Then 'ie we found a match
                         For i As Integer = RNChngNote + 1 To revisions.Count - 1
+                            revisions.Item(i).RevIssue.attRefText = ""
+                            revisions.Item(i).RevChangeNote.attRefText = ""
+                            revisions.Item(i).RevDate.attRefText = ""
+                        Next
+                    ElseIf RNChngNote = -1 Then ' there aren't any RN###### change notes so empty any others.
+                        For i As Integer = 0 To revisions.Count - 1
                             revisions.Item(i).RevIssue.attRefText = ""
                             revisions.Item(i).RevChangeNote.attRefText = ""
                             revisions.Item(i).RevDate.attRefText = ""
@@ -1454,7 +1480,7 @@ Namespace BlockReplace
                 '3DT-957840_sht-001_iss-00b-00.dwg
                 Dim pad As Char = "0"c
                 Dim newfilename As String = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
-                myDoc.Database.SaveAs(newfilename, True, DwgVersion.AC1024, myDoc.Database.SecurityParameters)
+                Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
                 Dim serializerd As New XmlSerializer(GetType(Drawings))
                 Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
                 Dim readerD As XmlReader = XmlReader.Create(fsd)
@@ -1463,9 +1489,14 @@ Namespace BlockReplace
                 fsd.Close()
                 For Each dwg In drawingreport.Drawing
                     If Path.GetFileNameWithoutExtension(dwg.oldname) = Path.GetFileNameWithoutExtension(originalfilename) Then
-                        Dim acCurDb As Database = myDoc.Database
                         Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(newfilename) & "_After.png"
-                        Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(acCurDb.Pextmin, acCurDb.Pextmax), New Extents3d(acCurDb.Extmin, acCurDb.Extmax))
+                        Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
+                        Dim pntcoll As Point3dCollection = New Point3dCollection
+                        pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                        pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
+                        pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
+                        pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                        DeleteMySelection(pntcoll, True)
                         dwg.AfterImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
                         dwg.name = dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
                         dwg.path = drawingpath
@@ -1545,7 +1576,7 @@ Namespace BlockReplace
         <CommandMethod("DELSEL")> _
         Public Sub SelectLines()
             Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = doc.Editor
+            Dim ed As Editor = Active.document.Editor
             'need a set of points to capture existing lines
             Dim p1 As New Point3d(0.0, 0.0, 0.0) 'bottom left
             Dim p2 As New Point3d(0.0, 1000.0, 0.0) 'top left
@@ -1565,10 +1596,7 @@ Namespace BlockReplace
         ''' </summary>
         ''' <param name="pntCol">Point3dCollection containing the extents of the area we wish to delete lines from.</param>
         ''' <remarks></remarks>
-        Public Sub DeleteMySelection(ByVal pntCol As Point3dCollection)
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim db As Database = doc.Database
-            Dim ed As Editor = doc.Editor
+        Public Sub DeleteMySelection(ByVal pntCol As Point3dCollection, Optional onlyblocks As Boolean = True)
             'need a set of points to capture existing lines
 
             Dim numOfEntsFound As Integer = 0
@@ -1583,13 +1611,13 @@ Namespace BlockReplace
             'Dim typedVal As TypedValue() = New TypedValue(0) {}
             'typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
             'Dim selFilter As New SelectionFilter(typedVal)
-            pmtSelRes = ed.SelectCrossingPolygon(pntCol, selFilter)
+            pmtSelRes = Active.Editor.SelectCrossingPolygon(pntCol, selFilter)
             ' May not find entities in the UCS area
             ' between p1 and p3 if not PLAN view
             ' pmtSelRes =
-            '    ed.SelectCrossingWindow(p1, p3, selFilter);
-            Using myTrans As Transaction = doc.Database.TransactionManager.StartTransaction
-                Dim bt As BlockTable = DirectCast(myTrans.GetObject(db.BlockTableId, OpenMode.ForRead), BlockTable)
+            '    Active.editor.SelectCrossingWindow(p1, p3, selFilter);
+            Using myTrans As Transaction = Active.document.Database.TransactionManager.StartTransaction
+                Dim bt As BlockTable = DirectCast(myTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
                 Dim btr As BlockTableRecord = DirectCast(myTrans.GetObject(bt(BlockTableRecord.ModelSpace), OpenMode.ForRead), BlockTableRecord)
 
                 If pmtSelRes.Status = PromptStatus.OK Then
@@ -1599,22 +1627,24 @@ Namespace BlockReplace
                         Dim ln As Line = TryCast(obj, Line)
 
                         If ln IsNot Nothing Then
-                            ln.UpgradeOpen()
-                            ln.[Erase]()
+                            If onlyblocks = False Then
+                                ln.UpgradeOpen()
+                                ln.[Erase]()
+                            End If
                         Else 'we want to look for and erase blockreferences that aren't our 5.2 border:
                             Dim br As BlockReference = TryCast(obj, BlockReference)
                             If br IsNot Nothing Then
-                                If Not br.Name Like "*5.2(block)" Then
+                                If Not br.Name Like "*5.2(block)" And Not br.Name = "3rd ANGLE + SCALE NOTE" Then
                                     br.UpgradeOpen()
                                     br.[Erase]()
                                 End If
                             End If
-                            End If
+                        End If
                     Next
                     myTrans.Commit()
-                    ed.WriteMessage(vbCrLf & "Entities erased " & numOfEntsFound.ToString() & vbCrLf)
+                    Active.WriteMessage(vbCrLf & "Entities erased " & numOfEntsFound.ToString() & vbCrLf)
                 Else
-                    ed.WriteMessage(vbCrLf & "Did not find entities" & vbCrLf)
+                    Active.WriteMessage(vbCrLf & "Did not find entities" & vbCrLf)
                 End If
             End Using
         End Sub
@@ -1625,15 +1655,11 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("STXT")> _
         Public Sub StrikeTextArea()
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
-
             ' Ask for a point. Could also ask for an enclosed text entity
             ' and use the picked point or the text's insertion point
 
             Dim ppo = New PromptPointOptions(vbLf & "Select point")
-            Dim ppr = ed.GetPoint(ppo)
+            Dim ppr = Active.Editor.GetPoint(ppo)
             If ppr.Status <> PromptStatus.OK Then
                 Return
             End If
@@ -1647,11 +1673,8 @@ Namespace BlockReplace
         ''' </summary>
         ''' <remarks></remarks>
         Public Shared Sub StrikeTextArea(ByVal point As Point3d)
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
-            Using tr = db.TransactionManager.StartTransaction()
-                Dim oc = ed.TraceBoundary(point, False)
+            Using tr = Active.Database.TransactionManager.StartTransaction()
+                Dim oc = Active.Editor.TraceBoundary(point, False)
                 If oc.Count = 1 Then
                     Dim ent = TryCast(oc(0), Entity)
                     If ent IsNot Nothing Then
@@ -1661,7 +1684,7 @@ Namespace BlockReplace
                         ' Create a line between these points
                         Dim ln = New Line(pt1, pt2)
                         ' Add it to the current space
-                        Dim btr = DirectCast(tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
+                        Dim btr = DirectCast(tr.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
                         btr.AppendEntity(ln)
                         tr.AddNewlyCreatedDBObject(ln, True)
                     End If
@@ -1677,20 +1700,16 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("CTXT")> _
         Public Sub CollectTextFromArea()
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
-
             ' Ask for a point. Could also ask for an enclosed text entity
             ' and use the picked point or the text's insertion point
 
             Dim ppo = New PromptPointOptions(vbLf & "Select point")
-            Dim ppr = ed.GetPoint(ppo)
+            Dim ppr = Active.Editor.GetPoint(ppo)
             If ppr.Status <> PromptStatus.OK Then
                 Return
             End If
 
-            ed.WriteMessage(CollectTextFromArea(ppr.Value))
+            Active.WriteMessage(CollectTextFromArea(ppr.Value))
         End Sub
 
         ''' <summary>
@@ -1699,20 +1718,15 @@ Namespace BlockReplace
         ''' <param name="point">Point3d required to make a TraceBoundary attempt from.</param>
         ''' <remarks></remarks>
         Public Function CollectTextFromArea(ByVal point As Point3d, Optional reverseSort As Boolean = False) As String
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
             Dim tmpstr As String = String.Empty
-            'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
-            Using tr = db.TransactionManager.StartTransaction()
-                Dim oc = ed.TraceBoundary(point, False)
+            Using tr = Active.Database.TransactionManager.StartTransaction()
+                Dim oc = Active.Editor.TraceBoundary(point, False)
                 If oc.Count = 1 Then
                     Dim ent = TryCast(oc(0), Entity)
                     If ent IsNot Nothing Then
                         Dim pmtSelRes As PromptSelectionResult = Nothing
-
                         Dim selFilter As New SelectionFilter(New TypedValue() {New TypedValue(0, "*text")})
                         Dim ext = ent.GeometricExtents
                         Dim pt1 = New Point3d(ext.MinPoint.X, ext.MinPoint.Y, 0) 'bottom left
@@ -1724,7 +1738,7 @@ Namespace BlockReplace
                         pnts.Add(pt2)
                         pnts.Add(pt3)
                         pnts.Add(pt4)
-                        pmtSelRes = ed.SelectCrossingPolygon(pnts, selFilter)
+                        pmtSelRes = Active.Editor.SelectCrossingPolygon(pnts, selFilter)
 
                         If pmtSelRes.Status = PromptStatus.OK Then
                             For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
@@ -1770,9 +1784,9 @@ Namespace BlockReplace
                                     tmpstr = pt.StringValue
                                 End If
                             Next
-                            ed.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
+                            Active.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
                         Else
-                            ed.WriteMessage(vbLf & "Did not find entities")
+                            Active.WriteMessage(vbLf & "Did not find entities")
                         End If
                     End If
                 End If
@@ -1793,25 +1807,22 @@ Namespace BlockReplace
         ''' <returns>String value found with tmppntcoll boundary</returns>
         ''' <remarks></remarks>
         Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, locName As String, Optional reverseSort As Boolean = False) As String
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
             Dim tmpstr As String = String.Empty
             'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
-            Using tr = db.TransactionManager.StartTransaction()
+            Using tr = Active.Database.TransactionManager.StartTransaction()
                 Dim pmtSelRes As PromptSelectionResult = Nothing
                 Dim acTypValAr() As TypedValue = New TypedValue() {
                     New TypedValue(DxfCode.Start, "ATTDEF,TEXT,MTEXT")}
 
                 ' in case you want to see what the filter looks like
                 'For Each tv As TypedValue In acTypValAr
-                '    ed.WriteMessage(String.Format("\nFilter Pair: {0}", tv.ToString()))
+                '   Active.WriteMessage(String.Format("\nFilter Pair: {0}", tv.ToString()))
                 'Next
 
                 Dim selFilter As New SelectionFilter(acTypValAr)
-                pmtSelRes = ed.SelectCrossingPolygon(tmppntcoll, selFilter)
+                pmtSelRes = Active.editor.SelectCrossingPolygon(tmppntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
@@ -1860,10 +1871,9 @@ Namespace BlockReplace
                         sorted = (From pt As FloatingText In tmplist
                                   Order By pt.StringLocation.Y, pt.StringLocation.X Ascending
                                   Select pt)
-                    Else
+                    Else 'removed this line from the following because it caused attributes to get incorrectly sorted: Order By pt.StringLocation.X Ascending
                         sorted = (From pt As FloatingText In tmplist
                                   Order By pt.StringLocation.Y Descending
-                                  Order By pt.StringLocation.X Ascending
                                   Select pt)
                     End If
                     For Each pt As FloatingText In sorted
@@ -1871,24 +1881,23 @@ Namespace BlockReplace
                             If locName.ToUpper() = "TOLERANCES" Then
                                 'Tolerance strings seem to be split better than the other long strings we're seeing.
                                 'hence we don't necessarily need to checklengthandsplit them.
-                                DrawingHasMultiLineTolerances = True
                                 tmpstr = tmpstr & vbCrLf & pt.StringValue
-                            ElseIf locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE TEXTURE" Or locName.ToUpper() = "PROTECTIVE FINISH" Then
+                            ElseIf locName.ToUpper() = "MATERIAL" Then 'Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
                                 tmpstr = checkLengthAndSplit(tmpstr)
                             Else
                                 tmpstr = tmpstr & " " & pt.StringValue
                             End If
                         Else
-                            If locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE TEXTURE" Or locName.ToUpper() = "PROTECTIVE FINISH" Then
+                            If locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
                                 tmpstr = checkLengthAndSplit(pt.StringValue)
                             Else
                                 tmpstr = pt.StringValue
                             End If
                         End If
                     Next
-                    ed.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
+                    Active.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
                 Else
-                    ed.WriteMessage(vbLf & "Did not find entities")
+                    Active.WriteMessage(vbLf & "Did not find entities")
                 End If
 
                 ' Commit even if we didn't add anything
@@ -1905,20 +1914,17 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function CollectTextListFromArea(tmppntcoll As Point3dCollection, ByVal attstr As String) As List(Of String)
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
             Dim tmpstrlist As List(Of String) = New List(Of String)
             'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
             Dim tmpstr As String = String.Empty
-            Using tr = db.TransactionManager.StartTransaction()
+            Using tr = Active.Database.TransactionManager.StartTransaction()
                 Dim pmtSelRes As PromptSelectionResult = Nothing
                 Dim acTypValAr(0) As TypedValue
                 acTypValAr.SetValue(New TypedValue(DxfCode.Start, "*"), 0)
                 Dim selFilter As New SelectionFilter(acTypValAr)
-                pmtSelRes = ed.SelectCrossingPolygon(tmppntcoll, selFilter)
+                pmtSelRes = Active.Editor.SelectCrossingPolygon(tmppntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
@@ -1988,9 +1994,9 @@ Namespace BlockReplace
                             'End If
                         End If
                     Next
-                    ed.WriteMessage(vbCrLf & "MText & Text Entities found " & numOfEntsFound.ToString())
+                    Active.WriteMessage(vbCrLf & "MText & Text Entities found " & numOfEntsFound.ToString())
                 Else
-                    ed.WriteMessage(vbLf & "Did not find entities")
+                    Active.WriteMessage(vbLf & "Did not find entities")
                 End If
 
                 ' Commit even if we didn't add anything
@@ -2120,11 +2126,7 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function DetermineOverlap(objectId As ObjectId, blkrefId As ObjectId) As Point3d
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
-            
-            Using tr = db.TransactionManager.StartTransaction()
+            Using tr = Active.Database.TransactionManager.StartTransaction()
                 Dim ent As Entity = DirectCast(tr.GetObject(objectId, OpenMode.ForWrite), Entity)
                 Dim blkrefent As Entity = DirectCast(tr.GetObject(blkrefId, OpenMode.ForRead), Entity)
                 Dim ext As Extents3d = ent.GeometricExtents
@@ -2137,40 +2139,33 @@ Namespace BlockReplace
                 pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
                 pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
                 pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                'pntcoll.Add(ext.MinPoint)
-                'pntcoll.Add(ext.MaxPoint)
-                pmtSelRes = ed.SelectCrossingPolygon(pntcoll, selFilter)
+                pmtSelRes = Active.Editor.SelectCrossingPolygon(pntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim points As New Point3dCollection
                         ent.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                        Do While points.Count > 0
+                            pnt = DirectCast(ent, AttributeReference).AlignmentPoint
+                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(pnt.X, _
+                                                                                             pnt.Y + DirectCast(ent, AttributeReference).Height, _
+                                                                                             pnt.Z)
+
+                        Loop
+
                         If points.Count > 0 Then ' we have an overlap?
                             Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
-                            'move our alignment point up by 1mm
-                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 
-                            'pnt = tmppnt
+                            'move our alignment point up by the text height
+                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, _
+                                                                                             tmppnt.Y + DirectCast(ent,  _
+                                                                                                 AttributeReference).Height, _
+                                                                                             tmppnt.Z)
                             'then recursively check again.
-                            'try to scale the height of the attributereference and then check again?
-                            DirectCast(ent, AttributeReference).Height = DirectCast(ent, AttributeReference).Height * 0.9
-                            DirectCast(ent, AttributeReference).AlignmentPoint = DetermineOverlap(ent.ObjectId, blkrefId)
-                            Return DirectCast(ent, AttributeReference).AlignmentPoint
+                            pnt = DetermineOverlap(ent.ObjectId, blkrefId)
+                            Return pnt
                         Else 'no overlap?
                             pnt = DirectCast(ent, AttributeReference).AlignmentPoint
                             Return pnt
                         End If
-                        'Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
-                        'Dim ln As Line = TryCast(obj, Line)
-                        'If ln IsNot Nothing Then ' we need to move our attributereference up?
-                        '    Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
-                        '    tmppnt = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 'move our point up by 1mm
-                        '    pnt = tmppnt
-                        '    'then recursively check again.
-                        '    pnt = DetermineOverlap(ent.ObjectId, blkrefId)
-                        '    Return pnt
-                        'Else
-                        '    pnt = DirectCast(ent, AttributeReference).AlignmentPoint
-                        '    Return pnt
-                        'End If
                     Next
                 Else
                     pnt = DirectCast(ent, AttributeReference).AlignmentPoint
@@ -2178,7 +2173,7 @@ Namespace BlockReplace
                 End If
                 tr.Commit()
             End Using
-            
+
             'Dim points As New Point3dCollection
             'ent.IntersectWith(blkrefent, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
             'If points.Count > 0 Then ' we have an overlap?
@@ -2201,11 +2196,8 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function GetEntity(objectId As ObjectId) As Entity
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
             Dim ent As Entity
-            Using tr As Transaction = db.TransactionManager.StartTransaction()
+            Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
                 ent = DirectCast(tr.GetObject(objectId, OpenMode.ForRead), Entity)
                 tr.Commit()
             End Using
@@ -2215,15 +2207,12 @@ Namespace BlockReplace
 #Region "Kean's Sort a point2dcollection or point3dcollection code"
         Public Sub PrintPoints(ed As Editor, pts As IEnumerable(Of Point3d))
             For Each pt As Point3d In pts
-                ed.WriteMessage("{0}" & vbLf, pt)
+                Active.WriteMessage("{0}" & vbLf, pt)
             Next
         End Sub
 
         <CommandMethod("PTS")> _
         Public Sub PointSort()
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = doc.Editor
-
             ' We'll use a random number generator
 
             Dim rnd As New Random()
@@ -2241,18 +2230,14 @@ Namespace BlockReplace
                          Order By pt.X, pt.Y, pt.Z
                          Select pt
 
-            ed.WriteMessage(vbLf & "Points before sort:" & vbLf & vbLf)
-            PrintPoints(ed, pts)
-            ed.WriteMessage(vbLf & vbLf & "Points after sort:" & vbLf & vbLf)
-            PrintPoints(ed, sorted)
+            Active.WriteMessage(vbLf & "Points before sort:" & vbLf & vbLf)
+            PrintPoints(Active.Editor, pts)
+            Active.WriteMessage(vbLf & vbLf & "Points after sort:" & vbLf & vbLf)
+            PrintPoints(Active.Editor, sorted)
         End Sub
 
         <CommandMethod("CG")> _
         Public Sub CompleteGraph()
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim db As Database = doc.Database
-            Dim ed As Editor = doc.Editor
-
             ' Generate points, put them in a list
 
             Dim alpha As Double = Math.PI * 2 / 19
@@ -2268,9 +2253,9 @@ Namespace BlockReplace
 
             ' Add them to the current space in the active drawing
 
-            Dim tr As Transaction = db.TransactionManager.StartTransaction()
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
             Using tr
-                Dim btr As BlockTableRecord = DirectCast(tr.GetObject(db.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
+                Dim btr As BlockTableRecord = DirectCast(tr.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
                 For Each ln As Line In lns
                     btr.AppendEntity(ln)
                     tr.AddNewlyCreatedDBObject(ln, True)
@@ -2437,9 +2422,6 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         '<CommandMethod("ADNPLUGINS", "SCREENSHOT", CommandFlags.Modal)> _
         Public Shared Function CaptureSnapShot(ByVal pnt1 As Point3d, ByVal pnt2 As Point3d, ByVal filename As String) As String
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = doc.Editor
-
             ' Retrieve our application settings (or create new ones)
 
             Dim ad As New AppData()
@@ -2464,12 +2446,12 @@ Namespace BlockReplace
 
                 ' Then the handle to the current drawing window
 
-                Dim hWnd As IntPtr = doc.Window.Handle
+                Dim hWnd As IntPtr = Active.document.Window.Handle
 
                 ' Now calculate the selected corners in screen coordinates
 
-                pt1 = ScreenFromDrawingPoint(ed, hWnd, first, vp, True)
-                pt2 = ScreenFromDrawingPoint(ed, hWnd, second, vp, True)
+                pt1 = ScreenFromDrawingPoint(Active.Editor, hWnd, first, vp, True)
+                pt2 = ScreenFromDrawingPoint(Active.Editor, hWnd, second, vp, True)
 
                 ' Now save this portion of our screen as a raster image
                 Return ScreenShotToFile(pt1, pt2, filename, ad)
@@ -2482,7 +2464,7 @@ Namespace BlockReplace
 
             Dim wcsPt As Point3d = (If(useUcs, pt.TransformBy(ed.CurrentUserCoordinateSystem), pt))
 
-            Dim winPt As System.Windows.Point = ed.PointToScreen(wcsPt, vpNum)
+            Dim winPt As System.Windows.Point = Active.editor.PointToScreen(wcsPt, vpNum)
             Dim s As System.Windows.Vector = Autodesk.AutoCAD.Windows.Window.GetDeviceIndependentScale(IntPtr.Zero)
             Dim res As New Point(CInt(winPt.X * s.X), CInt(winPt.Y * s.Y))
             ClientToScreen(hWnd, res)
@@ -2501,13 +2483,7 @@ Namespace BlockReplace
             ' taking the absolute value of each
 
             Dim sz As New Size(Math.Abs(pt1.X - pt2.X), Math.Abs(pt1.Y - pt2.Y))
-
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim db As Database = doc.Database
-            Dim ed As Editor = doc.Editor
-            'Dim gsm As GraphicsSystem.Manager = doc.GraphicsManager
-
-            Dim tr As Transaction = db.TransactionManager.StartTransaction()
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
             Using tr
                 Dim ocs As New AcColorSettings()
                 Dim gotSettings As Boolean = False
@@ -2539,13 +2515,13 @@ Namespace BlockReplace
 
                     acedSetCurrentColors(cs)
 
-                    ed.WriteMessage(vbLf)
-                    ed.Regen()
+                    Active.WriteMessage(vbLf)
+                    Active.editor.Regen()
                     regened = True
                     'End If
                     ' Update the screen to reflect the changes
 
-                    ed.UpdateScreen()
+                    Active.editor.UpdateScreen()
                 End If
 
                 ' Set the bitmap object to the size of the window
@@ -2566,7 +2542,7 @@ Namespace BlockReplace
                         If filename IsNot Nothing AndAlso filename <> "" Then
                             processed.Save(filename, ImageFormat.Png)
 
-                            ed.WriteMessage("Image captured and saved to ""{0}"".", filename)
+                            Active.WriteMessage("Image captured and saved to ""{0}"".", filename)
                         End If
                         processed.Dispose()
                     End Using
@@ -2577,11 +2553,11 @@ Namespace BlockReplace
                     'Else
                     '    If gotSettings Then
                     acedSetCurrentColors(ocs)
-                    ed.WriteMessage(vbLf)
-                    ed.Regen()
+                    Active.WriteMessage(vbLf)
+                    Active.editor.Regen()
                     'End If
                     'End If
-                    ed.UpdateScreen()
+                    Active.editor.UpdateScreen()
                 End If
                 tr.Commit()
             End Using
@@ -2590,6 +2566,12 @@ Namespace BlockReplace
 
 #End Region
 
+        ''' <summary>
+        ''' check the length of a string and split if necessary.
+        ''' </summary>
+        ''' <param name="tmpstr"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Private Function checkLengthAndSplit(tmpstr As String) As String
             'need to determine the max length for this field
             If tmpstr.Length > 30 Then
@@ -2611,12 +2593,93 @@ Namespace BlockReplace
             End If
         End Function
 
-        
+        ''' <summary>
+        ''' 
+        ''' </summary>
+        ''' <param name="action"></param>
+        ''' <remarks></remarks>
+        Public Sub UsingTransaction(action As Action(Of Transaction))
+            Using tr = Active.Database.TransactionManager.StartTransaction()
+                ' Invoke the method
+                action(tr)
 
-        
+                tr.Commit()
+            End Using
+        End Sub
 
+        ''' <summary>
+        ''' Using ModelSpace helper function
+        ''' </summary>
+        ''' <param name="action"></param>
+        ''' <remarks></remarks>
+        Public Sub UsingModelSpace(action As Action(Of Transaction, BlockTableRecord))
+            Using tr = Active.Database.TransactionManager.StartTransaction()
+                ' Get the block table for the current database
+                Dim blockTable = DirectCast(tr.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
 
+                ' Get the model space block table record
+                Dim modelSpace = DirectCast(tr.GetObject(blockTable(BlockTableRecord.ModelSpace), OpenMode.ForRead), BlockTableRecord)
 
+                ' Invoke the method
+                action(tr, modelSpace)
+
+                tr.Commit()
+            End Using
+        End Sub
+
+        ''' <summary>
+        ''' Using PaperSpace helper function
+        ''' </summary>
+        ''' <param name="action"></param>
+        ''' <remarks></remarks>
+        Public Sub UsingPaperSpace(action As Action(Of Transaction, BlockTableRecord))
+            Using tr = Active.Database.TransactionManager.StartTransaction()
+                ' Get the block table for the current database
+                Dim blockTable = DirectCast(tr.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
+
+                ' Get the model space block table record
+                Dim paperSpace = DirectCast(tr.GetObject(blockTable(BlockTableRecord.PaperSpace), OpenMode.ForRead), BlockTableRecord)
+
+                ' Invoke the method
+                action(tr, paperSpace)
+
+                tr.Commit()
+            End Using
+        End Sub
+
+        Private Function ProcessBlockReferences(blkref As BlockReference) As Action(Of BlockReference)
+            If SelEntId = ObjectId.Null Then
+                If blkref.Name.StartsWith("*") Then
+                    tmpblkname = _
+                        DirectCast(blkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead),  _
+                            BlockTableRecord).Name
+                    Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                                              Where s.name = tmpblkname
+                                              Select s).SingleOrDefault()
+                    If Not ob Is Nothing Then
+                        SelEntId = blkref.ObjectId
+                    Else
+                        SelEntId = ObjectId.Null
+                    End If
+                Else
+                    If Not blkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
+                        tmpblkname = blkref.Name
+                        Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                                                      Where s.name = tmpblkname
+                                                      Select s).SingleOrDefault()
+                        If Not ob Is Nothing Then
+                            ob = Nothing
+                            SelEntId = blkref.ObjectId
+                            'Exit Function
+                        Else
+                            SelEntId = ObjectId.Null
+                        End If
+                    Else 'we don't need to do anything to this block, just capture it's id.
+                        SelEntId = blkref.ObjectId
+                    End If
+                End If
+            End If
+        End Function
 
     End Class
 
@@ -2791,7 +2854,7 @@ Namespace BlockReplace
     ''' Our ZoomCommands Class
     ''' </summary>
     Public NotInheritable Class ZoomCommands
-        
+
         ''' <summary>
         ''' zoom the current view using the minPoint and maxPoint
         ''' </summary>
@@ -2806,9 +2869,9 @@ Namespace BlockReplace
             Dim db As Database = Application.DocumentManager. _
               MdiActiveDocument.Database
             'get the current view
-            Dim view As ViewTableRecord = ed.GetCurrentView()
+            Dim view As ViewTableRecord = Active.editor.GetCurrentView()
             'start transaction
-            Using trans As Transaction = db. _
+            Using trans As Transaction = Active.Database. _
               TransactionManager.StartTransaction()
                 'get the entity' extends
                 'configure the new current view
@@ -2818,10 +2881,63 @@ Namespace BlockReplace
                   minPoint.X + (view.Width / 2), _
                   minPoint.Y + (view.Height / 2))
                 'update the view
-                ed.SetCurrentView(view)
+                Active.Editor.SetCurrentView(view)
                 trans.Commit()
             End Using
         End Sub
     End Class
+
+    ''' <summary>
+    ''' Provides easy access to several "active" objects in the AutoCAD
+    ''' runtime environment.
+    ''' </summary>
+    Public NotInheritable Class Active
+        Private Sub New()
+        End Sub
+        ''' <summary>
+        ''' Returns the active Editor object.
+        ''' </summary>
+        Public Shared ReadOnly Property Editor() As Editor
+            Get
+                Return Document.Editor
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns the active Document object.
+        ''' </summary>
+        Public Shared ReadOnly Property Document() As Document
+            Get
+                Return Application.DocumentManager.MdiActiveDocument
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Returns the active Database object.
+        ''' </summary>
+        Public Shared ReadOnly Property Database() As Database
+            Get
+                Return Document.Database
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Sends a string to the command line in the active Editor
+        ''' </summary>
+        ''' <param name="message">The message to send.</param>
+        Public Shared Sub WriteMessage(message As String)
+            Editor.WriteMessage(message)
+        End Sub
+
+        ''' <summary>
+        ''' Sends a string to the command line in the active Editor using String.Format.
+        ''' </summary>
+        ''' <param name="message">The message containing format specifications.</param>
+        ''' <param name="parameter">The variables to substitute into the format string.</param>
+        Public Shared Sub WriteMessage(message As String, ParamArray parameter As Object())
+            Editor.WriteMessage(message, parameter)
+        End Sub
+    End Class
+
 
 End Namespace

@@ -505,7 +505,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>350.79455288811727</X>
             <Y>36.441555026799392</Y>
@@ -526,7 +526,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36.441555026799392</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
       </Attrefs>
     </SearchBoxBounds>
     <Lines>
@@ -1424,7 +1424,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>905</X>
             <Y>44</Y>
@@ -1445,7 +1445,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>44</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>905</X>
@@ -1673,7 +1673,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>580</X>
             <Y>36</Y>
@@ -1694,7 +1694,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>580</X>
@@ -1922,7 +1922,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>335</X>
             <Y>36</Y>
@@ -1943,7 +1943,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>335</X>
@@ -2171,7 +2171,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>199</X>
             <Y>37</Y>
@@ -2192,7 +2192,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>37</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>199</X>
@@ -2420,7 +2420,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>97.5</X>
             <Y>54.25</Y>
@@ -2441,7 +2441,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>54.25</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>97.5</X>
@@ -2669,7 +2669,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>905</X>
             <Y>44</Y>
@@ -2690,7 +2690,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>44</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>905</X>
@@ -2918,7 +2918,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>580</X>
             <Y>36</Y>
@@ -2939,7 +2939,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>580</X>
@@ -3167,7 +3167,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>335</X>
             <Y>36</Y>
@@ -3188,7 +3188,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>335</X>
@@ -3416,7 +3416,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>199</X>
             <Y>37</Y>
@@ -3437,7 +3437,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>37</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>199</X>
@@ -3511,7 +3511,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>67.4</X>
             <Y>41</Y>
@@ -3532,7 +3532,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>41</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>67.4</X>
@@ -3854,7 +3854,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>199.00003624373365</X>
             <Y>36.999999828778755</Y>
@@ -3875,7 +3875,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36.999999828778755</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>199.00003624373365</X>
@@ -4103,7 +4103,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>330.18981899999994</X>
             <Y>36.441555</Y>
@@ -4124,7 +4124,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36.441555</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
       </Attrefs>
     </SearchBoxBounds>
     <Lines />
@@ -4308,28 +4308,6 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="" name="">
-          <point3d name="p1">
-            <X>524</X>
-            <Y>7</Y>
-            <Z>0</Z>
-          </point3d>
-          <point3d name="p2">
-            <X>524</X>
-            <Y>36</Y>
-            <Z>0</Z>
-          </point3d>
-          <point3d name="p3">
-            <X>580</X>
-            <Y>36</Y>
-            <Z>0</Z>
-          </point3d>
-          <point3d name="p4">
-            <X>580</X>
-            <Y>7</Y>
-            <Z>0</Z>
-          </point3d>
-        </Attref>
         <Attref AttributeName="TOLERANCE" name="TOLERANCES">
           <point3d name="p1">
             <X>524</X>
@@ -4352,7 +4330,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>580</X>
             <Y>36</Y>
@@ -4373,7 +4351,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>36</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
         <Attref AttributeName="RESPONSIBLE AUTHORITY" name="RESPONSIBLE_AUTHORITY">
           <point3d name="p1">
             <X>580</X>
@@ -4828,7 +4806,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Z>0</Z>
           </point3d>
         </Attref>
-        <Attref AttributeName="CAD REF" name="CAD_REF">
+        <!--<Attref AttributeName="CAD REF" name="CAD_REF">
           <point3d name="p1">
             <X>1078.9017869979059</X>
             <Y>55.893761852199106</Y>
@@ -4849,7 +4827,7 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
             <Y>55.893761852199106</Y>
             <Z>0</Z>
           </point3d>
-        </Attref>
+        </Attref>-->
       </Attrefs>
     </SearchBoxBounds>
     <Lines />

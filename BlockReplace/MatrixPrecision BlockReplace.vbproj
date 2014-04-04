@@ -133,7 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BlockReplace.designer.vb" />
-    <Compile Include="Module1.vb" />
+    <Compile Include="ExtensionMethods.vb" />
     <Compile Include="myCommands.Designer.vb">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
