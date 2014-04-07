@@ -105,38 +105,9 @@ Namespace BlockReplace
             Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
                 If ss.Count > 1 Then
                     ForEach(Of BlockReference)(Active.Database, AddressOf ProcessBlockReferences)
-                                               
-
-                    'For Each id As ObjectId In ss.GetObjectIds()
-                    '    Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForWrite)
-                    '    If tmpblkref.Name.StartsWith("*") Then 'dynamic block
-                    '        Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
-                    '        tmpblkname = tmpbtr.Name
-                    '        Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                    '                                  Where s.name = tmpblkname
-                    '                                  Select s).SingleOrDefault()
-                    '        If Not ob Is Nothing Then
-                    '            selEntID = id
-                    '        End If
-                    '    Else 'normal block
-                    '        If Not tmpblkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
-                    '            tmpblkname = tmpblkref.Name
-                    '            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                    '                                          Where s.name = tmpblkname
-                    '                                          Select s).SingleOrDefault()
-                    '            If Not ob Is Nothing Then
-                    '                ob = Nothing
-                    '                selEntID = id
-                    '                Exit For
-                    '            End If
-                    '        Else 'we don't need to do anything to this block, just capture it's id.
-                    '            selEntID = id
-                    '        End If
-                    '    End If
-                    'Next
                 Else
                     selEntIDs = ss.GetObjectIds() 'currently this doesn't play nice if there happens to be a second attributed block in the drawing!
-                    selEntID = selEntIDs(0)
+                    SelEntId = selEntIDs(0)
                 End If
                 If Not selEntID = Nothing Then
                     'capture a screenshot of each existing area where text might be located:
@@ -359,12 +330,9 @@ Namespace BlockReplace
                                             Dim pmtSelRes As PromptSelectionResult = Nothing
                                             Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
                                             Dim selFilter As New SelectionFilter(acTypValAr)
-                                            Dim pntcoll As Point3dCollection = New Point3dCollection
-                                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
-                                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
-                                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                                            pmtSelRes = Active.Editor.SelectCrossingPolygon(pntcoll, selFilter)
+                                            pmtSelRes = Active.Editor.SelectCrossingWindow(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z), _
+                                                                                           New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z), _
+                                                                                           selFilter)
                                             If pmtSelRes.Status = PromptStatus.OK Then ' we found something that our boundingbox is overlapping.
                                                 For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                                                     Dim points As New Point3dCollection
@@ -2126,7 +2094,11 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function DetermineOverlap(objectId As ObjectId, blkrefId As ObjectId) As Point3d
-            Using tr = Active.Database.TransactionManager.StartTransaction()
+            Dim doc = Application.DocumentManager.MdiActiveDocument
+            Dim db = doc.Database
+            Dim ed = doc.Editor
+
+            Using tr = db.TransactionManager.StartTransaction()
                 Dim ent As Entity = DirectCast(tr.GetObject(objectId, OpenMode.ForWrite), Entity)
                 Dim blkrefent As Entity = DirectCast(tr.GetObject(blkrefId, OpenMode.ForRead), Entity)
                 Dim ext As Extents3d = ent.GeometricExtents
@@ -2139,29 +2111,19 @@ Namespace BlockReplace
                 pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
                 pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
                 pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                pmtSelRes = Active.Editor.SelectCrossingPolygon(pntcoll, selFilter)
+                pmtSelRes = ed.SelectCrossingPolygon(pntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim points As New Point3dCollection
                         ent.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
-                        Do While points.Count > 0
-                            pnt = DirectCast(ent, AttributeReference).AlignmentPoint
-                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(pnt.X, _
-                                                                                             pnt.Y + DirectCast(ent, AttributeReference).Height, _
-                                                                                             pnt.Z)
-
-                        Loop
-
                         If points.Count > 0 Then ' we have an overlap?
                             Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
-                            'move our alignment point up by the text height
-                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, _
-                                                                                             tmppnt.Y + DirectCast(ent,  _
-                                                                                                 AttributeReference).Height, _
-                                                                                             tmppnt.Z)
+                            'move our alignment point up by 1mm
+                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z)
+                            'pnt = tmppnt
                             'then recursively check again.
-                            pnt = DetermineOverlap(ent.ObjectId, blkrefId)
-                            Return pnt
+                            DirectCast(ent, AttributeReference).AlignmentPoint = DetermineOverlap(ent.ObjectId, blkrefId)
+                            Return DirectCast(ent, AttributeReference).AlignmentPoint
                         Else 'no overlap?
                             pnt = DirectCast(ent, AttributeReference).AlignmentPoint
                             Return pnt
@@ -2173,20 +2135,6 @@ Namespace BlockReplace
                 End If
                 tr.Commit()
             End Using
-
-            'Dim points As New Point3dCollection
-            'ent.IntersectWith(blkrefent, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
-            'If points.Count > 0 Then ' we have an overlap?
-            '    Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).Position
-            '    tmppnt = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z) 'move our point up by 1mm
-            '    pnt = tmppnt
-            '    'then recursively check again.
-            '    pnt = DetermineOverlap(ent.ObjectId, blkrefId)
-            '    Return pnt
-            'Else 'no overlap?
-            '    pnt = DirectCast(ent, AttributeReference).Position
-            '    Return pnt
-            'End If
         End Function
 
         ''' <summary>
