@@ -25,6 +25,7 @@
         <Command Local="CTXT" Global="CTXT" />
         <Command Local="DELSEL" Global="DELSEL" />
         <Command Local="GetPointsFromUser" Global="GetPointsFromUser" />
+        <Command Local="ADNIntersectsWith" Global="ADNIntersectsWith" />
       </Commands>
     </ComponentEntry>
     <ComponentEntry AppName="Block Replace" Version="1.0.0" ModuleName="./Contents/MatrixPrecision BlockReplace.pdb" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True">
@@ -36,6 +37,7 @@
         <Command Local="CTXT" Global="CTXT" />
         <Command Local="DELSEL" Global="DELSEL" />
         <Command Local="GetPointsFromUser" Global="GetPointsFromUser" />
+        <Command Local="ADNIntersectsWith" Global="ADNIntersectsWith" />
       </Commands>
     </ComponentEntry>
     <ComponentEntry AppName="Block Replace Lisp" Version="1.0.0" ModuleName="./Contents/MatrixPrecisionCommands.lsp" AppDescription="This plug-in enables fast replacement of attributed blocks." LoadOnAutoCADStartup="True" LoadOnCommandInvocation="True" LoadOnProxy="True">

@@ -26,7 +26,66 @@ Namespace BlockReplace
     ' of a given document. In other words, non static data in this class
     ' is implicitly per-document!
     Public Class MyCommands
-
+#Region "Constants"
+        ' Type of resbuf element
+        ' credit to Alexander Rivilis 
+        Const RTNONE As Short = 5000
+        ' No result 
+        Const RTREAL As Short = 5001
+        ' Real number 
+        Const RTPOshort As Short = 5002
+        ' 2D poshort X and Y only 
+        Const RTSHORT As Short = 5003
+        ' Short integer 
+        Const RTANG As Short = 5004
+        ' Angle 
+        Const RTSTR As Short = 5005
+        ' String 
+        Const RTENAME As Short = 5006
+        ' Entity name 
+        Const RTPICKS As Short = 5007
+        ' Pick set 
+        Const RTORshort As Short = 5008
+        ' Orientation 
+        Const RT3DPOshort As Short = 5009
+        ' 3D poshort - X, Y, and Z 
+        Const RTLONG As Short = 5010
+        ' Long integer 
+        Const RTVOID As Short = 5014
+        ' Blank symbol 
+        Const RTLB As Short = 5016
+        ' list begin 
+        Const RTLE As Short = 5017
+        ' list end 
+        Const RTDOTE As Short = 5018
+        ' dotted pair 
+        Const RTNIL As Short = 5019
+        ' nil 
+        Const RTDXF0 As Short = 5020
+        ' DXF code 0 for ads_buildlist only 
+        Const RTT As Short = 5021
+        ' T atom 
+        Const RTRESBUF As Short = 5023
+        ' resbuf 
+        Const RTMODELESS As Short = 5027
+        ' interrupted by modeless dialog 
+        '
+        ' Error return code
+        Const RTNORM As Short = 5100
+        ' Request succeeded 
+        Const RTERROR As Short = -5001
+        ' Some other error 
+        Const RTCAN As Short = -5002
+        ' User cancelled request -- Ctl-C 
+        Const RTREJ As Short = -5003
+        ' AutoCAD rejected request -- invalid 
+        Const RTFAIL As Short = -5004
+        ' Link failure -- Lisp probably died 
+        Const RTKWORD As Short = -5005
+        ' Keyword returned from getxxx() routine 
+        Const RTINPUTTRUNCATED As Short = -5008
+        ' Input didn't all fit in the buffer 
+#End Region
         Dim DoneAddingPoints As Boolean
         Dim KeepAddingAttRefs As Boolean
         Dim KeepAddingCrossingLines As Boolean
@@ -96,7 +155,9 @@ Namespace BlockReplace
             DrawingID = g.ToString()
             drawing.DrawingID = DrawingID
             Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(originalfilename) & "_Before.png"
-            Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
+            Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, _
+                                      New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), _
+                                      New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
             drawing.BeforeImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
             
             tmpm = CType(tmpserializer.Deserialize(tmpreader), mappings)
@@ -314,7 +375,8 @@ Namespace BlockReplace
                                 For Each Pnt3d In att.point3d
                                     tmppntcoll.Add(New Point3d(Pnt3d.X + myBrefB.Position.X, Pnt3d.Y + myBrefB.Position.Y, 0))
                                 Next
-                                tmpstr = CollectTextFromArea(tmppntcoll, att.name, False)
+                                Dim linecount As Integer = 0
+                                tmpstr = CollectTextFromArea(tmppntcoll, att.name, False, linecount)
                                 Dim attr As AttributeReference = (From tmpatt As ObjectId In myAttsB
                                                                   Let attref As AttributeReference = tmpatt.GetObject(OpenMode.ForWrite)
                                                                   Where attref.Tag = att.AttributeName
@@ -322,34 +384,38 @@ Namespace BlockReplace
                                 If Not attr = Nothing Then
                                     attr.TextString = tmpstr
                                     If attr.Tag = "TOLERANCE" And Not attr.TextString = "" Then 'always going to be this one that overlaps now.
-                                        Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
-                                            Dim ent As Entity = DirectCast(tr.GetObject(attr.ObjectId, OpenMode.ForWrite), Entity)
-                                            Dim blkrefent As Entity = DirectCast(tr.GetObject(myBrefB.ObjectId, OpenMode.ForRead), Entity)
-                                            ext = ent.GeometricExtents
-                                            Dim pnt As Point3d
-                                            Dim pmtSelRes As PromptSelectionResult = Nothing
-                                            Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
-                                            Dim selFilter As New SelectionFilter(acTypValAr)
-                                            pmtSelRes = Active.Editor.SelectCrossingWindow(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z), _
-                                                                                           New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z), _
-                                                                                           selFilter)
-                                            If pmtSelRes.Status = PromptStatus.OK Then ' we found something that our boundingbox is overlapping.
-                                                For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
-                                                    Dim points As New Point3dCollection
-                                                    ent.IntersectWith(DirectCast(tr.GetObject(objId, OpenMode.ForRead), Entity), _
-                                                                      Intersect.OnBothOperands, _
-                                                                      points, _
-                                                                      IntPtr.Zero, _
-                                                                      IntPtr.Zero)
-                                                    If points.Count > 0 Then 'we've got an overlap
-                                                        pnt = attr.AlignmentPoint
-                                                        attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
-                                                        Exit For 'exit the loop once we've moved it 2*height (which should be ample!)
-                                                    End If
-                                                Next
-                                            End If
-                                            tr.Commit()
-                                        End Using
+                                        If linecount > 2 Then '3 or more lines
+                                            Dim pnt As Point3d = attr.AlignmentPoint
+                                            attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
+                                        End If
+                                        'Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+                                        '    Dim blkrefent As Entity = DirectCast(tr.GetObject(myBrefB.ObjectId, OpenMode.ForRead), Entity)
+                                        '    ext = attr.GeometricExtents
+                                        '    Dim pnt As Point3d
+                                        '    Dim pmtSelRes As PromptSelectionResult = Nothing
+                                        '    Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
+                                        '    Dim selFilter As New SelectionFilter(acTypValAr)
+                                        '    pmtSelRes = Active.Editor.SelectCrossingWindow(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z), _
+                                        '                                                   New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z), _
+                                        '                                                   selFilter)
+                                        '    If pmtSelRes.Status = PromptStatus.OK Then ' we found something that our boundingbox is overlapping.
+                                        '        For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
+                                        '            Dim points As New Point3dCollection
+                                        '            attr.IntersectWith(blkrefent, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                                        '            'attr.IntersectWith(DirectCast(tr.GetObject(objId, OpenMode.ForRead), Entity), _
+                                        '            '                  Intersect.OnBothOperands, _
+                                        '            '                  points, _
+                                        '            '                  IntPtr.Zero, _
+                                        '            '                  IntPtr.Zero)
+                                        '            If points.Count > 0 Then 'we've got an overlap
+                                        '                pnt = attr.AlignmentPoint
+                                        '                attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
+                                        '                Exit For 'exit the loop once we've moved it 2*height (which should be ample!)
+                                        '            End If
+                                        '        Next
+                                        '    End If
+                                        '    tr.Commit()
+                                        'End Using
                                         attr.UpdateMTextAttribute()
                                     End If
                                     snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
@@ -557,6 +623,170 @@ Namespace BlockReplace
                 tr.Commit()
             End Using
             Return filename
+        End Function
+
+        <DllImport("acdb19.dll", CallingConvention:=CallingConvention.Cdecl, EntryPoint:="?acdbGetAdsName@@YA?AW4ErrorStatus@Acad@@AEAY01_JVAcDbObjectId@@@Z")> _
+        Private Shared Function acdbGetAdsName(ByRef name As ads_name, objId As ObjectId) As Integer
+        End Function
+
+        Public Structure ads_name
+            Private a As IntPtr
+            Private b As IntPtr
+        End Structure
+
+
+        ''' <summary>
+        ''' Allows the user to add unknown borders to the BlockReplace.xml file.
+        ''' </summary>
+        ''' <remarks></remarks>
+        <CommandMethod("ADNIntersectsWith")> _
+        Public Sub ADNIntersectsWith()
+            Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+                Dim peo As PromptEntityOptions = New PromptEntityOptions(vbCrLf & "Select a blockreference >>")
+                peo.SetRejectMessage("Only Blockreferences allowed!")
+                peo.AddAllowedClass(GetType(BlockReference), False)
+
+                Dim res As PromptEntityResult = Active.Editor.GetEntity(peo)
+                If Not res.Status = PromptStatus.OK Then Return
+                Dim ent1 As Entity = DirectCast(tr.GetObject(res.ObjectId, OpenMode.ForRead), Entity)
+                If ent1 = Nothing Then Return
+
+                peo = New PromptEntityOptions(vbCrLf & "Select another entity >>")
+                peo.SetRejectMessage("Any Entity allowed!")
+                peo.AddAllowedClass(GetType(Entity), False)
+                res = Active.Editor.GetEntity(peo)
+                If Not res.Status = PromptStatus.OK Then Return
+                Dim ent2 As Entity = DirectCast(tr.GetObject(res.ObjectId, OpenMode.ForRead), Entity)
+                If ent2 = Nothing Then Return
+                Dim ename1 = New ads_name()
+                Dim Clash As Boolean = True
+                Do Until Clash = False
+                    Dim intersectionPoints As New Point3dCollection
+                    If GetIntersectionPointsOf(ent1, ent2, intersectionPoints, Clash) = RTNORM Then
+                        Dim length As Integer = intersectionPoints.Count
+                        For i As Integer = 0 To length - 1
+                            'there will most-likely be two points for each entity as the boundingbox will overlap twice.
+                            moveIt(intersectionPoints.Item(i), ent2, ent1, intersectionPoints, Clash)
+                        Next
+                    End If
+                Loop
+                tr.Commit()
+            End Using
+        End Sub
+
+        Private Function GetIntersectionPointsOf(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
+            
+            Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
+                Dim oc1 = ent1.ObjectId.ObjectClass
+                Dim oc2 = ent2.ObjectId.ObjectClass
+                If (oc1.IsDerivedFrom(RXClass.GetClass(GetType(BlockReference)))) Then 'first entity is a blockreference
+                    GetIntersectionPointsFromBlockEntities(ent1, ent2, intersectionPoints, clash)
+                ElseIf (oc2.IsDerivedFrom(RXClass.GetClass(GetType(BlockReference)))) Then 'second entity is a blockreference
+                    GetIntersectionPointsFromBlockEntities(ent2, ent1, intersectionPoints, clash)
+                Else 'neither entities are blockreferences?
+                    Dim tmppnts As New Point3dCollection
+                    ent1.IntersectWith(ent2, Intersect.OnBothOperands, tmppnts, IntPtr.Zero, IntPtr.Zero)
+                    If tmppnts.Count = 0 Then
+                        clash = False
+                    Else 'reset the clash value
+                        clash = True
+                    End If
+                    ent1.IntersectWith(ent2, Intersect.OnBothOperands, intersectionPoints, IntPtr.Zero, IntPtr.Zero)
+                End If
+                tr.Commit()
+            End Using
+            Return (RTNORM)
+        End Function
+
+        ''' <summary>
+        ''' determines the best way to move an object based on the insert point/origin,
+        ''' and the angle to the first point of intersection.
+        ''' </summary>
+        ''' <param name="pnt">the point of intersection between the entities in question</param>
+        ''' <param name="ent">the entity being tested</param>
+        ''' <param name="blockent">the blockent for passing recursively back to GetIntersectionPointsFromBlockEntities</param>
+        ''' <param name="intersectionPoints">the Point3dCollection we need to check each time.</param>
+        ''' <remarks></remarks>
+        Private Sub moveIt(pnt As Point3d, ent As Entity, blockent As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean)
+            'need to try and work out where the overlap occurs in relation to the origin/insert point of the entity.
+            'Do Until intersectionPoints.Count = 0
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+            Try
+                Dim txt As DBText = TryCast(ent, DBText)
+                If txt IsNot Nothing Then
+                    'move it
+                    txt.UpgradeOpen()
+                    txt.Position = GetBestDirectionForMove(txt.Position, pnt)
+                    'then check again.
+                    GetIntersectionPointsOf(ent, blockent, intersectionPoints, clash)
+                Else 'failed converting to DBText
+                    Dim mtxt As MText = TryCast(ent, MText)
+                    If mtxt IsNot Nothing Then
+                        'move it
+                        mtxt.UpgradeOpen()
+                        mtxt.Location = GetBestDirectionForMove(mtxt.Location, pnt)
+                        'then check again.
+                        GetIntersectionPointsOf(ent, blockent, intersectionPoints, clash)
+                    End If
+                End If
+            Catch ex As Exception
+
+            Finally
+
+                tr.Commit()
+                tr.Dispose()
+            End Try
+            'Loop
+        End Sub
+
+        Private Function GetBestDirectionForMove(txtloc As Point3d, pnt As Point3d) As Point3d
+            Dim pt1 As Point2d = New Point2d(txtloc.X, txtloc.Y)
+            Dim pt2 As Point2d = New Point2d(pnt.X, pnt.Y)
+            Select Case pt1.GetVectorTo(pt2).Angle
+                Case 0 To 90
+                    txtloc = New Point3d(txtloc.X - 5, txtloc.Y + 0, txtloc.Z)
+                Case 91 To 180
+                    txtloc = New Point3d(txtloc.X, txtloc.Y - 5, txtloc.Z)
+                Case 181 To 270
+                    txtloc = New Point3d(txtloc.X, txtloc.Y - 5, txtloc.Z)
+                Case 271 To 359
+                    txtloc = New Point3d(txtloc.X - 5, txtloc.Y + 0, txtloc.Z)
+            End Select
+            Return txtloc
+        End Function
+
+        ''' <summary>
+        ''' 
+        ''' </summary>
+        ''' <param name="ent1"></param>
+        ''' <param name="ent2"></param>
+        ''' <param name="intersectionPoints"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function GetIntersectionPointsFromBlockEntities(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
+            Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
+                Dim oc = ent2.ObjectId.ObjectClass
+                If (oc.IsDerivedFrom(RXClass.GetClass(GetType(BlockReference)))) Then
+                    Active.Editor.WriteMessage(vbCrLf & "Error - this routine cannot handle two blocks, sorry!")
+                    Return (RTERROR)
+                End If
+                Dim pBlockRef = TryCast(ent1, BlockReference)
+                If Not pBlockRef = Nothing Then
+                    Dim entitySet As New DBObjectCollection
+                    ent1.Explode(entitySet)
+                    For i = 0 To entitySet.Count - 1
+                        Dim tmpEntity As Entity = DirectCast(entitySet.Item(i), Entity)
+                        Dim tmpoc = tmpEntity.ObjectId.ObjectClass
+                        If Not (tmpEntity.GetRXClass().DxfName = "ATTDEF") Then 'add any other entities that might fail to this line.
+                            If Not GetIntersectionPointsOf(tmpEntity, ent2, intersectionPoints, clash) = RTNORM Then
+                                Active.WriteMessage(vbCrLf & "Error getting objects!")
+                            End If
+                        End If
+                    Next
+                End If
+                tr.Commit()
+            End Using
+            Return (RTNORM)
         End Function
 
         ''' <summary>
@@ -1774,7 +2004,10 @@ Namespace BlockReplace
         ''' <param name="reverseSort"></param>
         ''' <returns>String value found with tmppntcoll boundary</returns>
         ''' <remarks></remarks>
-        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, locName As String, Optional reverseSort As Boolean = False) As String
+        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, _
+                                            locName As String, _
+                                            Optional reverseSort As Boolean = False, _
+                                            Optional ByRef lineCount As Integer = 0) As String
             Dim tmpstr As String = String.Empty
             'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
@@ -1790,7 +2023,7 @@ Namespace BlockReplace
                 'Next
 
                 Dim selFilter As New SelectionFilter(acTypValAr)
-                pmtSelRes = Active.editor.SelectCrossingPolygon(tmppntcoll, selFilter)
+                pmtSelRes = Active.Editor.SelectCrossingPolygon(tmppntcoll, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
@@ -1847,13 +2080,17 @@ Namespace BlockReplace
                     For Each pt As FloatingText In sorted
                         If tmpstr.Length > 0 Then
                             If locName.ToUpper() = "TOLERANCES" Then
+                                lineCount = lineCount + 1
                                 'Tolerance strings seem to be split better than the other long strings we're seeing.
                                 'hence we don't necessarily need to checklengthandsplit them.
                                 tmpstr = tmpstr & vbCrLf & pt.StringValue
+                                'replace +/- with ±:
+                                tmpstr = tmpstr.Replace("+/-", "±")
                             ElseIf locName.ToUpper() = "MATERIAL" Then 'Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
                                 tmpstr = checkLengthAndSplit(tmpstr)
                             Else
                                 tmpstr = tmpstr & " " & pt.StringValue
+                                tmpstr = checkLengthAndSplit(tmpstr)
                             End If
                         Else
                             If locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
