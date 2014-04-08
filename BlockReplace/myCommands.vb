@@ -91,12 +91,13 @@ Namespace BlockReplace
         Dim KeepAddingCrossingLines As Boolean
         Dim UsedOnImgUrl As String
         Dim SelEntId As ObjectId
-        Dim tmpblkname As String
+        Dim SelEntIds As ObjectId()
+        Dim tmpblkname As String = String.Empty
         Dim tmpm As New mappings
         Dim d As New Drawings
-        Dim drawing As New DrawingsDrawing
+        Dim drawing As DrawingsDrawing
         Dim Snapshots As New Snapshots ' new snapshot details parent collection
-        Dim snDetails As New SnapshotsSnapshotDetails ' new snapshots collection
+        Dim snDetails As SnapshotsSnapshotDetails ' new snapshots collection
         Dim snapshot As SnapshotsSnapshotDetailsSnapshot ' new snapshot detail
         Dim tmppntcoll As Point3dCollection
 
@@ -144,12 +145,15 @@ Namespace BlockReplace
                 Throw New ArgumentException("Bad argument type - requires a selection set")
             End If
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
-            Dim selEntIDs As ObjectId()
+            'Dim selEntIDs As ObjectId()
             Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
             Dim tmpserializer As New XmlSerializer(GetType(mappings))
             Dim tmpfs As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
             Dim tmpreader As XmlReader = XmlReader.Create(tmpfs)
-
+            'new these objects here.
+            snDetails = New SnapshotsSnapshotDetails
+            drawing = New DrawingsDrawing
+            'then continue
             Dim originalfilename As String = Active.Database.Filename
             Dim g As Guid = Guid.NewGuid()
             DrawingID = g.ToString()
@@ -162,71 +166,14 @@ Namespace BlockReplace
             
             tmpm = CType(tmpserializer.Deserialize(tmpreader), mappings)
             tmpfs.Close()
-            Dim tmpblkname As String = ""
-            Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
-                If ss.Count > 1 Then
-                    ForEach(Of BlockReference)(Active.Database, AddressOf ProcessBlockReferences)
-                Else
-                    selEntIDs = ss.GetObjectIds() 'currently this doesn't play nice if there happens to be a second attributed block in the drawing!
-                    SelEntId = selEntIDs(0)
-                End If
-                If Not selEntID = Nothing Then
-                    'capture a screenshot of each existing area where text might be located:
-                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
-                    drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
-                    Dim serializerf As New XmlSerializer(GetType(frames))
-                    Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
-                    Dim readerBR As XmlReader = XmlReader.Create(fsbr)
-                    Dim f As frames = CType(serializerf.Deserialize(readerBR), frames)
-                    fsbr.Close()
-                    Dim brefa As BlockReference = selEntID.GetObject(OpenMode.ForRead)
-                    tmpblkname = brefa.Name
-                    Dim WeKnowAboutThisBorder = (From a In f.DrawingFrame
-                                                     Where a.name = tmpblkname
-                                                     Select a).SingleOrDefault()
-                    If WeKnowAboutThisBorder IsNot Nothing Then
-                        Dim sb = (From s In f.DrawingFrame
-                              Where s.name = tmpblkname
-                              Let sbb = s.SearchBoxBounds
-                              Select sbb).SingleOrDefault()
-
-                        For Each att As framesDrawingFrameSearchBoxBoundsAttref In sb.Attrefs
-                            snapshot = New SnapshotsSnapshotDetailsSnapshot
-                            tmppntcoll = New Point3dCollection
-                            For Each Pnt3d In att.point3d
-                                tmppntcoll.Add(New Point3d(Pnt3d.X + brefa.Position.X, Pnt3d.Y + brefa.Position.Y, 0))
-                            Next
-                            Dim pnt1 As Point3d
-                            Dim pnt2 As Point3d
-                            If brefa.Name = "A3BORD" Then 'don't add the block position to the screenshot points
-                                pnt1 = New Point3d(att.point3d.Item(0).X, att.point3d.Item(0).Y, att.point3d.Item(0).Z)
-                                pnt2 = New Point3d(att.point3d.Item(2).X, att.point3d.Item(2).Y, att.point3d.Item(2).Z)
-                            Else
-                                pnt1 = New Point3d(att.point3d.Item(0).X + brefa.Position.X, att.point3d.Item(0).Y + brefa.Position.Y, att.point3d.Item(0).Z)
-                                pnt2 = New Point3d(att.point3d.Item(2).X + brefa.Position.X, att.point3d.Item(2).Y + brefa.Position.Y, att.point3d.Item(2).Z)
-                            End If
-
-                            fn = "C:\temp\" & Path.GetFileNameWithoutExtension(Active.Database.Filename) & "_" & att.name & ".png"
-                            snapshot.name = att.name
-                            'snapshot.ImgUrl = CaptureSnapShot(pnt1, pnt2, fn)
-                            snapshot.ImgUrl = ScreenShotToFile(pnt1, pnt2, fn)
-                            If att.name = "USED_ON" Then
-                                UsedOnImgUrl = snapshot.ImgUrl
-                            End If
-                            Dim pntmin As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt1.X, .Y = pnt1.Y, .Z = 0}
-                            Dim pntmax As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt2.X, .Y = pnt2.Y, .Z = 0}
-                            snapshot.capturedarea.Add(pntmin)
-                            snapshot.capturedarea.Add(pntmax)
-                            snDetails.DrawingID = DrawingID
-                            snDetails.snapshot.Add(snapshot)
-                        Next
-                        Active.WriteMessage(vbCrLf & "Done Capturing Area Screenshots" & vbCrLf)
-                    Else
-                        Active.WriteMessage("This isn't a drawing we have had prior knowledge of!" & vbCrLf & "Suggest you run the GetPointsFromUser tool and try again!")
-                        Exit Sub
-                    End If
-                End If
-            End Using
+            If ss.Count > 1 Then
+                ForEach(Of BlockReference)(Active.Database, AddressOf ProcessBlockReferences)
+            Else
+                SelEntIds = ss.GetObjectIds() 'currently this doesn't play nice if there happens to be a second attributed block in the drawing!
+                SelEntId = SelEntIds(0)
+            End If
+            'we can now choose to drop this part of the tool- if the before & after snapshots are good enough!
+            'CreateSnapshotsForAreasOfInterest(ss, asmpath)
             tmpfs.Dispose()
             Dim selEntID2 As ObjectId '=  Active.editor.GetEntity("Select New block:").ObjectId
             Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
@@ -349,23 +296,24 @@ Namespace BlockReplace
                                                                           Where attref.Tag = str
                                                                           Select attref).SingleOrDefault()
                                         attr.TextString = tmpstrlist.Item(i)
-                                        snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
-                                                    Where sn.name = att.name
-                                                    Select sn).SingleOrDefault()
-                                        If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
-                                            snapshot = New SnapshotsSnapshotDetailsSnapshot
-                                            snapshot.ImgUrl = UsedOnImgUrl
-                                            snapshot.name = str
-                                            snapshot.tag = str
-                                            snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                            snapshot.textstring = attr.TextString
-                                            snDetails.snapshot.Add(snapshot)
-                                        Else
-                                            snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                            snapshot.tag = attr.Tag
-                                            snapshot.textstring = attr.TextString
-                                            'snDetails.snapshot.Add(snapshot)
-                                        End If
+                                        PadSnapshotsForAreasOfInterest(att, attr, str, True)
+                                        'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
+                                        '            Where sn.name = att.name
+                                        '            Select sn).SingleOrDefault()
+                                        'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
+                                        '    snapshot = New SnapshotsSnapshotDetailsSnapshot
+                                        '    snapshot.ImgUrl = UsedOnImgUrl
+                                        '    snapshot.name = str
+                                        '    snapshot.tag = str
+                                        '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+                                        '    snapshot.textstring = attr.TextString
+                                        '    snDetails.snapshot.Add(snapshot)
+                                        'Else
+                                        '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+                                        '    snapshot.tag = attr.Tag
+                                        '    snapshot.textstring = attr.TextString
+                                        '    'snDetails.snapshot.Add(snapshot)
+                                        'End If
                                     Next
                                     tmpstrlist = Nothing
                                     tmppntcoll = Nothing
@@ -388,53 +336,26 @@ Namespace BlockReplace
                                             Dim pnt As Point3d = attr.AlignmentPoint
                                             attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
                                         End If
-                                        'Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
-                                        '    Dim blkrefent As Entity = DirectCast(tr.GetObject(myBrefB.ObjectId, OpenMode.ForRead), Entity)
-                                        '    ext = attr.GeometricExtents
-                                        '    Dim pnt As Point3d
-                                        '    Dim pmtSelRes As PromptSelectionResult = Nothing
-                                        '    Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
-                                        '    Dim selFilter As New SelectionFilter(acTypValAr)
-                                        '    pmtSelRes = Active.Editor.SelectCrossingWindow(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z), _
-                                        '                                                   New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z), _
-                                        '                                                   selFilter)
-                                        '    If pmtSelRes.Status = PromptStatus.OK Then ' we found something that our boundingbox is overlapping.
-                                        '        For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
-                                        '            Dim points As New Point3dCollection
-                                        '            attr.IntersectWith(blkrefent, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
-                                        '            'attr.IntersectWith(DirectCast(tr.GetObject(objId, OpenMode.ForRead), Entity), _
-                                        '            '                  Intersect.OnBothOperands, _
-                                        '            '                  points, _
-                                        '            '                  IntPtr.Zero, _
-                                        '            '                  IntPtr.Zero)
-                                        '            If points.Count > 0 Then 'we've got an overlap
-                                        '                pnt = attr.AlignmentPoint
-                                        '                attr.AlignmentPoint = New Point3d(pnt.X, pnt.Y + (attr.Height * 2), pnt.Z)
-                                        '                Exit For 'exit the loop once we've moved it 2*height (which should be ample!)
-                                        '            End If
-                                        '        Next
-                                        '    End If
-                                        '    tr.Commit()
-                                        'End Using
                                         attr.UpdateMTextAttribute()
                                     End If
-                                    snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
-                                                Where sn.name = att.name
-                                                Select sn).SingleOrDefault()
-                                    If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
-                                        snapshot = New SnapshotsSnapshotDetailsSnapshot
-                                        snapshot.ImgUrl = UsedOnImgUrl
-                                        snapshot.name = tmpstr
-                                        snapshot.tag = attr.Tag
-                                        snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                        snapshot.textstring = attr.TextString
-                                        snDetails.snapshot.Add(snapshot)
-                                    Else
-                                        snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                        snapshot.tag = attr.Tag
-                                        snapshot.textstring = attr.TextString
-                                        'snDetails.snapshot.Add(snapshot)
-                                    End If
+                                    PadSnapshotsForAreasOfInterest(att, attr, tmpstr, False)
+                                    'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
+                                    '            Where sn.name = att.name
+                                    '            Select sn).SingleOrDefault()
+                                    'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
+                                    '    snapshot = New SnapshotsSnapshotDetailsSnapshot
+                                    '    snapshot.ImgUrl = UsedOnImgUrl
+                                    '    snapshot.name = tmpstr
+                                    '    snapshot.tag = attr.Tag
+                                    '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+                                    '    snapshot.textstring = attr.TextString
+                                    '    snDetails.snapshot.Add(snapshot)
+                                    'Else
+                                    '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+                                    '    snapshot.tag = attr.Tag
+                                    '    snapshot.textstring = attr.TextString
+                                    '    'snDetails.snapshot.Add(snapshot)
+                                    'End If
                                 End If
                             End If
                         Next
@@ -548,8 +469,104 @@ Namespace BlockReplace
                     myTrans.Commit()
                 End Using
             End Using
+            'cleanup some things between drawings or FAIL.
+            drawing = Nothing
+            snDetails = Nothing
         End Sub
 
+        ''' <summary>
+        ''' 
+        ''' </summary>
+        ''' <param name="ss"></param>
+        ''' <param name="asmpath"></param>
+        ''' <remarks></remarks>
+        Private Sub CreateSnapshotsForAreasOfInterest(ss As SelectionSet, asmpath As String)
+            Dim fn As String = String.Empty
+            Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
+                If Not SelEntId = Nothing Then
+                    'capture a screenshot of each existing area where text might be located:
+                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
+                    drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
+                    Dim serializerf As New XmlSerializer(GetType(frames))
+                    Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
+                    Dim readerBR As XmlReader = XmlReader.Create(fsbr)
+                    Dim f As frames = CType(serializerf.Deserialize(readerBR), frames)
+                    fsbr.Close()
+                    Dim brefa As BlockReference = SelEntId.GetObject(OpenMode.ForRead)
+                    tmpblkname = brefa.Name
+                    Dim WeKnowAboutThisBorder = (From a In f.DrawingFrame
+                                                     Where a.name = tmpblkname
+                                                     Select a).SingleOrDefault()
+                    If WeKnowAboutThisBorder IsNot Nothing Then
+                        Dim sb = (From s In f.DrawingFrame
+                              Where s.name = tmpblkname
+                              Let sbb = s.SearchBoxBounds
+                              Select sbb).SingleOrDefault()
+
+                        For Each att As framesDrawingFrameSearchBoxBoundsAttref In sb.Attrefs
+                            snapshot = New SnapshotsSnapshotDetailsSnapshot
+                            tmppntcoll = New Point3dCollection
+                            For Each Pnt3d In att.point3d
+                                tmppntcoll.Add(New Point3d(Pnt3d.X + brefa.Position.X, Pnt3d.Y + brefa.Position.Y, 0))
+                            Next
+                            Dim pnt1 As Point3d
+                            Dim pnt2 As Point3d
+                            If brefa.Name = "A3BORD" Then 'don't add the block position to the screenshot points
+                                pnt1 = New Point3d(att.point3d.Item(0).X, att.point3d.Item(0).Y, att.point3d.Item(0).Z)
+                                pnt2 = New Point3d(att.point3d.Item(2).X, att.point3d.Item(2).Y, att.point3d.Item(2).Z)
+                            Else
+                                pnt1 = New Point3d(att.point3d.Item(0).X + brefa.Position.X, att.point3d.Item(0).Y + brefa.Position.Y, att.point3d.Item(0).Z)
+                                pnt2 = New Point3d(att.point3d.Item(2).X + brefa.Position.X, att.point3d.Item(2).Y + brefa.Position.Y, att.point3d.Item(2).Z)
+                            End If
+
+                            fn = "C:\temp\" & Path.GetFileNameWithoutExtension(Active.Database.Filename) & "_" & att.name & ".png"
+                            snapshot.name = att.name
+                            'snapshot.ImgUrl = CaptureSnapShot(pnt1, pnt2, fn)
+                            snapshot.ImgUrl = ScreenShotToFile(pnt1, pnt2, fn)
+                            If att.name = "USED_ON" Then
+                                UsedOnImgUrl = snapshot.ImgUrl
+                            End If
+                            Dim pntmin As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt1.X, .Y = pnt1.Y, .Z = 0}
+                            Dim pntmax As New SnapshotsSnapshotDetailsSnapshotPoint3d With {.name = att.name, .X = pnt2.X, .Y = pnt2.Y, .Z = 0}
+                            snapshot.capturedarea.Add(pntmin)
+                            snapshot.capturedarea.Add(pntmax)
+                            snDetails.DrawingID = DrawingID
+                            snDetails.snapshot.Add(snapshot)
+                        Next
+                        Active.WriteMessage(vbCrLf & "Done Capturing Area Screenshots" & vbCrLf)
+                    Else
+                        Active.WriteMessage("This isn't a drawing we have had prior knowledge of!" & vbCrLf & "Suggest you run the GetPointsFromUser tool and try again!")
+                        Exit Sub
+                    End If
+                End If
+            End Using
+        End Sub
+
+        Private Sub PadSnapshotsForAreasOfInterest(att As framesDrawingFrameSearchBoxBoundsAttref, attr As AttributeReference, str As String, isUsedOnAttr As Boolean)
+            snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
+                        Where sn.name = att.name
+                        Select sn).SingleOrDefault()
+            If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
+                snapshot = New SnapshotsSnapshotDetailsSnapshot
+                snapshot.ImgUrl = UsedOnImgUrl
+                If isUsedOnAttr Then
+                    snapshot.name = str
+                    snapshot.tag = str
+                Else
+                    snapshot.name = str
+                    snapshot.tag = attr.Tag
+                End If
+                
+                snapshot.objectIdAsString = attr.ObjectId.ToString()
+                snapshot.textstring = attr.TextString
+                snDetails.snapshot.Add(snapshot)
+            Else
+                snapshot.objectIdAsString = attr.ObjectId.ToString()
+                snapshot.tag = attr.Tag
+                snapshot.textstring = attr.TextString
+                'snDetails.snapshot.Add(snapshot)
+            End If
+        End Sub
         ''' <summary>
         ''' Creates a screenshot of each area we are interested in.
         ''' </summary>
@@ -625,16 +642,6 @@ Namespace BlockReplace
             Return filename
         End Function
 
-        <DllImport("acdb19.dll", CallingConvention:=CallingConvention.Cdecl, EntryPoint:="?acdbGetAdsName@@YA?AW4ErrorStatus@Acad@@AEAY01_JVAcDbObjectId@@@Z")> _
-        Private Shared Function acdbGetAdsName(ByRef name As ads_name, objId As ObjectId) As Integer
-        End Function
-
-        Public Structure ads_name
-            Private a As IntPtr
-            Private b As IntPtr
-        End Structure
-
-
         ''' <summary>
         ''' Allows the user to add unknown borders to the BlockReplace.xml file.
         ''' </summary>
@@ -658,7 +665,6 @@ Namespace BlockReplace
                 If Not res.Status = PromptStatus.OK Then Return
                 Dim ent2 As Entity = DirectCast(tr.GetObject(res.ObjectId, OpenMode.ForRead), Entity)
                 If ent2 = Nothing Then Return
-                Dim ename1 = New ads_name()
                 Dim Clash As Boolean = True
                 Do Until Clash = False
                     Dim intersectionPoints As New Point3dCollection
@@ -2077,6 +2083,7 @@ Namespace BlockReplace
                                   Order By pt.StringLocation.Y Descending
                                   Select pt)
                     End If
+                    Dim dblstr As String = String.Empty
                     For Each pt As FloatingText In sorted
                         If tmpstr.Length > 0 Then
                             If locName.ToUpper() = "TOLERANCES" Then
@@ -2088,13 +2095,56 @@ Namespace BlockReplace
                                 tmpstr = tmpstr.Replace("+/-", "±")
                             ElseIf locName.ToUpper() = "MATERIAL" Then 'Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
                                 tmpstr = checkLengthAndSplit(tmpstr)
+                            ElseIf locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
+                                tmpstr = tmpstr & " " & pt.StringValue
+                                tmpstr = checkLengthAndSplit(tmpstr)
+                                If MatchesSurfaceTextureFormat(tmpstr) Then
+                                    Dim splitstr As New List(Of String)(tmpstr.Split(" "))
+                                    Dim machinestr As String = String.Empty
+                                    'this works but only when "MACHINE" is part of the string.
+                                    For j As Integer = 0 To splitstr.FindIndex(Function(str As String) str = "") - 1
+                                        Dim number As Integer
+                                        If Not Double.TryParse(splitstr.Item(j), number) Then
+                                            If machinestr = "" Then
+                                                machinestr = splitstr.Item(j)
+                                            Else
+                                                machinestr = machinestr & " " & splitstr.Item(j)
+                                            End If
+                                        End If
+                                    Next
+
+                                    'Dim machinestr = (From s In splitstr
+                                    '                  Where s = "MACHINE"
+                                    '                  Select s).Single()
+                                    Dim spaceint As Integer = splitstr.FindLastIndex(Function(rev As String) rev = "")
+                                    Dim rebuiltstr As String = String.Empty
+                                    For i = spaceint + 1 To splitstr.Count - 1
+                                        If splitstr.Item(i).StartsWith(" ") Then
+                                            rebuiltstr = rebuiltstr & splitstr.Item(i)
+                                        Else
+                                            If rebuiltstr = "" Then
+                                                rebuiltstr = splitstr.Item(i)
+                                            Else
+                                                rebuiltstr = rebuiltstr & " " & splitstr.Item(i)
+                                            End If
+                                        End If
+                                    Next
+                                    tmpstr = machinestr & " " & dblstr & " " & rebuiltstr
+                                    tmpstr = tmpstr.Replace("  ", " ")
+                                End If
                             Else
                                 tmpstr = tmpstr & " " & pt.StringValue
                                 tmpstr = checkLengthAndSplit(tmpstr)
                             End If
                         Else
-                            If locName.ToUpper() = "MATERIAL" Or locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
+                            If locName.ToUpper() = "MATERIAL" Then
                                 tmpstr = checkLengthAndSplit(pt.StringValue)
+                            ElseIf locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
+                                tmpstr = checkLengthAndSplit(pt.StringValue)
+                                Dim number As Double
+                                If Double.TryParse(tmpstr, number) Then 'tmpstr is probably something like 0.8 or similar.
+                                    dblstr = tmpstr & "µm"
+                                End If
                             Else
                                 tmpstr = pt.StringValue
                             End If
@@ -2210,6 +2260,8 @@ Namespace BlockReplace
             End Using
             Return tmpstrlist
         End Function
+#Region "Regex Methods"
+
 
         ''' <summary>
         ''' Checks for whether the revision is of the format 1P1
@@ -2235,6 +2287,18 @@ Namespace BlockReplace
             Dim lastRNRegex As New Regex(pattern)
             Return lastRNRegex.IsMatch(chngnote.RevChangeNote.attRefText)
 
+        End Function
+
+        ''' <summary>
+        ''' Compares the Surface Texture string against our pattern for it.
+        ''' </summary>
+        ''' <param name="tmpstr">the string to check</param>
+        ''' <returns>True if the string matches our pattern</returns>
+        ''' <remarks></remarks>
+        Private Function MatchesSurfaceTextureFormat(tmpstr As String) As Boolean
+            Dim pattern As String = ".*\s{2,}.*"
+            Dim surfacetexture As New Regex(pattern)
+            Return surfacetexture.IsMatch(tmpstr)
         End Function
 
         ''' <summary>
@@ -2278,7 +2342,7 @@ Namespace BlockReplace
                 Return False
             End If
         End Function
-
+#End Region
         ''' <summary>
         ''' Corrects the drawing number dependant on what blockname the attributereference is from.
         ''' </summary>
@@ -2833,38 +2897,49 @@ Namespace BlockReplace
         End Sub
 
         Private Function ProcessBlockReferences(blkref As BlockReference) As Action(Of BlockReference)
-            If SelEntId = ObjectId.Null Then
-                If blkref.Name.StartsWith("*") Then
-                    tmpblkname = _
-                        DirectCast(blkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead),  _
-                            BlockTableRecord).Name
-                    Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                              Where s.name = tmpblkname
-                                              Select s).SingleOrDefault()
-                    If Not ob Is Nothing Then
-                        SelEntId = blkref.ObjectId
-                    Else
-                        SelEntId = ObjectId.Null
-                    End If
-                Else
-                    If Not blkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
-                        tmpblkname = blkref.Name
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
+            Try
+                If SelEntId = ObjectId.Null Then
+                    If blkref.Name.StartsWith("*") Then
+                        tmpblkname = _
+                            DirectCast(blkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead),  _
+                                BlockTableRecord).Name
                         Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                                      Where s.name = tmpblkname
-                                                      Select s).SingleOrDefault()
+                                                  Where s.name = tmpblkname
+                                                  Select s).SingleOrDefault()
                         If Not ob Is Nothing Then
-                            ob = Nothing
                             SelEntId = blkref.ObjectId
-                            'Exit Function
                         Else
                             SelEntId = ObjectId.Null
                         End If
-                    Else 'we don't need to do anything to this block, just capture it's id.
-                        SelEntId = blkref.ObjectId
+                    Else
+                        If Not blkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
+                            tmpblkname = blkref.Name
+                            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                                                          Where s.name = tmpblkname
+                                                          Select s).SingleOrDefault()
+                            If Not ob Is Nothing Then
+                                ob = Nothing
+                                SelEntId = blkref.ObjectId
+                                'Exit Function
+                            Else
+                                SelEntId = ObjectId.Null
+                            End If
+                        Else 'we don't need to do anything to this block, just capture it's id.
+                            SelEntId = blkref.ObjectId
+                        End If
                     End If
                 End If
-            End If
+            Catch ex As Exception
+                Active.WriteMessage("The Error was: " & ex.Message)
+            Finally
+                tr.Commit()
+                tr.Dispose()
+            End Try
+            
         End Function
+
+        
 
     End Class
 
