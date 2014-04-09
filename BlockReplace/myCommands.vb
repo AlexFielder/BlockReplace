@@ -99,7 +99,6 @@ Namespace BlockReplace
         Dim Snapshots As New Snapshots ' new snapshot details parent collection
         Dim snDetails As SnapshotsSnapshotDetails ' new snapshots collection
         Dim snapshot As SnapshotsSnapshotDetailsSnapshot ' new snapshot detail
-        Dim tmppntcoll As Point3dCollection
 
         Private Property DrawingID As String
 
@@ -187,7 +186,7 @@ Namespace BlockReplace
                     Dim serializerm As New XmlSerializer(GetType(mappings))
                     Dim serializerf As New XmlSerializer(GetType(frames))
                     Dim serializerd As New XmlSerializer(GetType(Drawings))
-                    Dim serializers As New XmlSerializer(GetType(Snapshots))
+
                     Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
                     Dim fsm As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
                     Dim readerBR As XmlReader = XmlReader.Create(fsbr)
@@ -297,23 +296,6 @@ Namespace BlockReplace
                                                                           Select attref).SingleOrDefault()
                                         attr.TextString = tmpstrlist.Item(i)
                                         PadSnapshotsForAreasOfInterest(att, attr, str, True)
-                                        'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
-                                        '            Where sn.name = att.name
-                                        '            Select sn).SingleOrDefault()
-                                        'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
-                                        '    snapshot = New SnapshotsSnapshotDetailsSnapshot
-                                        '    snapshot.ImgUrl = UsedOnImgUrl
-                                        '    snapshot.name = str
-                                        '    snapshot.tag = str
-                                        '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                        '    snapshot.textstring = attr.TextString
-                                        '    snDetails.snapshot.Add(snapshot)
-                                        'Else
-                                        '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                        '    snapshot.tag = attr.Tag
-                                        '    snapshot.textstring = attr.TextString
-                                        '    'snDetails.snapshot.Add(snapshot)
-                                        'End If
                                     Next
                                     tmpstrlist = Nothing
                                     tmppntcoll = Nothing
@@ -324,7 +306,7 @@ Namespace BlockReplace
                                     tmppntcoll.Add(New Point3d(Pnt3d.X + myBrefB.Position.X, Pnt3d.Y + myBrefB.Position.Y, 0))
                                 Next
                                 Dim linecount As Integer = 0
-                                tmpstr = CollectTextFromArea(tmppntcoll, att.name, False, linecount)
+                                tmpstr = CollectTextFromArea(tmppntcoll:=tmppntcoll, locName:=att.name, reverseSort:=False, lineCount:=linecount)
                                 Dim attr As AttributeReference = (From tmpatt As ObjectId In myAttsB
                                                                   Let attref As AttributeReference = tmpatt.GetObject(OpenMode.ForWrite)
                                                                   Where attref.Tag = att.AttributeName
@@ -339,23 +321,6 @@ Namespace BlockReplace
                                         attr.UpdateMTextAttribute()
                                     End If
                                     PadSnapshotsForAreasOfInterest(att, attr, tmpstr, False)
-                                    'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
-                                    '            Where sn.name = att.name
-                                    '            Select sn).SingleOrDefault()
-                                    'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
-                                    '    snapshot = New SnapshotsSnapshotDetailsSnapshot
-                                    '    snapshot.ImgUrl = UsedOnImgUrl
-                                    '    snapshot.name = tmpstr
-                                    '    snapshot.tag = attr.Tag
-                                    '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                    '    snapshot.textstring = attr.TextString
-                                    '    snDetails.snapshot.Add(snapshot)
-                                    'Else
-                                    '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-                                    '    snapshot.tag = attr.Tag
-                                    '    snapshot.textstring = attr.TextString
-                                    '    'snDetails.snapshot.Add(snapshot)
-                                    'End If
                                 End If
                             End If
                         Next
@@ -369,6 +334,7 @@ Namespace BlockReplace
                     For Each pnt In sblines.Points
                         pnts.Add(New Point3d(pnt.X + myBrefB.Position.X, pnt.Y + myBrefB.Position.Y, 0))
                     Next
+                    'delete extra lines, text, mtext and blocks which aren't our border.
                     DeleteMySelection(pnts, False)
                     Active.WriteMessage(vbCrLf & "Done deleting old lines!" & vbCrLf)
                     Dim lines = (From ln In f.DrawingFrame
@@ -443,6 +409,7 @@ Namespace BlockReplace
                         serializerd.Serialize(writer, r) 'so we only include our new drawing.
                         writer.Close()
                     End If
+                    Dim serializers As New XmlSerializer(GetType(Snapshots))
                     If Not File.Exists("C:\Temp\Snapshots.xml") Then
                         fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create)
                         Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
@@ -505,7 +472,7 @@ Namespace BlockReplace
 
                         For Each att As framesDrawingFrameSearchBoxBoundsAttref In sb.Attrefs
                             snapshot = New SnapshotsSnapshotDetailsSnapshot
-                            tmppntcoll = New Point3dCollection
+                            Dim tmppntcoll As Point3dCollection = New Point3dCollection
                             For Each Pnt3d In att.point3d
                                 tmppntcoll.Add(New Point3d(Pnt3d.X + brefa.Position.X, Pnt3d.Y + brefa.Position.Y, 0))
                             Next
@@ -543,20 +510,25 @@ Namespace BlockReplace
         End Sub
 
         Private Sub PadSnapshotsForAreasOfInterest(att As framesDrawingFrameSearchBoxBoundsAttref, attr As AttributeReference, str As String, isUsedOnAttr As Boolean)
+            If snapshot Is Nothing Then snapshot = New SnapshotsSnapshotDetailsSnapshot
             snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
                         Where sn.name = att.name
                         Select sn).SingleOrDefault()
-            If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
+            If snapshot Is Nothing Then
                 snapshot = New SnapshotsSnapshotDetailsSnapshot
-                snapshot.ImgUrl = UsedOnImgUrl
                 If isUsedOnAttr Then
+                    snapshot.ImgUrl = UsedOnImgUrl
                     snapshot.name = str
-                    snapshot.tag = str
+                    If snapshot.tag Is Nothing Or snapshot.tag = "" Then
+                        snapshot.tag = str
+                    End If
                 Else
                     snapshot.name = str
-                    snapshot.tag = attr.Tag
+                    If snapshot.tag Is Nothing Or snapshot.tag = "" Then
+                        snapshot.tag = attr.Tag
+                    End If
                 End If
-                
+
                 snapshot.objectIdAsString = attr.ObjectId.ToString()
                 snapshot.textstring = attr.TextString
                 snDetails.snapshot.Add(snapshot)
@@ -564,8 +536,24 @@ Namespace BlockReplace
                 snapshot.objectIdAsString = attr.ObjectId.ToString()
                 snapshot.tag = attr.Tag
                 snapshot.textstring = attr.TextString
-                'snDetails.snapshot.Add(snapshot)
             End If
+            'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
+            '            Where sn.name = att.name
+            '            Select sn).SingleOrDefault()
+            'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
+            '    snapshot = New SnapshotsSnapshotDetailsSnapshot
+            '    snapshot.ImgUrl = UsedOnImgUrl
+            '    snapshot.name = tmpstr
+            '    snapshot.tag = attr.Tag
+            '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+            '    snapshot.textstring = attr.TextString
+            '    snDetails.snapshot.Add(snapshot)
+            'Else
+            '    snapshot.objectIdAsString = attr.ObjectId.ToString()
+            '    snapshot.tag = attr.Tag
+            '    snapshot.textstring = attr.TextString
+            '    'snDetails.snapshot.Add(snapshot)
+            'End If
         End Sub
         ''' <summary>
         ''' Creates a screenshot of each area we are interested in.
@@ -782,7 +770,6 @@ Namespace BlockReplace
                     ent1.Explode(entitySet)
                     For i = 0 To entitySet.Count - 1
                         Dim tmpEntity As Entity = DirectCast(entitySet.Item(i), Entity)
-                        Dim tmpoc = tmpEntity.ObjectId.ObjectClass
                         If Not (tmpEntity.GetRXClass().DxfName = "ATTDEF") Then 'add any other entities that might fail to this line.
                             If Not GetIntersectionPointsOf(tmpEntity, ent2, intersectionPoints, clash) = RTNORM Then
                                 Active.WriteMessage(vbCrLf & "Error getting objects!")
@@ -892,13 +879,8 @@ Namespace BlockReplace
                 If pkr.Status = PromptStatus.OK Then
                     Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
                         Dim acBlkTbl As BlockTable
-                        Dim acBlkTblRec As BlockTableRecord
-
                         '' Open Model space for write
                         acBlkTbl = acTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead)
-
-                        acBlkTblRec = acTrans.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), OpenMode.ForWrite)
-
                         Dim serializer As New XmlSerializer(GetType(frames))
                         Dim f As New frames
                         Dim frame As New framesDrawingFrame
@@ -1154,19 +1136,11 @@ Namespace BlockReplace
             Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
 
                 Dim acBlkTbl As BlockTable
-                Dim acBlkTblRec As BlockTableRecord
-
                 '' Open Model space for write
                 acBlkTbl = acTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead)
-
-                acBlkTblRec = acTrans.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), OpenMode.ForWrite)
-
-                'Dim acLine As Line = New Line(ptStart, ptEnd)
-
                 Dim serializer As New XmlSerializer(GetType(frames))
                 Dim f As New frames
                 Dim frame As New framesDrawingFrame
-                Dim points As New framesDrawingFrameSearchBoxBoundsPoint3d()
                 Dim pnt3d1 As New framesDrawingFrameSearchBoxBoundsPoint3d
                 With pnt3d1
                     .X = ptStart.X
@@ -1202,9 +1176,6 @@ Namespace BlockReplace
                 Dim pStrOpts As PromptStringOptions = New PromptStringOptions(vbLf & "Enter the frame name: ")
                 pStrOpts.AllowSpaces = True
                 Dim pStrRes As PromptResult = Active.Editor.GetString(pStrOpts)
-                Dim attrefs As New framesDrawingFrameSearchBoxBoundsAttref()
-
-
                 'Application.ShowAlertDialog("The name entered was: " & pStrRes.StringResult)
                 frame.name = pStrRes.StringResult
                 f.DrawingFrame.Add(frame)
@@ -1233,9 +1204,6 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("SEL")> _
         Public Sub MySelection()
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = Active.document.Editor
-
             Dim p1 As New Point3d(10.0, 10.0, 0.0)
             Dim p2 As New Point3d(10.0, 11.0, 0.0)
             Dim p3 As New Point3d(11.0, 11.0, 0.0)
@@ -1247,8 +1215,6 @@ Namespace BlockReplace
             pntCol.Add(p3)
             pntCol.Add(p4)
 
-            Dim numOfEntsFound As Integer = 0
-
             Dim pmtSelRes As PromptSelectionResult = Nothing
 
             Dim typedVal As TypedValue() = New TypedValue(0) {}
@@ -1256,16 +1222,9 @@ Namespace BlockReplace
 
             Dim selFilter As New SelectionFilter(typedVal)
             pmtSelRes = Active.editor.SelectCrossingPolygon(pntCol, selFilter)
-            ' May not find entities in the UCS area
-            ' between p1 and p3 if not PLAN view
-            ' pmtSelRes =
-            '    Active.editor.SelectCrossingWindow(p1, p3, selFilter);
-
+            
             If pmtSelRes.Status = PromptStatus.OK Then
-                For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
-                    numOfEntsFound += 1
-                Next
-                Active.WriteMessage("Entities found " & numOfEntsFound.ToString())
+                Active.WriteMessage("Entities found " & pmtSelRes.Value.GetObjectIds().Count.ToString())
             Else
                 Active.WriteMessage(vbLf & "Did not find entities")
             End If
@@ -1278,10 +1237,6 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         <CommandMethod("SelectObjectsOnscreen")> _
         Public Sub SelectObjectsOnscreen()
-            '' Get the current document and database
-            'Dim acDoc As Document = Application.DocumentManager.MdiActiveDocument
-            'Dim acCurDb As Database = acDoc.Database
-
             '' Start a transaction
             Using acTrans As Transaction = Active.Database.TransactionManager.StartTransaction()
 
@@ -1290,8 +1245,6 @@ Namespace BlockReplace
 
                 '' If the prompt status is OK, objects were selected
                 If acSSPrompt.Status = PromptStatus.OK Then
-                    Dim pnt3dcoll As New Point3dCollection
-
                     Dim acSSet As SelectionSet = acSSPrompt.Value
 
                     '' Step through the objects in the selection set
@@ -1432,298 +1385,320 @@ Namespace BlockReplace
         ''' <remarks>requires the arguments of RN###### & a release date in dd-MMM-yy format</remarks>
         <LispFunction("SortRevs")> _
         Public Sub SortRevs(args As ResultBuffer)
-            If revisions Is Nothing Then
-                revisions = New List(Of Revision)()
-            End If
-            'Microsoft.VisualBasic.MsgBox("Attach to Process now!")
-            If args Is Nothing Then
-                Throw New ArgumentException("Requires one argument")
-            End If
-            Dim values As TypedValue() = args.AsArray
-            If values.Length <> 3 Then
-                Throw New ArgumentException("Wrong number of arguments")
-            End If
-            If values(0).TypeCode <> CInt(LispDataType.SelectionSet) Then
-                Throw New ArgumentException("Bad argument type - requires a selection set")
-            End If
-            If values(1).TypeCode <> CInt(LispDataType.Text) Then
-                Throw New ArgumentException("Bad argument type - requires a text string in the RN###### format")
-            End If
-            If values(2).TypeCode <> CInt(LispDataType.Text) Then
-                Throw New ArgumentException("Bad argument type - requires a date text string in the dd-MMM-yy format")
-            End If
-            Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
-            Dim ReleaseNote As String = DirectCast(values(1).Value, String)
-            Dim ReleaseDate As String = DirectCast(values(2).Value, String)
-            Dim strdrawingfilename As String = Application.GetSystemVariable("DWGNAME")
-            Dim drawingpath As String = Application.GetSystemVariable("DWGPREFIX")
-            Dim supercededPath As String
-            If Not drawingpath.ToUpper.Contains("CURRENT") Then 'file is in the root of the folder and we need to create the correct folders for it.
-                IO.Directory.CreateDirectory(drawingpath & "CURRENT\")
-                IO.Directory.CreateDirectory(drawingpath & "SUPERCEDED\")
-                supercededPath = drawingpath & "SUPERCEDED\"
-                drawingpath = drawingpath & "CURRENT\"
-            Else
-                supercededPath = GetParentDirectory(drawingpath, 2) & "\Superceded\"
-            End If
-            Dim originalfilename As String = Active.Database.Filename
-            Dim dwgnum As String = ""
-            Dim shtnum As String = ""
-            Dim IssueChar As String = ""
-            Dim selEntID As ObjectId = Nothing
-            Dim selEntIDs As ObjectId()
-            Dim tmpblkname As String
-            Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
-                Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
-                    If ss.Count > 1 Then
-                        'get the objectId from the blockname
-                        For Each id As ObjectId In ss.GetObjectIds()
-                            Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForWrite)
-                            If tmpblkref.Name.StartsWith("*") Then 'dynamic block
-                                Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
-                                tmpblkname = tmpbtr.Name
-                                If tmpblkname Like "*5.2(block)" Then
-                                    selEntID = id
-                                    Exit For
+            Try
+                If revisions Is Nothing Then
+                    revisions = New List(Of Revision)()
+                End If
+                'Microsoft.VisualBasic.MsgBox("Attach to Process now!")
+                If args Is Nothing Then
+                    Throw New ArgumentException("Requires one argument")
+                End If
+                Dim values As TypedValue() = args.AsArray
+                If values.Length <> 3 Then
+                    Throw New ArgumentException("Wrong number of arguments")
+                End If
+                If values(0).TypeCode <> CInt(LispDataType.SelectionSet) Then
+                    Throw New ArgumentException("Bad argument type - requires a selection set")
+                End If
+                If values(1).TypeCode <> CInt(LispDataType.Text) Then
+                    Throw New ArgumentException("Bad argument type - requires a text string in the RN###### format")
+                End If
+                If values(2).TypeCode <> CInt(LispDataType.Text) Then
+                    Throw New ArgumentException("Bad argument type - requires a date text string in the dd-MMM-yy format")
+                End If
+                Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
+                Dim ReleaseNote As String = DirectCast(values(1).Value, String)
+                Dim ReleaseDate As String = DirectCast(values(2).Value, String)
+                Dim strdrawingfilename As String = Application.GetSystemVariable("DWGNAME")
+                Dim drawingpath As String = Application.GetSystemVariable("DWGPREFIX")
+                Dim supercededPath As String
+                If Not drawingpath.ToUpper.Contains("CURRENT") Then 'file is in the root of the folder and we need to create the correct folders for it.
+                    IO.Directory.CreateDirectory(drawingpath & "CURRENT\")
+                    IO.Directory.CreateDirectory(drawingpath & "SUPERCEDED\")
+                    supercededPath = drawingpath & "SUPERCEDED\"
+                    drawingpath = drawingpath & "CURRENT\"
+                Else
+                    supercededPath = GetParentDirectory(drawingpath, 2) & "\Superceded\"
+                End If
+                Dim originalfilename As String = Active.Database.Filename
+                Dim dwgnum As String = ""
+                Dim shtnum As String = ""
+                Dim IssueChar As String = ""
+                Dim selEntID As ObjectId = Nothing
+                Dim selEntIDs As ObjectId()
+                Dim tmpblkname As String
+                Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
+                Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
+                    Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
+                        If ss.Count > 1 Then
+                            'get the objectId from the blockname
+                            For Each id As ObjectId In ss.GetObjectIds()
+                                Dim tmpblkref As BlockReference = id.GetObject(OpenMode.ForWrite)
+                                If tmpblkref.Name.StartsWith("*") Then 'dynamic block
+                                    Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
+                                    tmpblkname = tmpbtr.Name
+                                    If tmpblkname Like "*5.2(block)" Then
+                                        selEntID = id
+                                        Exit For
+                                    End If
+                                Else 'normal block
+                                    tmpblkname = tmpblkref.Name
+                                    If tmpblkname Like "*5.2(block)" Then
+                                        selEntID = id
+                                        Exit For
+                                    End If
                                 End If
-                            Else 'normal block
-                                tmpblkname = tmpblkref.Name
-                                If tmpblkname Like "*5.2(block)" Then
-                                    selEntID = id
-                                    Exit For
-                                End If
+                            Next
+                        Else
+                            selEntIDs = ss.GetObjectIds()
+                            selEntID = selEntIDs(0)
+                        End If
+                        If selEntID = Nothing Then 'we're not running this tool on a "*5.2(block)" named drawing frame.
+                            Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
+                            Exit Sub
+                        End If
+                        Dim blkref As BlockReference = selEntID.GetObject(OpenMode.ForWrite)
+                        If Not blkref.Name Like ("*5.2(block)") Then
+                            Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
+                            Exit Sub
+                        End If
+                        Dim attcoll As AttributeCollection = blkref.AttributeCollection
+                        'commented out this for now - can return to this later!
+                        'Dim regex = New Regex("(?<chngnote>CHANGE NO \d*)\|(?<date>DATE \d*)\|(?<issue>ISSUE \d*)\|(?<dwgnum>DRAWING NUMBER 1)\|(?<shtnum>SHEET NUMBER 1)")
+                        Dim AllSearchTerm As Regex = New Regex("(.* )(\d*)")
+                        Dim ChangeNoteSearchTerm As Regex = New Regex("(CHANGE NO \d*)")
+                        Dim DateSearchTerm As Regex = New Regex("(DATE \d*)")
+                        Dim IssueSearchTerm As Regex = New Regex("(ISSUE \d*)")
+                        Dim DrawingNumberSearchTerm As Regex = New Regex("(DRAWING NUMBER 1)")
+                        Dim SheetNumberSearchTerm As Regex = New Regex("(SHEET NUMBER 1)")
+                        Dim queryMatchingAll _
+                            = From a As ObjectId In attcoll
+                              Let b As AttributeReference = a.GetObject(OpenMode.ForRead)
+                              Let n As String() = b.Tag.Split(New Char() {" "})
+                              Let matches = AllSearchTerm.Matches(b.Tag)
+                              Where (matches.Count > 0)
+                              Order By n(0)
+                              Group By groupKey = n(n.Length - 1)
+                              Into groupName = Group
+
+                        For Each gGroup In queryMatchingAll
+                            'Active.WriteMessage(vbLf + "querymatchingall: " + (gGroup.groupKey) + vbLf)
+                            Dim rev As New Revision
+                            Dim chngNote As AttRef = Nothing
+                            Dim issDate As AttRef = Nothing
+                            Dim issue As AttRef = Nothing
+
+
+                            'chngNote = GetAttributeReferenceFromQMA(ChangeNoteSearchTerm, gGroup)
+                            'issDate = GetAttributeReferenceFromQMA(DateSearchTerm, gGroup)
+                            'issue = GetAttributeReferenceFromQMA(IssueSearchTerm, gGroup)
+                            'dwgnum = GetAttributeReferenceFromQMA(DrawingNumberSearchTerm, gGroup).attRefText.Replace("/", "-")
+                            'shtnum = GetAttributeReferenceFromQMA(SheetNumberSearchTerm, gGroup).attRefText
+
+                            Dim CN = (From item In gGroup.groupName
+                                                Let matches = ChangeNoteSearchTerm.Matches(item.b.Tag)
+                                                Where (matches.Count > 0)
+                                                Select item.b).FirstOrDefault()
+                            If Not CN = Nothing Then
+                                chngNote = New AttRef
+                                chngNote.attrefId = CN.ObjectId
+                                chngNote.attRefTag = CN.Tag
+                                chngNote.attRefText = CN.TextString
+                            End If
+                            Dim DT = (From item In gGroup.groupName
+                                      Let matches = DateSearchTerm.Matches(item.b.Tag)
+                                      Where (matches.Count > 0)
+                                      Select item.b).FirstOrDefault()
+                            If Not DT = Nothing Then
+                                issDate = New AttRef
+                                issDate.attrefId = DT.ObjectId
+                                issDate.attRefTag = DT.Tag
+                                issDate.attRefText = DT.TextString
+                            End If
+                            Dim RV = (From item In gGroup.groupName
+                                      Let matches = IssueSearchTerm.Matches(item.b.Tag)
+                                      Where (matches.Count > 0)
+                                      Select item.b).FirstOrDefault()
+                            If Not RV = Nothing Then
+                                issue = New AttRef
+                                issue.attrefId = RV.ObjectId
+                                issue.attRefTag = RV.Tag
+                                issue.attRefText = RV.TextString
+                            End If
+                            Dim dnum = (From item In gGroup.groupName
+                                       Let matches = DrawingNumberSearchTerm.Matches(item.b.Tag)
+                                       Where matches.Count > 0
+                                       Select item.b).FirstOrDefault()
+                            If Not dnum = Nothing Then
+                                dwgnum = dnum.TextString.Replace("/", "-")
+                            End If
+                            Dim snum = (From item In gGroup.groupName
+                                       Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
+                                       Where matches.Count > 0
+                                       Select item.b).FirstOrDefault()
+                            If Not snum = Nothing Then
+                                shtnum = snum.TextString
+                            End If
+                            If Not chngNote Is Nothing And Not issDate Is Nothing And Not issue Is Nothing Then
+                                rev.RevChangeNote = chngNote
+                                rev.RevDate = issDate
+                                rev.RevIssue = issue
+                                revisions.Add(rev)
+                            End If
+                            'Active.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
+                            chngNote = Nothing
+                            issDate = Nothing
+                            issue = Nothing
+                        Next
+                        queryMatchingAll = Nothing
+                        'First check for non-standard revisions.
+                        For i As Integer = 0 To revisions.Count - 1
+                            If MatchesOddRevision(revisions.Item(i).RevIssue.attRefText) Then 'blank off any with revisions that match the specific pattern
+                                revisions.Item(i).RevIssue.attRefText = ""
+                                revisions.Item(i).RevChangeNote.attRefText = ""
+                                revisions.Item(i).RevDate.attRefText = ""
                             End If
                         Next
-                    Else
-                        selEntIDs = ss.GetObjectIds()
-                        selEntID = selEntIDs(0)
-                    End If
-                    If selEntID = Nothing Then 'we're not running this tool on a "*5.2(block)" named drawing frame.
-                        Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
-                        Exit Sub
-                    End If
-                    Dim blkref As BlockReference = selEntID.GetObject(OpenMode.ForWrite)
-                    If Not blkref.Name Like ("*5.2(block)") Then
-                        Active.WriteMessage("You need to make sure the block has been replaced before running this tool" + vbCrLf + "Exiting...")
-                        Exit Sub
-                    End If
-                    Dim attcoll As AttributeCollection = blkref.AttributeCollection
-                    Dim AllSearchTerm As Regex = New Regex("(.* )(\d*)")
-                    Dim ChangeNoteSearchTerm As Regex = New Regex("(CHANGE NO \d*)")
-                    Dim DateSearchTerm As Regex = New Regex("(DATE \d*)")
-                    Dim IssueSearchTerm As Regex = New Regex("(ISSUE \d*)")
-                    Dim DrawingNumberSearchTerm As Regex = New Regex("(DRAWING NUMBER 1)")
-                    Dim SheetNumberSearchTerm As Regex = New Regex("(SHEET NUMBER 1)")
-                    Dim queryMatchingAll = From a As ObjectId In attcoll
-                                                   Let b As AttributeReference = a.GetObject(OpenMode.ForRead)
-                                                   Let n As String() = b.Tag.Split(New Char() {" "})
-                                                   Let matches = AllSearchTerm.Matches(b.Tag)
-                                                   Where (matches.Count > 0)
-                                                   Order By n(0)
-                                                   Group By groupKey = n(n.Length - 1)
-                                                   Into groupName = Group
-                    For Each gGroup In queryMatchingAll
-                        'Active.WriteMessage(vbLf + "querymatchingall: " + (gGroup.groupKey) + vbLf)
-                        Dim rev As New Revision
-                        Dim chngNote As AttRef = Nothing
-                        Dim issDate As AttRef = Nothing
-                        Dim issue As AttRef = Nothing
-                        Dim CN = (From item In gGroup.groupName
-                                            Let matches = ChangeNoteSearchTerm.Matches(item.b.Tag)
-                                            Where (matches.Count > 0)
-                                            Select item.b).FirstOrDefault()
-                        If Not CN = Nothing Then
-                            chngNote = New AttRef
-                            chngNote.attrefId = CN.ObjectId
-                            chngNote.attRefTag = CN.Tag
-                            chngNote.attRefText = CN.TextString
+                        'And then check for RN###### revisions.
+                        Dim RNChngNote As Integer = revisions.FindLastIndex(AddressOf FindLastRNChngNote)
+                        'Dim RNChngNote As Integer = revisions.FindLastIndex(Function(rev As Revision) rev.RevChangeNote.attRefText Like "RN*")
+                        If Not RNChngNote = -1 Then 'ie we found a match
+                            For i As Integer = RNChngNote + 1 To revisions.Count - 1
+                                revisions.Item(i).RevIssue.attRefText = ""
+                                revisions.Item(i).RevChangeNote.attRefText = ""
+                                revisions.Item(i).RevDate.attRefText = ""
+                            Next
+                        ElseIf RNChngNote = -1 Then ' there aren't any RN###### change notes so empty any others.
+                            For i As Integer = 0 To revisions.Count - 1
+                                revisions.Item(i).RevIssue.attRefText = ""
+                                revisions.Item(i).RevChangeNote.attRefText = ""
+                                revisions.Item(i).RevDate.attRefText = ""
+                            Next
                         End If
-                        Dim DT = (From item In gGroup.groupName
-                                  Let matches = DateSearchTerm.Matches(item.b.Tag)
-                                  Where (matches.Count > 0)
-                                  Select item.b).FirstOrDefault()
-                        If Not DT = Nothing Then
-                            issDate = New AttRef
-                            issDate.attrefId = DT.ObjectId
-                            issDate.attRefTag = DT.Tag
-                            issDate.attRefText = DT.TextString
-                        End If
-                        Dim RV = (From item In gGroup.groupName
-                                  Let matches = IssueSearchTerm.Matches(item.b.Tag)
-                                  Where (matches.Count > 0)
-                                  Select item.b).FirstOrDefault()
-                        If Not RV = Nothing Then
-                            issue = New AttRef
-                            issue.attrefId = RV.ObjectId
-                            issue.attRefTag = RV.Tag
-                            issue.attRefText = RV.TextString
-                        End If
-                        Dim dnum = (From item In gGroup.groupName
-                                   Let matches = DrawingNumberSearchTerm.Matches(item.b.Tag)
-                                   Where matches.Count > 0
-                                   Select item.b).FirstOrDefault()
-                        If Not dnum = Nothing Then
-                            dwgnum = dnum.TextString.Replace("/", "-")
-                        End If
-                        Dim snum = (From item In gGroup.groupName
-                                   Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
-                                   Where matches.Count > 0
-                                   Select item.b).FirstOrDefault()
-                        If Not snum = Nothing Then
-                            shtnum = snum.TextString
-                        End If
-                        If Not chngNote Is Nothing And Not issDate Is Nothing And Not issue Is Nothing Then
-                            rev.RevChangeNote = chngNote
-                            rev.RevDate = issDate
-                            rev.RevIssue = issue
-                            revisions.Add(rev)
-                        End If
-                        'Active.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
-                    Next
-                    queryMatchingAll = Nothing
-                    'First check for non-standard revisions.
-                    For i As Integer = 0 To revisions.Count - 1
-                        If MatchesOddRevision(revisions.Item(i).RevIssue.attRefText) Then 'blank off any with revisions that match the specific pattern
-                            revisions.Item(i).RevIssue.attRefText = ""
-                            revisions.Item(i).RevChangeNote.attRefText = ""
-                            revisions.Item(i).RevDate.attRefText = ""
-                        End If
-                    Next
-                    'And then check for RN###### revisions.
-                    Dim RNChngNote As Integer = revisions.FindLastIndex(AddressOf FindLastRNChngNote)
-                    'Dim RNChngNote As Integer = revisions.FindLastIndex(Function(rev As Revision) rev.RevChangeNote.attRefText Like "RN*")
-                    If Not RNChngNote = -1 Then 'ie we found a match
-                        For i As Integer = RNChngNote + 1 To revisions.Count - 1
-                            revisions.Item(i).RevIssue.attRefText = ""
-                            revisions.Item(i).RevChangeNote.attRefText = ""
-                            revisions.Item(i).RevDate.attRefText = ""
-                        Next
-                    ElseIf RNChngNote = -1 Then ' there aren't any RN###### change notes so empty any others.
-                        For i As Integer = 0 To revisions.Count - 1
-                            revisions.Item(i).RevIssue.attRefText = ""
-                            revisions.Item(i).RevChangeNote.attRefText = ""
-                            revisions.Item(i).RevDate.attRefText = ""
-                        Next
-                    End If
 
-                    Dim ndx As Integer = revisions.FindIndex(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
-                    Dim numericRevs As Revision = revisions.Find(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
-                    If Not numericRevs Is Nothing And Not ndx = 0 Then 'our revisions list has a numeric value within it.
-                        numericRevs.RevChangeNote.attRefText = ReleaseNote
-                        numericRevs.RevDate.attRefText = ReleaseDate
-                        IssueChar = GetNextCode(revisions.Item(ndx - 1).RevIssue.attRefText)
-                        numericRevs.RevIssue.attRefText = IssueChar
-                    ElseIf Not numericRevs Is Nothing And ndx = 0 Then 'numeric revision found and it IS the first one!
-                        revisions.Item(ndx).RevChangeNote.attRefText = ReleaseNote
-                        revisions.Item(ndx).RevDate.attRefText = ReleaseDate
-                        IssueChar = "A"
-                        revisions.Item(ndx).RevIssue.attRefText = IssueChar
-                    Else 'no numeric revision found, possibly none at all
-
-                        'then find the first empty revision.
-                        ndx = revisions.FindIndex(Function(rev As Revision) rev.RevIssue.attRefText = "") ' should find the first empty issue
-                        If ndx = 0 Then ' no revisions on the drawing frame!
+                        Dim ndx As Integer = revisions.FindIndex(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
+                        Dim numericRevs As Revision = revisions.Find(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
+                        If Not numericRevs Is Nothing And Not ndx = 0 Then 'our revisions list has a numeric value within it.
+                            numericRevs.RevChangeNote.attRefText = ReleaseNote
+                            numericRevs.RevDate.attRefText = ReleaseDate
+                            IssueChar = GetNextCode(revisions.Item(ndx - 1).RevIssue.attRefText)
+                            numericRevs.RevIssue.attRefText = IssueChar
+                        ElseIf Not numericRevs Is Nothing And ndx = 0 Then 'numeric revision found and it IS the first one!
                             revisions.Item(ndx).RevChangeNote.attRefText = ReleaseNote
                             revisions.Item(ndx).RevDate.attRefText = ReleaseDate
                             IssueChar = "A"
                             revisions.Item(ndx).RevIssue.attRefText = IssueChar
-                        ElseIf ndx = -1 Then 'all rows are used and none of them are numeric revisions.
-                            Dim cnt As Integer = revisions.Count
-                            For index = 0 To revisions.Count - 1
-                                If Not index = cnt - 1 Then
-                                    'swap with next row:
-                                    revisions.Item(index).RevChangeNote.attRefText = revisions.Item(index + 1).RevChangeNote.attRefText
-                                    revisions.Item(index).RevDate.attRefText = revisions.Item(index + 1).RevDate.attRefText
-                                    revisions.Item(index).RevIssue.attRefText = revisions.Item(index + 1).RevIssue.attRefText
-                                Else
-                                    revisions.Item(index).RevChangeNote.attRefText = ReleaseNote
-                                    revisions.Item(index).RevDate.attRefText = ReleaseDate
-                                    IssueChar = GetNextCode(revisions.Item(index - 1).RevIssue.attRefText)
-                                    revisions.Item(index).RevIssue.attRefText = IssueChar
+                        Else 'no numeric revision found, possibly none at all
+
+                            'then find the first empty revision.
+                            ndx = revisions.FindIndex(Function(rev As Revision) rev.RevIssue.attRefText = "") ' should find the first empty issue
+                            If ndx = 0 Then ' no revisions on the drawing frame!
+                                revisions.Item(ndx).RevChangeNote.attRefText = ReleaseNote
+                                revisions.Item(ndx).RevDate.attRefText = ReleaseDate
+                                IssueChar = "A"
+                                revisions.Item(ndx).RevIssue.attRefText = IssueChar
+                            ElseIf ndx = -1 Then 'all rows are used and none of them are numeric revisions.
+                                Dim cnt As Integer = revisions.Count
+                                For index = 0 To revisions.Count - 1
+                                    If Not index = cnt - 1 Then
+                                        'swap with next row:
+                                        revisions.Item(index).RevChangeNote.attRefText = revisions.Item(index + 1).RevChangeNote.attRefText
+                                        revisions.Item(index).RevDate.attRefText = revisions.Item(index + 1).RevDate.attRefText
+                                        revisions.Item(index).RevIssue.attRefText = revisions.Item(index + 1).RevIssue.attRefText
+                                    Else
+                                        revisions.Item(index).RevChangeNote.attRefText = ReleaseNote
+                                        revisions.Item(index).RevDate.attRefText = ReleaseDate
+                                        IssueChar = GetNextCode(revisions.Item(index - 1).RevIssue.attRefText)
+                                        revisions.Item(index).RevIssue.attRefText = IssueChar
+                                    End If
+                                Next
+                            Else 'found the highest empty cell.
+                                revisions.Item(ndx).RevChangeNote.attRefText = ReleaseNote
+                                revisions.Item(ndx).RevDate.attRefText = ReleaseDate
+                                IssueChar = GetNextCode(revisions.Item(ndx - 1).RevIssue.attRefText)
+                                revisions.Item(ndx).RevIssue.attRefText = IssueChar
+                            End If
+                        End If
+                        Dim tmplist As List(Of Revision) = revisions.FindAll(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
+                        If tmplist.Count > 0 Then
+                            For Each rev As Revision In tmplist
+                                Dim chngIndex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevChangeNote.attrefId = rev.RevChangeNote.attrefId)
+                                revisions.Item(chngIndex).RevChangeNote.attRefText = ""
+                                Dim dateindex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevDate.attrefId = rev.RevDate.attrefId)
+                                revisions.Item(dateindex).RevDate.attRefText = ""
+                                Dim issueIndex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevIssue.attrefId = rev.RevIssue.attrefId)
+                                revisions.Item(issueIndex).RevIssue.attRefText = ""
+                            Next
+                        End If
+                        For Each id As ObjectId In attcoll
+                            For Each rev As Revision In revisions
+                                Dim attref As AttributeReference
+                                If rev.RevChangeNote.attrefId = id Then
+                                    attref = id.GetObject(OpenMode.ForWrite)
+                                    attref.TextString = rev.RevChangeNote.attRefText
+                                ElseIf rev.RevDate.attrefId = id Then
+                                    attref = id.GetObject(OpenMode.ForWrite)
+                                    attref.TextString = rev.RevDate.attRefText
+                                ElseIf rev.RevIssue.attrefId = id Then
+                                    attref = id.GetObject(OpenMode.ForWrite)
+                                    attref.TextString = rev.RevIssue.attRefText
                                 End If
                             Next
-                        Else 'found the highest empty cell.
-                            revisions.Item(ndx).RevChangeNote.attRefText = ReleaseNote
-                            revisions.Item(ndx).RevDate.attRefText = ReleaseDate
-                            IssueChar = GetNextCode(revisions.Item(ndx - 1).RevIssue.attRefText)
-                            revisions.Item(ndx).RevIssue.attRefText = IssueChar
-                        End If
-                    End If
-                    Dim tmplist As List(Of Revision) = revisions.FindAll(Function(rev As Revision) IsNumeric(rev.RevIssue.attRefText))
-                    If tmplist.Count > 0 Then
-                        For Each rev As Revision In tmplist
-                            Dim chngIndex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevChangeNote.attrefId = rev.RevChangeNote.attrefId)
-                            revisions.Item(chngIndex).RevChangeNote.attRefText = ""
-                            Dim dateindex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevDate.attrefId = rev.RevDate.attrefId)
-                            revisions.Item(dateindex).RevDate.attRefText = ""
-                            Dim issueIndex As Integer = revisions.FindIndex(Function(rv As Revision) rv.RevIssue.attrefId = rev.RevIssue.attrefId)
-                            revisions.Item(issueIndex).RevIssue.attRefText = ""
                         Next
-                    End If
-                    For Each id As ObjectId In attcoll
-                        For Each rev As Revision In revisions
-                            Dim attref As AttributeReference
-                            If rev.RevChangeNote.attrefId = id Then
-                                attref = id.GetObject(OpenMode.ForWrite)
-                                attref.TextString = rev.RevChangeNote.attRefText
-                            ElseIf rev.RevDate.attrefId = id Then
-                                attref = id.GetObject(OpenMode.ForWrite)
-                                attref.TextString = rev.RevDate.attRefText
-                            ElseIf rev.RevIssue.attrefId = id Then
-                                attref = id.GetObject(OpenMode.ForWrite)
-                                attref.TextString = rev.RevIssue.attRefText
-                            End If
-                        Next
-                    Next
-                    'commit changes back to the database
-                    tmptrans.Commit()
-                End Using
-                'a bit of cleanup between runs!
-                revisions = Nothing
-                'naming format is: {Drawing-Number}_{sht-###}_{iss-##X}-00.dwg
-                '3DT-957840_sht-001_iss-00b-00.dwg
-                Dim pad As Char = "0"c
-                Dim newfilename As String = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
-                Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
-                Dim serializerd As New XmlSerializer(GetType(Drawings))
-                Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
-                Dim readerD As XmlReader = XmlReader.Create(fsd)
-                Dim drawingreport As Drawings
-                drawingreport = CType(serializerd.Deserialize(readerD), Drawings)
-                fsd.Close()
-                For Each dwg In drawingreport.Drawing
-                    If Path.GetFileNameWithoutExtension(dwg.oldname) = Path.GetFileNameWithoutExtension(originalfilename) Then
-                        Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(newfilename) & "_After.png"
-                        Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
-                        Dim pntcoll As Point3dCollection = New Point3dCollection
-                        pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                        pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
-                        pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
-                        pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                        DeleteMySelection(pntcoll, True)
-                        dwg.AfterImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
-                        dwg.name = dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
-                        dwg.path = drawingpath
-                        dwg.revisiondatestr = ReleaseDate
-                        dwg.revision = IssueChar
-                        Exit For
-                    End If
-                Next
-                fsd = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
-                Dim writer As New XmlTextWriter(fsd, Encoding.Unicode)
-                writer.Formatting = Formatting.Indented
-                serializerd.Serialize(writer, drawingreport)
-                writer.Close()
-            End Using
+                        'commit changes back to the database
+                        tmptrans.Commit()
+                    End Using
 
-            If Not IO.Directory.Exists(supercededPath) Then
-                IO.Directory.CreateDirectory(supercededPath)
-            End If
-            If Not File.Exists(supercededPath & strdrawingfilename) Then 'should never be true as we're copying the original contents of \CURRENT to \SUPERCEDED before we process anything!
-                File.Move(originalfilename, supercededPath & strdrawingfilename)
-            Else 'then delete the one in the current folder:
-                File.Delete(drawingpath & strdrawingfilename)
-            End If
+                    GroupAndMoveTextNotes(ext, selEntID)
+                    'a bit of cleanup between runs!
+                    revisions = Nothing
+                    'naming format is: {Drawing-Number}_{sht-###}_{iss-##X}-00.dwg
+                    '3DT-957840_sht-001_iss-00b-00.dwg
+                    Dim pad As Char = "0"c
+                    Dim newfilename As String = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                    Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
+                    Dim serializerd As New XmlSerializer(GetType(Drawings))
+                    Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
+                    Dim readerD As XmlReader = XmlReader.Create(fsd)
+                    Dim drawingreport As Drawings
+                    drawingreport = CType(serializerd.Deserialize(readerD), Drawings)
+                    fsd.Close()
+                    For Each dwg In drawingreport.Drawing
+                        If Path.GetFileNameWithoutExtension(dwg.oldname) = Path.GetFileNameWithoutExtension(originalfilename) Then
+                            Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(newfilename) & "_After.png"
+                            Dim pntcoll As Point3dCollection = New Point3dCollection
+                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                            pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
+                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
+                            pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
+                            DeleteMySelection(pntcoll, True)
+                            dwg.AfterImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
+                            dwg.name = dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                            dwg.path = drawingpath
+                            dwg.revisiondatestr = ReleaseDate
+                            dwg.revision = IssueChar
+                            Exit For
+                        End If
+                    Next
+                    fsd = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
+                    Dim writer As New XmlTextWriter(fsd, Encoding.Unicode)
+                    writer.Formatting = Formatting.Indented
+                    serializerd.Serialize(writer, drawingreport)
+                    writer.Close()
+                End Using
+
+                If Not IO.Directory.Exists(supercededPath) Then
+                    IO.Directory.CreateDirectory(supercededPath)
+                End If
+                If Not File.Exists(supercededPath & strdrawingfilename) Then 'should never be true as we're copying the original contents of \CURRENT to \SUPERCEDED before we process anything!
+                    File.Move(originalfilename, supercededPath & strdrawingfilename)
+                Else 'then delete the one in the current folder:
+                    File.Delete(drawingpath & strdrawingfilename)
+                End If
+            Catch ex As Exception
+                Active.WriteMessage("The error was: " & ex.Message)
+                revisions = Nothing
+            End Try
         End Sub
 
         ''' <summary>
@@ -1774,13 +1749,82 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
+        ''' Gets the relevant AttributeReference we need based on a regex passed to it.
+        ''' </summary>
+        ''' <param name="ChangeNoteSearchTerm"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        'Private Function GetAttributeReferenceFromQMA(SearchTerm As Regex, gGroup As Object) As AttRef
+        '    Return (From item In gGroup.groupName
+        '              Let matches = SearchTerm.Matches(item.b.Tag)
+        '              Where (matches.Count > 0)
+        '              Select item.b).FirstOrDefault()
+        'End Function
+
+        ''' <summary>
+        ''' Groups a selection of text/mtext entities together and moves them away from our new border.
+        ''' </summary>
+        ''' <param name="ext">the area to search.</param>
+        ''' <param name="blockId">the ObjectId of our new drawing frame.</param>
+        ''' <remarks></remarks>
+        Private Sub GroupAndMoveTextNotes(ext As Extents3d, blockId As ObjectId)
+            'steps to implement are:
+            '1) get a selectionset of text
+            '2) sort the selectionset by Y Values
+            '3) determine which text objects are stacked above eachother (within a margin of error)
+            'actually, points 1 thru 3 above are taken care of by the CollectTextFromArea Method.
+            '4) create a new mtext object containing these stacked text entries.
+            '5) Move them so they don't intersectwith our blockreference.
+
+            'determine the centerpoint of our view.
+            Dim extents As Point3d = New Point3d(
+                                    ext.MinPoint.X + ((ext.MaxPoint.X - ext.MinPoint.X) / 2.0), _
+                                    ext.MinPoint.Y + ((ext.MaxPoint.Y - ext.MinPoint.Y) / 2.0), _
+                                    0)
+            Dim pnts As New Point3dCollection
+            Dim notesinsertpnt As Point3d = Point3d.Origin
+            Dim mtxt As MText = New MText
+            pnts.Add(ext.MinPoint)
+            pnts.Add(extents)
+            Dim str As String = CollectTextFromArea(tmppntcoll:=pnts, _
+                                                    locName:="Notes", _
+                                                    notesinsertpnt:=notesinsertpnt, _
+                                                     mtxt:=mtxt)
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+            Try
+                '' Open the Block table for read
+                Dim acBlkTbl As BlockTable
+                acBlkTbl = tr.GetObject(Active.Database.BlockTableId, _
+                                             OpenMode.ForRead)
+
+                '' Open the Block table record Model space for write
+                Dim acBlkTblRec As BlockTableRecord
+                acBlkTblRec = tr.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), _
+                                                OpenMode.ForWrite)
+
+                '' Create a multiline text object
+                Using acMText As MText = New MText()
+                    acMText.Location = mtxt.Location
+                    acMText.TextHeight = mtxt.TextHeight
+                    acMText.Contents = str
+
+                    acBlkTblRec.AppendEntity(acMText)
+                    tr.AddNewlyCreatedDBObject(acMText, True)
+                End Using
+            Catch ex As Exception
+                Active.WriteMessage("The error was: " & ex.Message)
+            Finally
+                tr.Commit()
+                tr.Dispose()
+            End Try
+        End Sub
+
+        ''' <summary>
         ''' Deletes a selection based on the Point3dCollection created below.
         ''' </summary>
         ''' <remarks></remarks>
         <CommandMethod("DELSEL")> _
         Public Sub SelectLines()
-            Dim doc As Document = Application.DocumentManager.MdiActiveDocument
-            Dim ed As Editor = Active.document.Editor
             'need a set of points to capture existing lines
             Dim p1 As New Point3d(0.0, 0.0, 0.0) 'bottom left
             Dim p2 As New Point3d(0.0, 1000.0, 0.0) 'top left
@@ -1806,28 +1850,16 @@ Namespace BlockReplace
             Dim numOfEntsFound As Integer = 0
 
             Dim pmtSelRes As PromptSelectionResult = Nothing
-            Dim acTypValAr(3) As TypedValue
-            acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "<or"), 0)
-            acTypValAr.SetValue(New TypedValue(DxfCode.Start, "Line"), 1)
-            acTypValAr.SetValue(New TypedValue(DxfCode.Start, "INSERT"), 2)
-            acTypValAr.SetValue(New TypedValue(DxfCode.Operator, "or>"), 3)
+            Dim acTypValAr() As TypedValue = New TypedValue() {
+                    New TypedValue(DxfCode.Start, "LINE,INSERT,TEXT,MTEXT")}
             Dim selFilter As New SelectionFilter(acTypValAr)
-            'Dim typedVal As TypedValue() = New TypedValue(0) {}
-            'typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
-            'Dim selFilter As New SelectionFilter(typedVal)
             pmtSelRes = Active.Editor.SelectCrossingPolygon(pntCol, selFilter)
-            ' May not find entities in the UCS area
-            ' between p1 and p3 if not PLAN view
-            ' pmtSelRes =
-            '    Active.editor.SelectCrossingWindow(p1, p3, selFilter);
-            Using myTrans As Transaction = Active.document.Database.TransactionManager.StartTransaction
-                Dim bt As BlockTable = DirectCast(myTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
-                Dim btr As BlockTableRecord = DirectCast(myTrans.GetObject(bt(BlockTableRecord.ModelSpace), OpenMode.ForRead), BlockTableRecord)
-
+            Using tr As Transaction = Active.Document.Database.TransactionManager.StartTransaction
+                Dim bt As BlockTable = DirectCast(tr.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         numOfEntsFound += 1
-                        Dim obj As DBObject = myTrans.GetObject(objId, OpenMode.ForRead)
+                        Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
                         Dim ln As Line = TryCast(obj, Line)
 
                         If ln IsNot Nothing Then
@@ -1845,7 +1877,7 @@ Namespace BlockReplace
                             End If
                         End If
                     Next
-                    myTrans.Commit()
+                    tr.Commit()
                     Active.WriteMessage(vbCrLf & "Entities erased " & numOfEntsFound.ToString() & vbCrLf)
                 Else
                     Active.WriteMessage(vbCrLf & "Did not find entities" & vbCrLf)
@@ -1870,7 +1902,6 @@ Namespace BlockReplace
 
             StrikeTextArea(ppr.Value)
         End Sub
-
 
         ''' <summary>
         ''' The automated version that would work correctly if the EverythingisAWEsome drawing frames had fully enclosed text boxes.
@@ -2012,8 +2043,11 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, _
                                             locName As String, _
+                                            ByRef NotesInsertPnt As Point3d, _
+                                            ByRef mtxt As MText, _
                                             Optional reverseSort As Boolean = False, _
-                                            Optional ByRef lineCount As Integer = 0) As String
+                                            Optional ByRef lineCount As Integer = 0 _
+                                            ) As String
             Dim tmpstr As String = String.Empty
             'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
@@ -2040,6 +2074,7 @@ Namespace BlockReplace
                             attdef.[Erase]()
                             Dim tmpFT As FloatingText = New FloatingText
                             tmpFT.StringLocation = attdef.Position
+                            tmpFT.TextHeight = attdef.Height
                             If attdef.TextString = "" Then
                                 tmpFT.StringValue = attdef.Tag
                             Else
@@ -2056,24 +2091,26 @@ Namespace BlockReplace
                                 Dim tmpFT As FloatingText = New FloatingText
                                 tmpFT.StringLocation = txt.Position
                                 tmpFT.StringValue = txt.TextString
+                                tmpFT.TextHeight = txt.Height
                                 tmplist.Add(tmpFT)
                                 tmpFT = Nothing
                             Else 'failed converting to DBText
-                                Dim mtxt As MText = TryCast(obj, MText)
-                                If mtxt IsNot Nothing Then
+                                Dim mtext As MText = TryCast(obj, MText)
+                                If mtext IsNot Nothing Then
                                     numOfEntsFound += 1
-                                    mtxt.UpgradeOpen()
-                                    mtxt.[Erase]()
+                                    mtext.UpgradeOpen()
+                                    mtext.[Erase]()
                                     Dim tmpFT As FloatingText = New FloatingText
-                                    tmpFT.StringLocation = mtxt.Location
-                                    tmpFT.StringValue = mtxt.Contents
+                                    tmpFT.StringLocation = mtext.Location
+                                    tmpFT.StringValue = mtext.Contents
+                                    tmpFT.TextHeight = mtext.TextHeight
                                     tmplist.Add(tmpFT)
                                     tmpFT = Nothing
                                 End If
                             End If
                         End If
                     Next
-                    Dim sorted
+                    Dim sorted As IEnumerable(Of FloatingText)
                     If reverseSort Then
                         sorted = (From pt As FloatingText In tmplist
                                   Order By pt.StringLocation.Y, pt.StringLocation.X Ascending
@@ -2099,39 +2136,13 @@ Namespace BlockReplace
                                 tmpstr = tmpstr & " " & pt.StringValue
                                 tmpstr = checkLengthAndSplit(tmpstr)
                                 If MatchesSurfaceTextureFormat(tmpstr) Then
-                                    Dim splitstr As New List(Of String)(tmpstr.Split(" "))
-                                    Dim machinestr As String = String.Empty
-                                    'this works but only when "MACHINE" is part of the string.
-                                    For j As Integer = 0 To splitstr.FindIndex(Function(str As String) str = "") - 1
-                                        Dim number As Integer
-                                        If Not Double.TryParse(splitstr.Item(j), number) Then
-                                            If machinestr = "" Then
-                                                machinestr = splitstr.Item(j)
-                                            Else
-                                                machinestr = machinestr & " " & splitstr.Item(j)
-                                            End If
-                                        End If
-                                    Next
-
-                                    'Dim machinestr = (From s In splitstr
-                                    '                  Where s = "MACHINE"
-                                    '                  Select s).Single()
-                                    Dim spaceint As Integer = splitstr.FindLastIndex(Function(rev As String) rev = "")
-                                    Dim rebuiltstr As String = String.Empty
-                                    For i = spaceint + 1 To splitstr.Count - 1
-                                        If splitstr.Item(i).StartsWith(" ") Then
-                                            rebuiltstr = rebuiltstr & splitstr.Item(i)
-                                        Else
-                                            If rebuiltstr = "" Then
-                                                rebuiltstr = splitstr.Item(i)
-                                            Else
-                                                rebuiltstr = rebuiltstr & " " & splitstr.Item(i)
-                                            End If
-                                        End If
-                                    Next
-                                    tmpstr = machinestr & " " & dblstr & " " & rebuiltstr
-                                    tmpstr = tmpstr.Replace("  ", " ")
+                                    tmpstr = returnReformattedstr(tmpstr, dblstr)
                                 End If
+                            ElseIf locName.ToUpper() = "NOTES" Then
+                                mtxt.Location = pt.StringLocation
+                                mtxt.TextHeight = pt.TextHeight
+                                tmpstr = tmpstr & " " & pt.StringValue
+                                tmpstr = checkLengthAndSplit(tmpstr, True)
                             Else
                                 tmpstr = tmpstr & " " & pt.StringValue
                                 tmpstr = checkLengthAndSplit(tmpstr)
@@ -2145,12 +2156,19 @@ Namespace BlockReplace
                                 If Double.TryParse(tmpstr, number) Then 'tmpstr is probably something like 0.8 or similar.
                                     dblstr = tmpstr & "µm"
                                 End If
+                            ElseIf locName.ToUpper() = "NOTES" Then
+                                If NotesInsertPnt = Point3d.Origin Then
+                                    NotesInsertPnt = pt.StringLocation
+                                End If
+                                mtxt.Location = pt.StringLocation
+                                mtxt.TextHeight = pt.TextHeight
+                                tmpstr = checkLengthAndSplit(pt.StringValue, True)
                             Else
                                 tmpstr = pt.StringValue
                             End If
                         End If
                     Next
-                    Active.WriteMessage("MText & Text Entities found " & numOfEntsFound.ToString())
+                    Active.WriteMessage(vbLf & "MText & Text Entities found " & numOfEntsFound.ToString())
                 Else
                     Active.WriteMessage(vbLf & "Did not find entities")
                 End If
@@ -2160,6 +2178,57 @@ Namespace BlockReplace
                 tr.Commit()
             End Using
             Return tmpstr
+        End Function
+
+        ''' <summary>
+        ''' This overload allows us to insert dummy objects into our main CollectTextFromArea Method.
+        ''' </summary>
+        ''' <param name="tmppntcoll"></param>
+        ''' <param name="locName"></param>
+        ''' <param name="reverseSort"></param>
+        ''' <param name="lineCount"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function CollectTextFromArea(tmppntcoll As Point3dCollection, locName As String, reverseSort As Boolean, ByRef lineCount As Integer) As String
+            Dim pnt As Point3d = Point3d.Origin
+            Dim mtxt As MText = New MText
+            Return CollectTextFromArea(tmppntcoll:=tmppntcoll, locName:=locName, NotesInsertPnt:=pnt, lineCount:=lineCount, reverseSort:=reverseSort, mtxt:=mtxt)
+        End Function
+
+        ''' <summary>
+        ''' returns our tmpstr reformatted correctly
+        ''' </summary>
+        ''' <param name="tmpstr"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function returnReformattedstr(tmpstr As String, dblstr As String) As String
+            Dim splitstr As New List(Of String)(tmpstr.Split(" "))
+            Dim machinestr As String = String.Empty
+            For j As Integer = 0 To splitstr.FindIndex(Function(str As String) str = "") - 1
+                Dim number As Integer
+                If Not Double.TryParse(splitstr.Item(j), number) Then
+                    If machinestr = "" Then
+                        machinestr = splitstr.Item(j)
+                    Else
+                        machinestr = machinestr & " " & splitstr.Item(j)
+                    End If
+                End If
+            Next
+            Dim spaceint As Integer = splitstr.FindLastIndex(Function(rev As String) rev = "")
+            Dim rebuiltstr As String = String.Empty
+            For i = spaceint + 1 To splitstr.Count - 1
+                If splitstr.Item(i).StartsWith(" ") Then
+                    rebuiltstr = rebuiltstr & splitstr.Item(i)
+                Else
+                    If rebuiltstr = "" Then
+                        rebuiltstr = splitstr.Item(i)
+                    Else
+                        rebuiltstr = rebuiltstr & " " & splitstr.Item(i)
+                    End If
+                End If
+            Next
+            tmpstr = machinestr & " " & dblstr & " " & rebuiltstr
+            Return tmpstr.Replace("  ", " ")
         End Function
 
         ''' <summary>
@@ -2260,9 +2329,8 @@ Namespace BlockReplace
             End Using
             Return tmpstrlist
         End Function
+
 #Region "Regex Methods"
-
-
         ''' <summary>
         ''' Checks for whether the revision is of the format 1P1
         ''' </summary>
@@ -2342,7 +2410,7 @@ Namespace BlockReplace
                 Return False
             End If
         End Function
-#End Region
+#End Region 'regex methods
         ''' <summary>
         ''' Corrects the drawing number dependant on what blockname the attributereference is from.
         ''' </summary>
@@ -2395,24 +2463,18 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function DetermineOverlap(objectId As ObjectId, blkrefId As ObjectId) As Point3d
-            Dim doc = Application.DocumentManager.MdiActiveDocument
-            Dim db = doc.Database
-            Dim ed = doc.Editor
+            'Dim doc = Application.DocumentManager.MdiActiveDocument
+            'Dim db = doc.Database
+            'Dim ed = doc.Editor
 
-            Using tr = db.TransactionManager.StartTransaction()
+            Using tr = Active.Database.TransactionManager.StartTransaction()
                 Dim ent As Entity = DirectCast(tr.GetObject(objectId, OpenMode.ForWrite), Entity)
-                Dim blkrefent As Entity = DirectCast(tr.GetObject(blkrefId, OpenMode.ForRead), Entity)
                 Dim ext As Extents3d = ent.GeometricExtents
                 Dim pnt As Point3d
                 Dim pmtSelRes As PromptSelectionResult = Nothing
                 Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
                 Dim selFilter As New SelectionFilter(acTypValAr)
-                Dim pntcoll As Point3dCollection = New Point3dCollection
-                pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                pntcoll.Add(New Point3d(ext.MinPoint.X, ext.MaxPoint.Y, ext.MinPoint.Z))
-                pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
-                pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
-                pmtSelRes = ed.SelectCrossingPolygon(pntcoll, selFilter)
+                pmtSelRes = Active.Editor.SelectCrossingWindow(ext.MinPoint, ext.MaxPoint, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim points As New Point3dCollection
@@ -2695,7 +2757,7 @@ Namespace BlockReplace
 
                 ' Then the handle to the current drawing window
 
-                Dim hWnd As IntPtr = Active.document.Window.Handle
+                Dim hWnd As IntPtr = Active.Document.Window.Handle
 
                 ' Now calculate the selected corners in screen coordinates
 
@@ -2713,7 +2775,7 @@ Namespace BlockReplace
 
             Dim wcsPt As Point3d = (If(useUcs, pt.TransformBy(ed.CurrentUserCoordinateSystem), pt))
 
-            Dim winPt As System.Windows.Point = Active.editor.PointToScreen(wcsPt, vpNum)
+            Dim winPt As System.Windows.Point = Active.Editor.PointToScreen(wcsPt, vpNum)
             Dim s As System.Windows.Vector = Autodesk.AutoCAD.Windows.Window.GetDeviceIndependentScale(IntPtr.Zero)
             Dim res As New Point(CInt(winPt.X * s.X), CInt(winPt.Y * s.Y))
             ClientToScreen(hWnd, res)
@@ -2735,18 +2797,11 @@ Namespace BlockReplace
             Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
             Using tr
                 Dim ocs As New AcColorSettings()
-                Dim gotSettings As Boolean = False
-
-                Dim vtrId As ObjectId = ObjectId.Null, sbId As ObjectId = ObjectId.Null
-
-                'Dim in3DView As Boolean = is3D(gsm)
-                Dim regened As Boolean = False
 
                 If ad.WhiteBackground Then
                     ' Get the current system colours
 
                     acedGetCurrentColors(ocs)
-                    gotSettings = True
 
                     ' Take a copy - we'll leave the original to reset
                     ' the values later on, once we've finished
@@ -2758,19 +2813,11 @@ Namespace BlockReplace
 
                     cs.dwGfxModelBkColor = 16777215
                     cs.dwGfxLayoutBkColor = 16777215
-                    'cs.dwParallelBkColor = 16777215;
-
                     ' Set the modified colours
-
                     acedSetCurrentColors(cs)
-
                     Active.WriteMessage(vbLf)
-                    Active.editor.Regen()
-                    regened = True
-                    'End If
-                    ' Update the screen to reflect the changes
-
-                    Active.editor.UpdateScreen()
+                    Active.Editor.Regen()
+                    Active.Editor.UpdateScreen()
                 End If
 
                 ' Set the bitmap object to the size of the window
@@ -2803,10 +2850,10 @@ Namespace BlockReplace
                     '    If gotSettings Then
                     acedSetCurrentColors(ocs)
                     Active.WriteMessage(vbLf)
-                    Active.editor.Regen()
+                    Active.Editor.Regen()
                     'End If
                     'End If
-                    Active.editor.UpdateScreen()
+                    Active.Editor.UpdateScreen()
                 End If
                 tr.Commit()
             End Using
@@ -2821,9 +2868,10 @@ Namespace BlockReplace
         ''' <param name="tmpstr"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function checkLengthAndSplit(tmpstr As String) As String
-            'need to determine the max length for this field
-            If tmpstr.Length > 30 Then
+        Private Function checkLengthAndSplit(tmpstr As String, Optional isNotes As Boolean = False) As String
+            Dim lengthint As Integer = 0
+            IIf(isNotes, lengthint = 100, lengthint = 30)
+            If tmpstr.Length > lengthint Then
                 Dim part1 As String = tmpstr.Substring(0, CInt(tmpstr.Length / 2))
                 Dim part2 As String = tmpstr.Substring(CInt(tmpstr.Length / 2))
                 Dim p1 As Integer = part1.LastIndexOf(" ")
@@ -2843,7 +2891,7 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
-        ''' 
+        ''' Using Transaction helper function
         ''' </summary>
         ''' <param name="action"></param>
         ''' <remarks></remarks>
@@ -2896,6 +2944,12 @@ Namespace BlockReplace
             End Using
         End Sub
 
+        ''' <summary>
+        ''' Function that allows us to filter for the blockreference.ObjectId we want
+        ''' </summary>
+        ''' <param name="blkref"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Private Function ProcessBlockReferences(blkref As BlockReference) As Action(Of BlockReference)
             Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
             Try
@@ -2936,10 +2990,9 @@ Namespace BlockReplace
                 tr.Commit()
                 tr.Dispose()
             End Try
-            
+
         End Function
 
-        
 
     End Class
 
@@ -3108,6 +3161,22 @@ Namespace BlockReplace
                 StrLoc = value
             End Set
         End Property
+
+        ''' <summary>
+        ''' Gets the height of the text object
+        ''' </summary>
+        ''' <remarks></remarks>
+        Private txtHeight As Double
+        Public Property TextHeight() As Double
+            Get
+                Return txtHeight
+            End Get
+            Set(ByVal value As Double)
+                txtHeight = value
+            End Set
+        End Property
+
+
     End Class
 
     ''' <summary>
@@ -3124,10 +3193,6 @@ Namespace BlockReplace
         Public Shared Sub ZoomToWindow( _
                   ByVal minPoint As Point3d, _
                   ByVal maxPoint As Point3d)
-            Dim ed As Editor = Application.DocumentManager. _
-              MdiActiveDocument.Editor
-            Dim db As Database = Application.DocumentManager. _
-              MdiActiveDocument.Database
             'get the current view
             Dim view As ViewTableRecord = Active.editor.GetCurrentView()
             'start transaction
