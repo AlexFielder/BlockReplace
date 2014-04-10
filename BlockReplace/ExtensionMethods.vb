@@ -55,6 +55,80 @@ Module ExtensionMethods
         Next
         Return namedCaptureDictionary
     End Function
+
+    ''' <summary>
+    ''' Returns the maximal element of the given sequence, based on
+    ''' the given projection.
+    ''' copied from: https://code.google.com/p/morelinq/source/browse/MoreLinq/MaxBy.cs
+    ''' </summary>
+    ''' <remarks>
+    ''' If more than one element has the maximal projected value, the first
+    ''' one encountered will be returned. This overload uses the default comparer
+    ''' for the projected type. This operator uses immediate execution, but
+    ''' only buffers a single result (the current maximal element).
+    ''' </remarks>
+    ''' <typeparam name="TSource">Type of the source sequence</typeparam>
+    ''' <typeparam name="TKey">Type of the projected element</typeparam>
+    ''' <param name="source">Source sequence</param>
+    ''' <param name="selector">Selector to use to pick the results to compare</param>
+    ''' <returns>The maximal element, according to the projection.</returns>
+    ''' <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="selector"/> is null</exception>
+    ''' <exception cref="InvalidOperationException"><paramref name="source"/> is empty</exception>
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function MaxBy(Of TSource, TKey)(source As IEnumerable(Of TSource), selector As Func(Of TSource, TKey)) As TSource
+        Return source.MaxBy(selector, Comparer(Of TKey).[Default])
+    End Function
+
+    ''' <summary>
+    ''' Returns the maximal element of the given sequence, based on
+    ''' the given projection and the specified comparer for projected values. 
+    ''' copied from: https://code.google.com/p/morelinq/source/browse/MoreLinq/MaxBy.cs
+    ''' </summary>
+    ''' <remarks>
+    ''' If more than one element has the maximal projected value, the first
+    ''' one encountered will be returned. This overload uses the default comparer
+    ''' for the projected type. This operator uses immediate execution, but
+    ''' only buffers a single result (the current maximal element).
+    ''' </remarks>
+    ''' <typeparam name="TSource">Type of the source sequence</typeparam>
+    ''' <typeparam name="TKey">Type of the projected element</typeparam>
+    ''' <param name="source">Source sequence</param>
+    ''' <param name="selector">Selector to use to pick the results to compare</param>
+    ''' <param name="comparer">Comparer to use to compare projected values</param>
+    ''' <returns>The maximal element, according to the projection.</returns>
+    ''' <exception cref="ArgumentNullException"><paramref name="source"/>, <paramref name="selector"/> 
+    ''' or <paramref name="comparer"/> is null</exception>
+    ''' <exception cref="InvalidOperationException"><paramref name="source"/> is empty</exception>
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function MaxBy(Of TSource, TKey)(source As IEnumerable(Of TSource), selector As Func(Of TSource, TKey), comparer As IComparer(Of TKey)) As TSource
+        If source Is Nothing Then
+            Throw New ArgumentNullException("source")
+        End If
+        If selector Is Nothing Then
+            Throw New ArgumentNullException("selector")
+        End If
+        If comparer Is Nothing Then
+            Throw New ArgumentNullException("comparer")
+        End If
+        Using sourceIterator = source.GetEnumerator()
+            If Not sourceIterator.MoveNext() Then
+                Throw New InvalidOperationException("Sequence contains no elements")
+            End If
+            Dim max = sourceIterator.Current
+            Dim maxKey = selector(max)
+            While sourceIterator.MoveNext()
+                Dim candidate = sourceIterator.Current
+                Dim candidateProjected = selector(candidate)
+                If comparer.Compare(candidateProjected, maxKey) > 0 Then
+                    max = candidate
+                    maxKey = candidateProjected
+                End If
+            End While
+            Return max
+        End Using
+    End Function
 #Region "Unused Code"
 
 

@@ -647,23 +647,38 @@ Namespace BlockReplace
                 If ent1 = Nothing Then Return
 
                 peo = New PromptEntityOptions(vbCrLf & "Select another entity >>")
-                peo.SetRejectMessage("Any Entity allowed!")
-                peo.AddAllowedClass(GetType(Entity), False)
+                peo.SetRejectMessage("Only Mtext allowed!")
+                peo.AddAllowedClass(GetType(MText), False)
                 res = Active.Editor.GetEntity(peo)
                 If Not res.Status = PromptStatus.OK Then Return
                 Dim ent2 As Entity = DirectCast(tr.GetObject(res.ObjectId, OpenMode.ForRead), Entity)
-                If ent2 = Nothing Then Return
-                Dim Clash As Boolean = True
-                Do Until Clash = False
-                    Dim intersectionPoints As New Point3dCollection
-                    If GetIntersectionPointsOf(ent1, ent2, intersectionPoints, Clash) = RTNORM Then
-                        Dim length As Integer = intersectionPoints.Count
-                        For i As Integer = 0 To length - 1
-                            'there will most-likely be two points for each entity as the boundingbox will overlap twice.
-                            moveIt(intersectionPoints.Item(i), ent2, ent1, intersectionPoints, Clash)
-                        Next
+                Dim obIdList As New List(Of ObjectId)
+                Dim entitySet As New DBObjectCollection
+                ent1.Explode(entitySet)
+                'get only the objectid of entities we intersect with.
+                For i = 0 To entitySet.Count - 1
+                    Dim tmpEntity As Entity = DirectCast(entitySet.Item(i), Entity)
+                    Dim points As New Point3dCollection
+                    If Not (tmpEntity.GetRXClass().DxfName = "ATTDEF") Then 'add any other entities that might fail to this line.
+                        ent2.IntersectWith(tmpEntity, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                        If points.Count > 0 Then ' we have an overlap?
+                            obIdList.Add(tmpEntity.ObjectId)
+                        End If
                     End If
-                Loop
+                Next i
+                DetermineOverlap(ent2.ObjectId, ent1.ObjectId)
+                'If ent2 = Nothing Then Return
+                'Dim Clash As Boolean = True
+                'Do Until Clash = False
+                '    Dim intersectionPoints As New Point3dCollection
+                '    If GetIntersectionPointsOf(ent1, ent2, intersectionPoints, Clash) = RTNORM Then
+                '        Dim length As Integer = intersectionPoints.Count
+                '        For i As Integer = 0 To length - 1
+                '            'there will most-likely be two points for each entity as the boundingbox will overlap twice.
+                '            moveIt(intersectionPoints.Item(i), ent2, ent1, intersectionPoints, Clash)
+                '        Next
+                '    End If
+                'Loop
                 tr.Commit()
             End Using
         End Sub
@@ -736,7 +751,8 @@ Namespace BlockReplace
         Private Function GetBestDirectionForMove(txtloc As Point3d, pnt As Point3d) As Point3d
             Dim pt1 As Point2d = New Point2d(txtloc.X, txtloc.Y)
             Dim pt2 As Point2d = New Point2d(pnt.X, pnt.Y)
-            Select Case pt1.GetVectorTo(pt2).Angle
+            Dim ang As Double = pt1.GetVectorTo(pt2).Angle
+            Select Case ang
                 Case 0 To 90
                     txtloc = New Point3d(txtloc.X - 5, txtloc.Y + 0, txtloc.Z)
                 Case 91 To 180
@@ -1696,7 +1712,7 @@ Namespace BlockReplace
                     File.Delete(drawingpath & strdrawingfilename)
                 End If
             Catch ex As Exception
-                Active.WriteMessage("The error was: " & ex.Message)
+                Active.WriteMessage(vbLf & "The error was: " & ex.Message)
                 revisions = Nothing
             End Try
         End Sub
@@ -1787,8 +1803,8 @@ Namespace BlockReplace
             pnts.Add(ext.MinPoint)
             pnts.Add(extents)
             Dim str As String = CollectTextFromArea(tmppntcoll:=pnts, _
-                                                    locName:="Notes", _
-                                                    notesinsertpnt:=notesinsertpnt, _
+                                                    locName:="NOTES", _
+                                                    NotesInsertPnt:=notesinsertpnt, _
                                                      mtxt:=mtxt)
             Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
             Try
@@ -1797,14 +1813,14 @@ Namespace BlockReplace
                 acBlkTbl = tr.GetObject(Active.Database.BlockTableId, _
                                              OpenMode.ForRead)
 
-                '' Open the Block table record Model space for write
+                '' Open the Block table record current space for write
                 Dim acBlkTblRec As BlockTableRecord
-                acBlkTblRec = tr.GetObject(acBlkTbl(BlockTableRecord.ModelSpace), _
+                acBlkTblRec = tr.GetObject(Active.Database.CurrentSpaceId, _
                                                 OpenMode.ForWrite)
 
                 '' Create a multiline text object
                 Using acMText As MText = New MText()
-                    acMText.Location = mtxt.Location
+                    acMText.Location = notesinsertpnt
                     acMText.TextHeight = mtxt.TextHeight
                     acMText.Contents = str
 
@@ -1812,7 +1828,7 @@ Namespace BlockReplace
                     tr.AddNewlyCreatedDBObject(acMText, True)
                 End Using
             Catch ex As Exception
-                Active.WriteMessage("The error was: " & ex.Message)
+                Active.WriteMessage(vbLf & "The error was: " & ex.Message)
             Finally
                 tr.Commit()
                 tr.Dispose()
@@ -1851,7 +1867,7 @@ Namespace BlockReplace
 
             Dim pmtSelRes As PromptSelectionResult = Nothing
             Dim acTypValAr() As TypedValue = New TypedValue() {
-                    New TypedValue(DxfCode.Start, "LINE,INSERT,TEXT,MTEXT")}
+                    New TypedValue(DxfCode.Start, "LINE,INSERT")} ',TEXT,MTEXT")} 'commented out text,mtext for now.
             Dim selFilter As New SelectionFilter(acTypValAr)
             pmtSelRes = Active.Editor.SelectCrossingPolygon(pntCol, selFilter)
             Using tr As Transaction = Active.Document.Database.TransactionManager.StartTransaction
@@ -2063,7 +2079,12 @@ Namespace BlockReplace
                 'Next
 
                 Dim selFilter As New SelectionFilter(acTypValAr)
-                pmtSelRes = Active.Editor.SelectCrossingPolygon(tmppntcoll, selFilter)
+                If locName = "NOTES" Then
+                    pmtSelRes = Active.Editor.SelectCrossingWindow(tmppntcoll.Item(0), tmppntcoll.Item(1), selFilter)
+                Else
+                    pmtSelRes = Active.Editor.SelectCrossingPolygon(tmppntcoll, selFilter)
+                End If
+
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
@@ -2120,6 +2141,7 @@ Namespace BlockReplace
                                   Order By pt.StringLocation.Y Descending
                                   Select pt)
                     End If
+                    
                     Dim dblstr As String = String.Empty
                     For Each pt As FloatingText In sorted
                         If tmpstr.Length > 0 Then
@@ -2134,15 +2156,16 @@ Namespace BlockReplace
                                 tmpstr = checkLengthAndSplit(tmpstr)
                             ElseIf locName.ToUpper() = "SURFACE_TEXTURE" Or locName.ToUpper() = "PROTECTIVE_FINISH" Then
                                 tmpstr = tmpstr & " " & pt.StringValue
-                                tmpstr = checkLengthAndSplit(tmpstr)
                                 If MatchesSurfaceTextureFormat(tmpstr) Then
                                     tmpstr = returnReformattedstr(tmpstr, dblstr)
                                 End If
+                                'needed to move this here because string.split() doesn't like it if there are VBcrlf characters in the string.
+                                tmpstr = checkLengthAndSplit(tmpstr)
                             ElseIf locName.ToUpper() = "NOTES" Then
                                 mtxt.Location = pt.StringLocation
                                 mtxt.TextHeight = pt.TextHeight
-                                tmpstr = tmpstr & " " & pt.StringValue
-                                tmpstr = checkLengthAndSplit(tmpstr, True)
+                                tmpstr = tmpstr & vbCrLf & pt.StringValue
+                                'tmpstr = checkLengthAndSplit(tmpstr, True)
                             Else
                                 tmpstr = tmpstr & " " & pt.StringValue
                                 tmpstr = checkLengthAndSplit(tmpstr)
@@ -2159,10 +2182,12 @@ Namespace BlockReplace
                             ElseIf locName.ToUpper() = "NOTES" Then
                                 If NotesInsertPnt = Point3d.Origin Then
                                     NotesInsertPnt = pt.StringLocation
+                                    'NotesInsertPnt = tmplist.MaxBy(Function(ft As FloatingText) ft.StringLocation.Y >= ft.StringLocation.Y).StringLocation
                                 End If
                                 mtxt.Location = pt.StringLocation
                                 mtxt.TextHeight = pt.TextHeight
-                                tmpstr = checkLengthAndSplit(pt.StringValue, True)
+                                tmpstr = pt.StringValue
+                                'tmpstr = checkLengthAndSplit(pt.StringValue, True)
                             Else
                                 tmpstr = pt.StringValue
                             End If
@@ -2467,37 +2492,57 @@ Namespace BlockReplace
             'Dim db = doc.Database
             'Dim ed = doc.Editor
 
-            Using tr = Active.Database.TransactionManager.StartTransaction()
-                Dim ent As Entity = DirectCast(tr.GetObject(objectId, OpenMode.ForWrite), Entity)
-                Dim ext As Extents3d = ent.GeometricExtents
+            Dim tr = Active.Database.TransactionManager.StartTransaction()
+            Try
+                Dim mtxt As MText = DirectCast(objectId.GetObject(OpenMode.ForWrite), MText)
+                Dim blkref As BlockReference = DirectCast(blkrefId.GetObject(OpenMode.ForRead), BlockReference)
+                Dim ext As Extents3d = mtxt.GeometricExtents
                 Dim pnt As Point3d
                 Dim pmtSelRes As PromptSelectionResult = Nothing
                 Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
                 Dim selFilter As New SelectionFilter(acTypValAr)
                 pmtSelRes = Active.Editor.SelectCrossingWindow(ext.MinPoint, ext.MaxPoint, selFilter)
                 If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
-                    For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
+                    Dim entitySet As New DBObjectCollection
+                    blkref.Explode(entitySet)
+                    For i = 0 To entitySet.Count - 1
+                        Dim tmpEntity As Entity = DirectCast(entitySet.Item(i), Entity)
+                        'For Each objId As ObjectId In entitySet
+                        'For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim points As New Point3dCollection
-                        ent.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                        Dim tmppnts As New Point3dCollection
+                        'mtxt.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, tmppnts, IntPtr.Zero, IntPtr.Zero)
+                        mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, tmppnts, IntPtr.Zero, IntPtr.Zero)
+                        If tmppnts.Count > 0 Then 'we know we have an intersection this time.
+                            tmppnts = Nothing
+                            'if we new "points" here it shouldn't persist through our recursion?
+                            points = New Point3dCollection
+                        End If
+                        'mtxt.IntersectWith(GetEntity(objId), Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                        mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
                         If points.Count > 0 Then ' we have an overlap?
-                            Dim tmppnt As Point3d = DirectCast(ent, AttributeReference).AlignmentPoint
-                            'move our alignment point up by 1mm
-                            DirectCast(ent, AttributeReference).AlignmentPoint = New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z)
-                            'pnt = tmppnt
-                            'then recursively check again.
-                            DirectCast(ent, AttributeReference).AlignmentPoint = DetermineOverlap(ent.ObjectId, blkrefId)
-                            Return DirectCast(ent, AttributeReference).AlignmentPoint
+                            Dim tmppnt As Point3d = mtxt.Location
+                            pnt = points.Item(0)
+                            mtxt.Location = GetBestDirectionForMove(tmppnt, pnt) 'New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z)
+                            mtxt.Location = DetermineOverlap(mtxt.ObjectId, blkrefId)
+                            pnt = mtxt.Location
                         Else 'no overlap?
-                            pnt = DirectCast(ent, AttributeReference).AlignmentPoint
-                            Return pnt
+                            pnt = mtxt.Location
+                            'Return pnt
                         End If
                     Next
                 Else
-                    pnt = DirectCast(ent, AttributeReference).AlignmentPoint
+                    pnt = mtxt.Location
                     Return pnt
                 End If
+            Catch ex As Exception
+                Active.WriteMessage(vbCrLf & "The error was: " & ex.Message)
+            Finally
                 tr.Commit()
-            End Using
+                tr.Dispose()
+            End Try
+            'tr.Commit()
+            'End Using
         End Function
 
         ''' <summary>
@@ -2870,7 +2915,12 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         Private Function checkLengthAndSplit(tmpstr As String, Optional isNotes As Boolean = False) As String
             Dim lengthint As Integer = 0
-            IIf(isNotes, lengthint = 100, lengthint = 30)
+            If isNotes = True Then
+                lengthint = 100
+            Else
+                lengthint = 30
+            End If
+
             If tmpstr.Length > lengthint Then
                 Dim part1 As String = tmpstr.Substring(0, CInt(tmpstr.Length / 2))
                 Dim part2 As String = tmpstr.Substring(CInt(tmpstr.Length / 2))
