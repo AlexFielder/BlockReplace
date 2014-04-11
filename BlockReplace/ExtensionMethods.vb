@@ -43,7 +43,7 @@ Module ExtensionMethods
     ''' <param name="input"></param>
     ''' <returns></returns>
     ''' <remarks></remarks>
-    <System.Runtime.CompilerServices.Extension> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> <System.Runtime.CompilerServices.Extension> _
     Public Function MatchNamedCaptures(regex As Regex, input As String) As Dictionary(Of String, String)
         Dim namedCaptureDictionary = New Dictionary(Of String, String)()
         Dim groups As GroupCollection = regex.Match(input).Groups
@@ -75,7 +75,7 @@ Module ExtensionMethods
     ''' <exception cref="ArgumentNullException"><paramref name="source"/> or <paramref name="selector"/> is null</exception>
     ''' <exception cref="InvalidOperationException"><paramref name="source"/> is empty</exception>
 
-    <System.Runtime.CompilerServices.Extension> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> <System.Runtime.CompilerServices.Extension> _
     Public Function MaxBy(Of TSource, TKey)(source As IEnumerable(Of TSource), selector As Func(Of TSource, TKey)) As TSource
         Return source.MaxBy(selector, Comparer(Of TKey).[Default])
     End Function
@@ -101,7 +101,7 @@ Module ExtensionMethods
     ''' or <paramref name="comparer"/> is null</exception>
     ''' <exception cref="InvalidOperationException"><paramref name="source"/> is empty</exception>
 
-    <System.Runtime.CompilerServices.Extension> _
+    <System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")> <System.Runtime.CompilerServices.Extension> _
     Public Function MaxBy(Of TSource, TKey)(source As IEnumerable(Of TSource), selector As Func(Of TSource, TKey), comparer As IComparer(Of TKey)) As TSource
         If source Is Nothing Then
             Throw New ArgumentNullException("source")

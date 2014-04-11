@@ -144,12 +144,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>82.424553216065249</X>
-          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
+          <Y>71.105666826834039</Y><!-- modified Y position by -2mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>203.51470921606526</X>
-          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
+          <Y>71.105666826834039</Y><!-- modified Y position by -2mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -1233,12 +1233,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>744</X>
-          <Y>70</Y>
+          <Y>97</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>1177</X>
-          <Y>70</Y>
+          <Y>97</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -1482,12 +1482,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>419</X>
-          <Y>62</Y>
+          <Y>83</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>832</X>
-          <Y>62</Y>
+          <Y>83</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -1731,12 +1731,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>8</X>
-          <Y>62.000000000000007</Y>
+          <Y>76</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>587</X>
-          <Y>62.000000000000007</Y>
+          <Y>76</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -1980,12 +1980,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>25</X>
-          <Y>60</Y>
+          <Y>70</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>415</X>
-          <Y>60</Y>
+          <Y>70</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -2229,12 +2229,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>32.5</X>
-          <Y>99.750023</Y>
+          <Y>120</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>222.5</X>
-          <Y>99.750023</Y>
+          <Y>120</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
@@ -3912,12 +3912,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>27</X>
-          <Y>44.441555</Y>
+          <Y>56</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>413.000092</X>
-          <Y>44.441555</Y>
+          <Y>56</Y>
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
