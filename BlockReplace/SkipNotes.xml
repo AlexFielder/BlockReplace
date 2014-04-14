@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<notes xmlns:mpe="http://MatrixPrecisionEngineering.com"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3schools.com/MatrixPrecisionEngineering BlockReplace.xsd">
+    <text>
+      <string>NEARSIDE ELEVATION</string>
+    </text>
+    <text>
+      <string>END VIEW</string>
+    </text>
+    <text>
+      <string>SEE NOTE </string>
+    </text>
+  <text>
+    <string>BURSTING DISCS OMITTED IN THIS VIEW (SEE FARSIDE ELEVATION)</string>
+  </text>
+</notes>

@@ -160,9 +160,9 @@
                           <xs:element type="xs:string" name="ImgUrl"/>
                         </xs:sequence>
                         <xs:attribute type="xs:string" name="name" use="required"/>
-                        <xs:attribute type="xs:string" name="tag" use="optional"/> --><!-- optional in case we don't need a tag here --><!--
-                        <xs:attribute type="xs:string" name="textstring" use="optional"/> --><!-- optional in case there's no attribute here i.e. Revisions --><!--
-                        <xs:attribute type="xs:string" name="objectIdAsString" use="optional"/> --><!-- optional in case there's no attribute here i.e. Revisions --><!--
+                        <xs:attribute type="xs:string" name="tag" use="optional"/> optional in case we don't need a tag here
+                        <xs:attribute type="xs:string" name="textstring" use="optional"/> optional in case there's no attribute here i.e. Revisions
+                        <xs:attribute type="xs:string" name="objectIdAsString" use="optional"/> optional in case there's no attribute here i.e. Revisions
                       </xs:complexType>
                     </xs:element>
                   </xs:sequence>
@@ -179,8 +179,8 @@
         </xs:element>
       </xs:sequence>
     </xs:complexType>
-  </xs:element>-->
-  <!--<xs:element name="Drawings">
+  </xs:element>
+  <xs:element name="Drawings">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="Drawing" maxOccurs="unbounded" minOccurs="0">
@@ -298,6 +298,32 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <!--<xs:element name="skip">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="note" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="string"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>-->
+  <xs:element name="notes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="text" maxOccurs="unbounded" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element type="xs:string" name="string"/>
             </xs:sequence>
           </xs:complexType>
         </xs:element>

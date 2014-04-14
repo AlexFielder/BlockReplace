@@ -235,7 +235,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="BlockReplaceHelp.htm" />
+    <Resource Include="Drawings.xml" />
     <Content Include="myCommands.html" />
+    <Resource Include="Snapshots.xml" />
+    <Resource Include="SkipNotes.xml" />
     <Resource Include="BlockReplace.xml">
       <SubType>Designer</SubType>
     </Resource>
@@ -256,6 +259,7 @@ mkdir Resources
 xcopy /y "$(ProjectDir)BlockReplace.xsd" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
 xcopy /y "$(ProjectDir)BlockReplace.xml" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
 xcopy /y "$(ProjectDir)Mappings.xml" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
+xcopy /y "$(ProjectDir)SkipNotes.xml" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
 xcopy /y "$(ProjectDir)MappingsExample.xlsx" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
 xcopy /y "$(ProjectDir)Matrix.png" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"
 xcopy /y "$(ProjectDir)Matrix (Small).png" "%25appdata%25\Autodesk\ApplicationPlugins\$(projectname).bundle\Contents\Resources\"

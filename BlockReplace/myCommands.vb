@@ -86,6 +86,7 @@ Namespace BlockReplace
         Const RTINPUTTRUNCATED As Short = -5008
         ' Input didn't all fit in the buffer 
 #End Region
+
         Dim DoneAddingPoints As Boolean
         Dim KeepAddingAttRefs As Boolean
         Dim KeepAddingCrossingLines As Boolean
@@ -99,6 +100,10 @@ Namespace BlockReplace
         Dim Snapshots As New Snapshots ' new snapshot details parent collection
         Dim snDetails As SnapshotsSnapshotDetails ' new snapshots collection
         Dim snapshot As SnapshotsSnapshotDetailsSnapshot ' new snapshot detail
+        ''' <summary>
+        ''' A list of Revision
+        ''' </summary>
+        Public Shared revisions As New List(Of Revision)()
 
         Private Property DrawingID As String
 
@@ -261,7 +266,9 @@ Namespace BlockReplace
                                 End If
                             Next
                         Next
-                    Else ' we have a 5.2 version frame already.
+                    Else ' we have a 5.2 version frame already & should update it to our latest version.
+                        'this doesn't work for whatever reason. reverted to original code for now.
+                        'myBrefB = myTrans.GetObject(ReplaceBlock(myBrefA.ObjectId), OpenMode.ForWrite)
                         myBrefB = myTrans.GetObject(myBrefA.ObjectId, OpenMode.ForRead)
                         blockNameB = myBrefB.Name
                         myAttsB = myBrefB.AttributeCollection
@@ -312,7 +319,9 @@ Namespace BlockReplace
                                                                   Where attref.Tag = att.AttributeName
                                                                   Select attref).SingleOrDefault()
                                 If Not attr = Nothing Then
-                                    attr.TextString = tmpstr
+                                    If attr.TextString = "" Then
+                                        attr.TextString = tmpstr
+                                    End If
                                     If attr.Tag = "TOLERANCE" And Not attr.TextString = "" Then 'always going to be this one that overlaps now.
                                         If linecount > 2 Then '3 or more lines
                                             Dim pnt As Point3d = attr.AlignmentPoint
@@ -322,7 +331,7 @@ Namespace BlockReplace
                                     End If
                                     PadSnapshotsForAreasOfInterest(att, attr, tmpstr, False)
                                 End If
-                            End If
+                                End If
                         Next
                     End If
 
@@ -459,7 +468,56 @@ Namespace BlockReplace
         End Sub
 
         ''' <summary>
-        ''' 
+        ''' Function that allows us to filter for the blockreference.ObjectId we want
+        ''' </summary>
+        ''' <param name="blkref"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function ProcessBlockReferences(blkref As BlockReference) As Action(Of BlockReference)
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
+            Try
+                If SelEntId = ObjectId.Null Then
+                    If blkref.Name.StartsWith("*") Then
+                        tmpblkname = _
+                            DirectCast(blkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead),  _
+                                BlockTableRecord).Name
+                        Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                                                  Where s.name = tmpblkname
+                                                  Select s).SingleOrDefault()
+                        If Not ob Is Nothing Then
+                            SelEntId = blkref.ObjectId
+                        Else
+                            SelEntId = ObjectId.Null
+                        End If
+                    Else
+                        If Not blkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
+                            tmpblkname = blkref.Name
+                            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
+                                                          Where s.name = tmpblkname
+                                                          Select s).SingleOrDefault()
+                            If Not ob Is Nothing Then
+                                ob = Nothing
+                                SelEntId = blkref.ObjectId
+                                'Exit Function
+                            Else
+                                SelEntId = ObjectId.Null
+                            End If
+                        Else 'we don't need to do anything to this block, just capture it's id.
+                            SelEntId = blkref.ObjectId
+                        End If
+                    End If
+                End If
+            Catch ex As Exception
+                Active.WriteMessage("The Error was: " & ex.Message)
+            Finally
+                tr.Commit()
+                tr.Dispose()
+            End Try
+
+        End Function
+
+        ''' <summary>
+        ''' Creates snapshots of areas based on the selectionset passed to it.
         ''' </summary>
         ''' <param name="ss"></param>
         ''' <param name="asmpath"></param>
@@ -526,6 +584,14 @@ Namespace BlockReplace
             End Using
         End Sub
 
+        ''' <summary>
+        ''' Adds extra information to the snapshots we previously created.
+        ''' </summary>
+        ''' <param name="att"></param>
+        ''' <param name="attr"></param>
+        ''' <param name="str"></param>
+        ''' <param name="isUsedOnAttr"></param>
+        ''' <remarks></remarks>
         Private Sub PadSnapshotsForAreasOfInterest(att As framesDrawingFrameSearchBoxBoundsAttref, attr As AttributeReference, str As String, isUsedOnAttr As Boolean)
             If snapshot Is Nothing Then snapshot = New SnapshotsSnapshotDetailsSnapshot
             snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
@@ -572,6 +638,7 @@ Namespace BlockReplace
             '    'snDetails.snapshot.Add(snapshot)
             'End If
         End Sub
+
         ''' <summary>
         ''' Creates a screenshot of each area we are interested in.
         ''' </summary>
@@ -727,44 +794,44 @@ Namespace BlockReplace
         ''' <param name="obids"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function DetermineOverlap(objectid As ObjectId, obids As List(Of ObjectId))
+        Private Function DetermineOverlap(objectid As ObjectId, obids As List(Of ObjectId)) As Point3d
             Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
             Try
                 Dim mtxt As MText = DirectCast(objectid.GetObject(OpenMode.ForWrite), MText)
                 Dim ext As Extents3d = mtxt.GeometricExtents
                 Dim pnt As Point3d
-                Dim pmtSelRes As PromptSelectionResult = Nothing
-                Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
-                Dim selFilter As New SelectionFilter(acTypValAr)
-                pmtSelRes = Active.Editor.SelectCrossingWindow(ext.MinPoint, ext.MaxPoint, selFilter)
-                If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
-                    For Each ob As ObjectId In obids
-                        Dim tmpEntity As Entity = DirectCast(ob.GetObject(OpenMode.ForRead), Entity)
-                        Dim points As New Point3dCollection
-                        Dim tmppnts As New Point3dCollection
-                        mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, tmppnts, IntPtr.Zero, IntPtr.Zero)
-                        If tmppnts.Count > 0 Then 'we know we have an intersection this time.
-                            tmppnts = Nothing
-                            'if we new "points" here it shouldn't persist through our recursion?
-                            points = New Point3dCollection
-                        End If
-                        mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
-                        If points.Count > 0 Then ' we have an overlap?
-                            Dim tmppnt As Point3d = mtxt.Location
-                            pnt = points.Item(0)
-                            mtxt.Location = GetBestDirectionForMove(tmppnt, pnt) 'New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z)
-                            mtxt.Location = DetermineOverlap(mtxt.ObjectId, ob)
-                            pnt = mtxt.Location
-                        Else 'no overlap?
-                            pnt = mtxt.Location
-                            'Return pnt
-                        End If
-                    Next
-                    Return pnt
-                Else
-                    pnt = mtxt.Location
-                    Return pnt
-                End If
+                'Dim pmtSelRes As PromptSelectionResult = Nothing
+                'Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
+                'Dim selFilter As New SelectionFilter(acTypValAr)
+                'pmtSelRes = Active.Editor.SelectCrossingWindow(ext.MinPoint, ext.MaxPoint, selFilter)
+                'If pmtSelRes.Status = PromptStatus.OK Then ' we found something.
+                For Each ob As ObjectId In obids
+                    Dim tmpEntity As Entity = DirectCast(ob.GetObject(OpenMode.ForRead), Entity)
+                    Dim points As New Point3dCollection
+                    Dim tmppnts As New Point3dCollection
+                    mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, tmppnts, IntPtr.Zero, IntPtr.Zero)
+                    If tmppnts.Count > 0 Then 'we know we have an intersection this time.
+                        tmppnts = Nothing
+                        'if we new "points" here it shouldn't persist through our recursion?
+                        points = New Point3dCollection
+                    End If
+                    mtxt.IntersectWith(tmpEntity, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
+                    If points.Count > 0 Then ' we have an overlap?
+                        Dim tmppnt As Point3d = mtxt.Location
+                        pnt = points.Item(0)
+                        mtxt.Location = GetBestDirectionForMove(tmppnt, pnt) 'New Point3d(tmppnt.X, tmppnt.Y + 1.0, tmppnt.Z)
+                        mtxt.Location = DetermineOverlap(mtxt.ObjectId, ob)
+                        pnt = mtxt.Location
+                    Else 'no overlap?
+                        pnt = mtxt.Location
+                        'Return pnt
+                    End If
+                Next
+                Return pnt
+                'Else
+                'pnt = mtxt.Location
+                'Return pnt
+                'End If
             Catch ex As Exception
                 Active.WriteMessage(vbCrLf & "The error was: " & ex.Message)
             Finally
@@ -772,6 +839,7 @@ Namespace BlockReplace
                 tr.Dispose()
             End Try
         End Function
+
         ''' <summary>
         ''' This is the singular instance of this method.
         ''' </summary>
@@ -837,6 +905,15 @@ Namespace BlockReplace
             Return ent
         End Function
 
+        ''' <summary>
+        ''' Gets the intersection point(s) of two entities and populates the intersectionPoints collection with the results.
+        ''' </summary>
+        ''' <param name="ent1"></param>
+        ''' <param name="ent2"></param>
+        ''' <param name="intersectionPoints"></param>
+        ''' <param name="clash"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Private Function GetIntersectionPointsOf(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
             
             Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
@@ -902,6 +979,13 @@ Namespace BlockReplace
             'Loop
         End Sub
 
+        ''' <summary>
+        ''' Calculates the best direction to move the mtext object based on the angle between the insertion point and intersectswith result.
+        ''' </summary>
+        ''' <param name="txtloc"></param>
+        ''' <param name="pnt"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
         Private Function GetBestDirectionForMove(txtloc As Point3d, pnt As Point3d) As Point3d
             Dim pt1 As Point2d = New Point2d(txtloc.X, txtloc.Y)
             Dim pt2 As Point2d = New Point2d(pnt.X, pnt.Y)
@@ -920,7 +1004,7 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
-        ''' 
+        ''' Gets the intersection points from Nested Block Entities.
         ''' </summary>
         ''' <param name="ent1"></param>
         ''' <param name="ent2"></param>
@@ -951,6 +1035,7 @@ Namespace BlockReplace
             End Using
             Return (RTNORM)
         End Function
+#Region "BlockReplace.xml methods"
 
         ''' <summary>
         ''' Allows the user to add unknown borders to the BlockReplace.xml file.
@@ -1066,7 +1151,7 @@ Namespace BlockReplace
                         pPtOpts.Message = vbLf & "Enter the top right corner point of the SearchBox: "
                         pPtOpts.UseBasePoint = True
                         pPtOpts.BasePoint = ptStart
-                        pPtRes = Active.editor.GetPoint(pPtOpts)
+                        pPtRes = Active.Editor.GetPoint(pPtOpts)
                         Dim ptEnd As Point3d = pPtRes.Value
 
                         If pPtRes.Status = PromptStatus.Cancel Then Exit Sub
@@ -1086,14 +1171,14 @@ Namespace BlockReplace
                             pko.Keywords.Add("Yes")
                             pko.Keywords.Add("No")
                             pko.Keywords.[Default] = "Yes"
-                            pkr = Active.editor.GetKeywords(pko)
+                            pkr = Active.Editor.GetKeywords(pko)
                             pko = Nothing
                             If pkr.Status = PromptStatus.OK And Not pkr.StringResult = "No" Then
                                 Dim attref As New framesDrawingFrameSearchBoxBoundsAttref
                                 '' Prompt for the start point
                                 Dim tmppPtOpts As PromptPointOptions = New PromptPointOptions(vbLf & "Enter the bottom left point of the line: ")
                                 Dim tmppPtRes As PromptPointResult
-                                tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
+                                tmppPtRes = Active.Editor.GetPoint(tmppPtOpts)
                                 Dim tmpptStart As Point3d = tmppPtRes.Value
 
                                 '' Exit if the user presses ESC or cancels the command
@@ -1103,7 +1188,7 @@ Namespace BlockReplace
                                 tmppPtOpts.Message = vbLf & "Enter the top right point of the line: "
                                 tmppPtOpts.UseBasePoint = True
                                 tmppPtOpts.BasePoint = tmpptStart
-                                tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
+                                tmppPtRes = Active.Editor.GetPoint(tmppPtOpts)
                                 tmppPtOpts = Nothing
                                 Dim tmpptEnd As Point3d = tmppPtRes.Value
                                 If tmppPtRes.Status = PromptStatus.Cancel Then Exit Do
@@ -1123,7 +1208,7 @@ Namespace BlockReplace
 
 
 
-                                Dim pStrAttRefRes As PromptResult = Active.editor.GetKeywords(pStrAttRefOpts)
+                                Dim pStrAttRefRes As PromptResult = Active.Editor.GetKeywords(pStrAttRefOpts)
 
                                 Select Case pStrAttRefRes.StringResult
                                     Case "CADREF"
@@ -1182,14 +1267,14 @@ Namespace BlockReplace
                                 pko.Keywords.Add("Yes")
                                 pko.Keywords.Add("No")
                                 pko.Keywords.[Default] = "Yes"
-                                pkr = Active.editor.GetKeywords(pko)
+                                pkr = Active.Editor.GetKeywords(pko)
                                 pko = Nothing
                                 If pkr.Status = PromptStatus.OK And Not pkr.StringResult = "No" Then
                                     Dim tmppPtOpts As PromptPointOptions = New PromptPointOptions(vbLf & "Enter the top left point of the line: ")
                                     Dim tmppPtRes As PromptPointResult
                                     'Dim lines As New framesDrawingFrameLine()
                                     Dim line As New framesDrawingFrameLine
-                                    tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
+                                    tmppPtRes = Active.Editor.GetPoint(tmppPtOpts)
                                     Dim tmpptStart As Point3d = tmppPtRes.Value
 
                                     '' Exit if the user presses ESC or cancels the command
@@ -1199,7 +1284,7 @@ Namespace BlockReplace
                                     tmppPtOpts.Message = vbLf & "Enter the bottom right point of the line: "
                                     tmppPtOpts.UseBasePoint = True
                                     tmppPtOpts.BasePoint = tmpptStart
-                                    tmppPtRes = Active.editor.GetPoint(tmppPtOpts)
+                                    tmppPtRes = Active.Editor.GetPoint(tmppPtOpts)
                                     tmppPtOpts = Nothing
                                     Dim tmpptEnd As Point3d = tmppPtRes.Value
                                     If tmppPtRes.Status = PromptStatus.Cancel Then Exit Do
@@ -1216,7 +1301,7 @@ Namespace BlockReplace
                                     pStrAttRefOpts.Keywords.Add("SCALE")
                                     pStrAttRefOpts.Keywords.Add("DIMSIN")
 
-                                    Dim pStrAttRefRes As PromptResult = Active.editor.GetKeywords(pStrAttRefOpts)
+                                    Dim pStrAttRefRes As PromptResult = Active.Editor.GetKeywords(pStrAttRefOpts)
 
                                     Select Case pStrAttRefRes.StringResult
                                         Case "DRAWINGOFFICEREF"
@@ -1287,7 +1372,7 @@ Namespace BlockReplace
 
             '' Prompt for the start point
             pPtOpts.Message = vbLf & "Enter the start point of the line: "
-            pPtRes = Active.editor.GetPoint(pPtOpts)
+            pPtRes = Active.Editor.GetPoint(pPtOpts)
             Dim ptStart As Point3d = pPtRes.Value
 
             '' Exit if the user presses ESC or cancels the command
@@ -1297,7 +1382,7 @@ Namespace BlockReplace
             pPtOpts.Message = vbLf & "Enter the end point of the line: "
             pPtOpts.UseBasePoint = True
             pPtOpts.BasePoint = ptStart
-            pPtRes = Active.editor.GetPoint(pPtOpts)
+            pPtRes = Active.Editor.GetPoint(pPtOpts)
             Dim ptEnd As Point3d = pPtRes.Value
 
             If pPtRes.Status = PromptStatus.Cancel Then Exit Sub
@@ -1366,7 +1451,7 @@ Namespace BlockReplace
                 acTrans.Commit()
             End Using
         End Sub
-
+#End Region
         ''' <summary>
         ''' An example class showing how to filter for lines in a selectionset based upon a known rectangle "search area"
         ''' Copied in from http://adndevblog.typepad.com/autocad/2012/05/use-selectcrossingpolygon-to-select-entities-in-view-other-than-plan.html
@@ -1391,8 +1476,8 @@ Namespace BlockReplace
             typedVal(0) = New TypedValue(CInt(DxfCode.Start), "Line")
 
             Dim selFilter As New SelectionFilter(typedVal)
-            pmtSelRes = Active.editor.SelectCrossingPolygon(pntCol, selFilter)
-            
+            pmtSelRes = Active.Editor.SelectCrossingPolygon(pntCol, selFilter)
+
             If pmtSelRes.Status = PromptStatus.OK Then
                 Active.WriteMessage("Entities found " & pmtSelRes.Value.GetObjectIds().Count.ToString())
             Else
@@ -1468,11 +1553,11 @@ Namespace BlockReplace
                 End If
                 'If the specified BlockTableRecord does not exist,
                 'get out gracefully
-                If myBlockTable.Has(btrToAddTo) = False Then
+                If myBlockTable.Has(btrtoaddto) = False Then
                     Return Nothing
                 End If
                 Dim myBlockDef As BlockTableRecord = myBlockTable(blockname).GetObject(OpenMode.ForRead)
-                Dim myBlockTableRecord As BlockTableRecord = myBlockTable(btrToAddTo).GetObject(OpenMode.ForWrite)
+                Dim myBlockTableRecord As BlockTableRecord = myBlockTable(btrtoaddto).GetObject(OpenMode.ForWrite)
                 'Create a new BlockReference
                 Dim myBlockRef As New BlockReference(inspt, myBlockDef.Id)
                 'Set the scale factors
@@ -1500,9 +1585,35 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
-        ''' A list of Vports
+        ''' Replaces an existing BlockReference with the latest version
+        ''' copied from: http://adndevblog.typepad.com/autocad/2012/05/redefining-a-block.html
         ''' </summary>
-        Public Shared revisions As New List(Of Revision)()
+        ''' <param name="objectId">the objectId of the block to be replaced.</param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function ReplaceBlock(objectId As ObjectId) As ObjectId
+            Dim Tx As Transaction = Active.Database.TransactionManager.StartTransaction()
+            Dim blkDb As Database = New Database(False, True)
+            Try
+                Dim tmpblkref As BlockReference = Tx.GetObject(objectId, OpenMode.ForRead)
+                blkDb.ReadDwgFile("C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\" & tmpblkref.Name & ".dwg", System.IO.FileShare.Read, True, "")
+                Dim blockTable As BlockTable = Tx.GetObject(Active.Database.BlockTableId, OpenMode.ForRead, False, True)
+                Dim btrId As ObjectId = Active.Database.Insert(tmpblkref.Name, blkDb, True)
+                If btrId <> objectId.Null Then
+                    Dim btr As BlockTableRecord = Tx.GetObject(btrId, OpenMode.ForRead, False, True)
+                    Dim brefIds As ObjectIdCollection = btr.GetBlockReferenceIds(False, True)
+                    For Each id As ObjectId In brefIds
+                        Dim bref As BlockReference =
+                        Tx.GetObject(id, OpenMode.ForWrite, False, True)
+                        bref.RecordGraphicsModified(True)
+                    Next
+                End If
+            Catch ex As Exception
+                Tx.Commit()
+                Tx.Dispose()
+                blkDb.Dispose()
+            End Try
+        End Function
 
         ''' <summary>
         ''' The "Manual" Command for SortRevisions
@@ -1524,15 +1635,15 @@ Namespace BlockReplace
             Dim prmptDateStrOpts As PromptStringOptions = New PromptStringOptions(vbLf + "Enter desired date")
             prmptDateStrOpts.DefaultValue = System.DateTime.Now.ToString("dd-MMM-yy")
             prmptDateStrOpts.UseDefaultValue = True
-            Dim prdate As PromptResult = Active.editor.GetString(prmptDateStrOpts)
+            Dim prdate As PromptResult = Active.Editor.GetString(prmptDateStrOpts)
             If Not prdate.Status = PromptStatus.OK Then
                 Exit Sub
             End If
-            Dim pr As PromptResult = Active.editor.GetString(prmptRNStrOpts)
+            Dim pr As PromptResult = Active.Editor.GetString(prmptRNStrOpts)
             If Not pr.Status = PromptStatus.OK Then
                 Exit Sub
             End If
-            prmptSelRes = Active.editor.GetSelection(prmptSelOpts)
+            prmptSelRes = Active.Editor.GetSelection(prmptSelOpts)
             If prmptSelRes.Status <> PromptStatus.OK Then
                 'the user didn't select anything.
                 Exit Sub
@@ -1955,7 +2066,7 @@ Namespace BlockReplace
                                                     locName:="NOTES", _
                                                     NotesInsertPnt:=notesinsertpnt, _
                                                      mtxt:=mtxt)
-            If Not str = "" Then
+            If Not str = "" Then 'And Not str.StartsWith("CABLES AND COLOURS") Then
                 Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
                 Try
                     '' Open the Block table for read
@@ -1987,6 +2098,8 @@ Namespace BlockReplace
                 ADNIntersectsWith(txtId, blockId)
             End If
         End Sub
+#Region "Line and Text Collection/Deletion Methods"
+
 
         ''' <summary>
         ''' Deletes a selection based on the Point3dCollection created below.
@@ -2256,6 +2369,15 @@ Namespace BlockReplace
                         Else
                             Dim txt As DBText = TryCast(obj, DBText)
                             If txt IsNot Nothing Then
+                                If locName.ToUpper() = "NOTES" Then
+                                    If Matchesdisallowednotes(txt.TextString) Then
+                                        Continue For 'basically we need to skip this entity.
+                                    End If
+                                End If
+                                'If txt.TextString.StartsWith("SEE NOTE") Then
+                                '    Continue For
+                                'End If
+                                'If txt.TextString.StartsWith("CABLES") Then Return "" 'it looked like things were going to kick off so I got outta there!
                                 numOfEntsFound += 1
                                 txt.UpgradeOpen()
                                 txt.[Erase]()
@@ -2268,6 +2390,11 @@ Namespace BlockReplace
                             Else 'failed converting to DBText
                                 Dim mtext As MText = TryCast(obj, MText)
                                 If mtext IsNot Nothing Then
+                                    If locName.ToUpper() = "NOTES" Then
+                                        If Matchesdisallowednotes(mtext.Contents) Then
+                                            Continue For 'basically we need to skip this entity.
+                                        End If
+                                    End If
                                     numOfEntsFound += 1
                                     mtext.UpgradeOpen()
                                     mtext.[Erase]()
@@ -2279,7 +2406,7 @@ Namespace BlockReplace
                                     tmpFT = Nothing
                                 End If
                             End If
-                        End If
+                            End If
                     Next
                     Dim sorted As IEnumerable(Of FloatingText)
                     If reverseSort Then
@@ -2291,7 +2418,7 @@ Namespace BlockReplace
                                   Order By pt.StringLocation.Y Descending
                                   Select pt)
                     End If
-                    
+
                     Dim dblstr As String = String.Empty
                     Dim skipnextcrlf As Boolean = False
                     For Each pt As FloatingText In sorted
@@ -2417,6 +2544,39 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
+        ''' check the length of a string and split if necessary.
+        ''' </summary>
+        ''' <param name="tmpstr"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function checkLengthAndSplit(tmpstr As String, Optional isNotes As Boolean = False) As String
+            Dim lengthint As Integer = 0
+            If isNotes = True Then
+                lengthint = 100
+            Else
+                lengthint = 30
+            End If
+
+            If tmpstr.Length > lengthint Then
+                Dim part1 As String = tmpstr.Substring(0, CInt(tmpstr.Length / 2))
+                Dim part2 As String = tmpstr.Substring(CInt(tmpstr.Length / 2))
+                Dim p1 As Integer = part1.LastIndexOf(" ")
+                Dim p2 As Integer = part2.IndexOf(" ")
+                If tmpstr.Length - p1 = 0 OrElse p2 = 0 Then
+                    Return part1 & vbCrLf & part2
+                ElseIf p1 <> -1 AndAlso tmpstr.Length - p1 < p2 Then
+                    Return part1.Substring(0, p1) & vbCrLf & part1.Substring(p1) & part2
+                ElseIf p2 <> -1 AndAlso tmpstr.Length - p1 > p2 Then
+                    Return part1 & part2.Substring(0, p2) & vbCrLf & part2.Substring(p2)
+                Else
+                    Return tmpstr
+                End If
+            Else
+                Return tmpstr
+            End If
+        End Function
+
+        ''' <summary>
         ''' This is a version that will accept a Point3dCollection
         ''' </summary>
         ''' <param name="tmppntcoll">Point3dCollection where we wish to search for text</param>
@@ -2514,8 +2674,27 @@ Namespace BlockReplace
             End Using
             Return tmpstrlist
         End Function
-
+#End Region
 #Region "Regex Methods"
+        ''' <summary>
+        ''' Checks the note string against an xml list of disallowed values.
+        ''' </summary>
+        ''' <param name="p1"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Private Function Matchesdisallowednotes(p1 As String) As Boolean
+            Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
+            Dim serializer As New XmlSerializer(GetType(notes))
+            Dim fs As New FileStream(asmpath + "\Resources\SkipNotes.xml", FileMode.Open)
+            Dim reader As XmlReader = XmlReader.Create(fs)
+            'new these objects here.
+            Dim skn As notes = CType(serializer.Deserialize(reader), notes)
+            fs.Close()
+            For Each note As notesText In skn.text
+                If p1.Contains(note.string) Then Return True
+            Next
+
+        End Function
         ''' <summary>
         ''' Checks whether the notes match the #. pattern
         ''' </summary>
@@ -2523,7 +2702,7 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function MatchesNoteBulletPoint(p1 As String) As Boolean
-            Dim pattern As String = "\b\d{1,}\."
+            Dim pattern As String = "\b\d{1,}\.\z"
             Dim NoteRegex As New Regex(pattern)
             Return NoteRegex.IsMatch(p1)
         End Function
@@ -2999,40 +3178,7 @@ Namespace BlockReplace
         End Function
 
 #End Region
-
-        ''' <summary>
-        ''' check the length of a string and split if necessary.
-        ''' </summary>
-        ''' <param name="tmpstr"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Private Function checkLengthAndSplit(tmpstr As String, Optional isNotes As Boolean = False) As String
-            Dim lengthint As Integer = 0
-            If isNotes = True Then
-                lengthint = 100
-            Else
-                lengthint = 30
-            End If
-
-            If tmpstr.Length > lengthint Then
-                Dim part1 As String = tmpstr.Substring(0, CInt(tmpstr.Length / 2))
-                Dim part2 As String = tmpstr.Substring(CInt(tmpstr.Length / 2))
-                Dim p1 As Integer = part1.LastIndexOf(" ")
-                Dim p2 As Integer = part2.IndexOf(" ")
-                If tmpstr.Length - p1 = 0 OrElse p2 = 0 Then
-                    Return part1 & vbCrLf & part2
-                ElseIf p1 <> -1 AndAlso tmpstr.Length - p1 < p2 Then
-                    Return part1.Substring(0, p1) & vbCrLf & part1.Substring(p1) & part2
-                ElseIf p2 <> -1 AndAlso tmpstr.Length - p1 > p2 Then
-                    Return part1 & part2.Substring(0, p2) & vbCrLf & part2.Substring(p2)
-                Else
-                    Return tmpstr
-                End If
-            Else
-                Return tmpstr
-            End If
-        End Function
-
+#Region "Using Helper Functions"
         ''' <summary>
         ''' Using Transaction helper function
         ''' </summary>
@@ -3086,56 +3232,11 @@ Namespace BlockReplace
                 tr.Commit()
             End Using
         End Sub
+#End Region
 
-        ''' <summary>
-        ''' Function that allows us to filter for the blockreference.ObjectId we want
-        ''' </summary>
-        ''' <param name="blkref"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Private Function ProcessBlockReferences(blkref As BlockReference) As Action(Of BlockReference)
-            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
-            Try
-                If SelEntId = ObjectId.Null Then
-                    If blkref.Name.StartsWith("*") Then
-                        tmpblkname = _
-                            DirectCast(blkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead),  _
-                                BlockTableRecord).Name
-                        Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                                  Where s.name = tmpblkname
-                                                  Select s).SingleOrDefault()
-                        If Not ob Is Nothing Then
-                            SelEntId = blkref.ObjectId
-                        Else
-                            SelEntId = ObjectId.Null
-                        End If
-                    Else
-                        If Not blkref.Name Like "*5.2(block)" Then 'go look and see if we know about this block already.
-                            tmpblkname = blkref.Name
-                            Dim ob As mappingsOldblock = (From s In tmpm.oldblock
-                                                          Where s.name = tmpblkname
-                                                          Select s).SingleOrDefault()
-                            If Not ob Is Nothing Then
-                                ob = Nothing
-                                SelEntId = blkref.ObjectId
-                                'Exit Function
-                            Else
-                                SelEntId = ObjectId.Null
-                            End If
-                        Else 'we don't need to do anything to this block, just capture it's id.
-                            SelEntId = blkref.ObjectId
-                        End If
-                    End If
-                End If
-            Catch ex As Exception
-                Active.WriteMessage("The Error was: " & ex.Message)
-            Finally
-                tr.Commit()
-                tr.Dispose()
-            End Try
+        
 
-        End Function
-
+        
 
     End Class
 

@@ -18,12 +18,12 @@ Lines in the frames are relatively positioned from the <point3d name="p1"> coord
         </point3d>
         <point3d name="p2">
           <X>82.424553216065249</X>
-          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
+          <Y>71.105666826834039</Y><!-- modified Y position by -2mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p3">
           <X>203.51470921606526</X>
-          <Y>72.105666826834039</Y><!-- modified Y position by -1mm to account for spurious line removal-->
+          <Y>71.105666826834039</Y><!-- modified Y position by -2mm to account for spurious line removal-->
           <Z>0</Z>
         </point3d>
         <point3d name="p4">
