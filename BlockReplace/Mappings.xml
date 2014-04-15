@@ -2,7 +2,7 @@
 <mappings xmlns:mpe="http://MatrixPrecisionEngineering.com"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.w3schools.com/MatrixPrecisionEngineering BlockReplace.xsd">
-  <oldblock name="SB-A3_993-5.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="SB-A3_993-5.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -71,7 +71,7 @@
       <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
     </attributes>
   </oldblock>
-  <oldblock name="HR-A0_800-6.1(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+  <oldblock name="HR-A0_800-6.1(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -129,7 +129,7 @@
       <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
     </attributes>
   </oldblock>
-  <oldblock name="HR-A1_801-6.1(block)" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
+  <oldblock name="HR-A1_801-6.1(block)" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -187,7 +187,7 @@
       <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
     </attributes>
   </oldblock>
-  <oldblock name="HR-A2_802-6.1(block)" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+  <oldblock name="HR-A2_802-6.1(block)" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -245,7 +245,7 @@
       <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
     </attributes>
   </oldblock>
-  <oldblock name="HR-A3_803-6.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="HR-A3_803-6.1(block)" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -304,7 +304,7 @@
     </attributes>
   </oldblock>
   <!-- everything after this line added by AF 05-03-2014-->
-  <oldblock name="HR-IL_806-7.1(block)" newname="SB-IL_996-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-IL_996-5.2(block).dwg">
+  <oldblock name="HR-IL_806-7.1(block)" newname="SB-IL_996-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-IL_996-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -368,7 +368,7 @@
       <attribute name="TEMPORY CAD REF" newname="TEMPORY CAD REF"/>
     </attributes>
   </oldblock>
-  <oldblock name="SB-A0_990-5 2(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+  <oldblock name="SB-A0_990-5 2(block)" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>
@@ -502,7 +502,7 @@
       <attribute name="USED ON 32 - DRG NUMBER" newname="USED ON 32 - DRG NUMBER"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border A0" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
+  <oldblock name="Border A0" newname="SB-A0_990-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A0_990-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -549,7 +549,7 @@
       <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border A1" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
+  <oldblock name="Border A1" newname="SB-A1_991-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A1_991-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -596,7 +596,7 @@
       <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border A2" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+  <oldblock name="Border A2" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -643,7 +643,7 @@
       <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border A3" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="Border A3" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -690,7 +690,7 @@
       <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border A4" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="Border A4" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -735,7 +735,7 @@
       <attribute name="L/R_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="Border" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="Border" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="COPY_DATE" newname="COPYRIGHT YEAR"/>
       <attribute name="CERTIFIED" newname="CERTIFIED"/>
@@ -782,7 +782,7 @@
       <attribute name="U/L_HR" newname="DRAWING NUMBER 2"/>
     </attributes>
   </oldblock>
-  <oldblock name="A3BORD" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="A3BORD" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="CHANGE_NO1" newname="CHANGE NO 1"/>
       <attribute name="CHANGE_NO2" newname="CHANGE NO 2"/>
@@ -829,7 +829,7 @@
       <attribute name="U/L_NOSHT" newname="NUMBER OF SHEETS 1"/>
     </attributes>
   </oldblock>
-  <oldblock name="DSS_A4V" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
+  <oldblock name="DSS_A4V" newname="SB-A3_993-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A3_993-5.2(block).dwg">
     <attributes>
       <attribute name="SCALE" newname="SCALE"/>
       <attribute name="DRG_TITLE_3" newname="TITLE 3"/>
@@ -845,7 +845,7 @@
       <attribute name="ISS_A" newname="ISSUE 1"/>
     </attributes>
   </oldblock>
-  <oldblock name="A2 BORDER" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
+  <oldblock name="A2 BORDER" newname="SB-A2_992-5.2(block)" path="C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-A2_992-5.2(block).dwg">
     <attributes>
       <attribute name="PROTECTIVE MARKING 1" newname="PROTECTIVE MARKING 1"/>
       <attribute name="PROTECTIVE MARKING 2" newname="PROTECTIVE MARKING 2"/>

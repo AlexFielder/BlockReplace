@@ -275,6 +275,7 @@ Namespace BlockReplace
                     End If
                     'open the blockreplace.xml file to grab dumb text from any of the frames
                     'and populate our new drawing frame
+                    ZoomCommands.ZoomToWindow(ext.MinPoint, ext.MaxPoint)
                     Dim WeKnowAboutThisBorder = (From a In f.DrawingFrame
                                                  Where a.name = blockNameA
                                                  Select a).SingleOrDefault()
@@ -1596,7 +1597,7 @@ Namespace BlockReplace
             Dim blkDb As Database = New Database(False, True)
             Try
                 Dim tmpblkref As BlockReference = Tx.GetObject(objectId, OpenMode.ForRead)
-                blkDb.ReadDwgFile("C:\LEGACY VAULT WORKING FOLDER\Designs\AWE\FSTF\AWE DRAWING FRAMES\" & tmpblkref.Name & ".dwg", System.IO.FileShare.Read, True, "")
+                blkDb.ReadDwgFile("C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\" & tmpblkref.Name & ".dwg", System.IO.FileShare.Read, True, "")
                 Dim blockTable As BlockTable = Tx.GetObject(Active.Database.BlockTableId, OpenMode.ForRead, False, True)
                 Dim btrId As ObjectId = Active.Database.Insert(tmpblkref.Name, blkDb, True)
                 If btrId <> objectId.Null Then
@@ -1609,6 +1610,9 @@ Namespace BlockReplace
                     Next
                 End If
             Catch ex As Exception
+                Tx.Dispose()
+                blkDb.Dispose()
+            Finally
                 Tx.Commit()
                 Tx.Dispose()
                 blkDb.Dispose()
@@ -2333,21 +2337,25 @@ Namespace BlockReplace
             Dim tmplist As List(Of FloatingText) = New List(Of FloatingText)
             Using tr = Active.Database.TransactionManager.StartTransaction()
                 Dim pmtSelRes As PromptSelectionResult = Nothing
-                Dim acTypValAr() As TypedValue = New TypedValue() {
-                    New TypedValue(DxfCode.Start, "ATTDEF,TEXT,MTEXT")}
+                'Dim acTypValAr() As TypedValue = New TypedValue() {New TypedValue(DxfCode.Start, "ATTDEF,TEXT,MTEXT")}
+                Dim acTypValAr() As TypedValue = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
 
                 ' in case you want to see what the filter looks like
                 'For Each tv As TypedValue In acTypValAr
                 '   Active.WriteMessage(String.Format("\nFilter Pair: {0}", tv.ToString()))
                 'Next
-
+                Dim pnt1, pnt2, pnt3, pnt4 As Point3d
+                'these are here out of curiousity!
+                pnt1 = tmppntcoll.Item(0)
+                pnt2 = tmppntcoll.Item(1)
                 Dim selFilter As New SelectionFilter(acTypValAr)
                 If locName = "NOTES" Then
-                    pmtSelRes = Active.Editor.SelectCrossingWindow(tmppntcoll.Item(0), tmppntcoll.Item(1), selFilter)
+                    pmtSelRes = Active.Editor.SelectCrossingWindow(pnt1, pnt2, selFilter)
                 Else
-                    pmtSelRes = Active.Editor.SelectCrossingPolygon(tmppntcoll, selFilter)
+                    pnt3 = tmppntcoll.Item(2)
+                    pnt4 = tmppntcoll.Item(3)
+                    pmtSelRes = Active.Editor.SelectCrossingWindow(pnt1, pnt3, selFilter)
                 End If
-
                 If pmtSelRes.Status = PromptStatus.OK Then
                     For Each objId As ObjectId In pmtSelRes.Value.GetObjectIds()
                         Dim obj As DBObject = tr.GetObject(objId, OpenMode.ForRead)
@@ -2406,7 +2414,7 @@ Namespace BlockReplace
                                     tmpFT = Nothing
                                 End If
                             End If
-                            End If
+                        End If
                     Next
                     Dim sorted As IEnumerable(Of FloatingText)
                     If reverseSort Then
@@ -2475,6 +2483,13 @@ Namespace BlockReplace
                                 mtxt.TextHeight = pt.TextHeight
                                 tmpstr = pt.StringValue
                                 'tmpstr = checkLengthAndSplit(pt.StringValue, True)
+                            ElseIf locName.ToUpper() = "TOLERANCES" Then
+                                tmpstr = pt.StringValue
+                                If tmpstr.Length > 20 Then
+                                    tmpstr = checkLengthAndSplit(tmpstr)
+                                End If
+                                'replace +/- with ±:
+                                tmpstr = tmpstr.Replace("+/-", "±")
                             Else
                                 tmpstr = pt.StringValue
                             End If
