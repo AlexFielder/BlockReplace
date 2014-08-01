@@ -272,6 +272,20 @@ Namespace BlockReplace
                                             myAttB.TextString = getCorrectedDrawingNumber(Active.Document, myAtt, myAttB.Tag, blockNameA)
                                             'myAttB.TextString = myAtt.TextString
                                         End If
+                                        'input the newly approved DRAWN, CHECKED, CERTIFIED Values:
+                                        Select Case myAttB.Tag
+                                            Case "DRAWN"
+                                                myAttB.TextString = "A. FIELDER"
+                                            Case "CHECKED"
+                                                myAttB.TextString = "G. HUGHES"
+                                            Case "CERTIFIED"
+                                                myAttB.TextString = "C. STEINBURG"
+                                            Case "SERVICE CODE(S) 1"
+                                                myAttB.TextString = "-"
+                                            Case "BUILDING(S) COVERED 1"
+                                                myAttB.TextString = "A90 HIERSYS"
+                                        End Select
+
                                     Next
                                 End If
                             Next
@@ -285,6 +299,22 @@ Namespace BlockReplace
                         btr.AttSync(False, True, False)
                         blockNameB = myBrefB.Name
                         myAttsB = myBrefB.AttributeCollection
+                        For Each myAttBID As ObjectId In myAttsB
+                            Dim myAttB As AttributeReference = myAttBID.GetObject(OpenMode.ForWrite)
+                            'input the newly approved DRAWN, CHECKED, CERTIFIED Values:
+                            Select Case myAttB.Tag
+                                Case "DRAWN"
+                                    myAttB.TextString = "A. FIELDER"
+                                Case "CHECKED"
+                                    myAttB.TextString = "G. HUGHES"
+                                Case "CERTIFIED"
+                                    myAttB.TextString = "C. STEINBURG"
+                                Case "SERVICE CODE(S) 1"
+                                    myAttB.TextString = "-"
+                                Case "BUILDING(S) COVERED 1"
+                                    myAttB.TextString = "A90 HIERSYS"
+                            End Select
+                        Next
                     End If
                     'open the blockreplace.xml file to grab dumb text from any of the frames
                     'and populate our new drawing frame
