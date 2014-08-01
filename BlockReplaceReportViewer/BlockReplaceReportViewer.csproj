@@ -78,6 +78,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Report1.rdlc" />
+    <EmbeddedResource Include="Report3.rdlc">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <None Include="Drawings.xsc">
       <DependentUpon>Drawings.xsd</DependentUpon>
     </None>

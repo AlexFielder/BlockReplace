@@ -55,6 +55,7 @@
             reportDataSource1.Value = this.DrawingBindingSource;
             this.reportViewer1.LocalReport.DataSources.Add(reportDataSource1);
             this.reportViewer1.LocalReport.EnableExternalImages = true;
+            this.reportViewer1.LocalReport.EnableHyperlinks = true;
             this.reportViewer1.LocalReport.ReportEmbeddedResource = "BlockReplaceReportViewer.Report1.rdlc";
             this.reportViewer1.Location = new System.Drawing.Point(0, 0);
             this.reportViewer1.Name = "reportViewer1";
