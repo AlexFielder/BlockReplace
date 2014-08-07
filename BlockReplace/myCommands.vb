@@ -195,23 +195,12 @@ Namespace BlockReplace
                     Dim myAttsB As AttributeCollection '= myBrefB.AttributeCollection
                     Dim blockNameA As String = ""
                     Dim blockNameB As String = ""
-                    'Dim serializerm As New XmlSerializer(GetType(mappings))
-                    'Dim serializerf As New XmlSerializer(GetType(frames))
-                    'Dim serializerd As New XmlSerializer(GetType(Drawings))
-                    'Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
-                    'Dim fsm As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
-                    'Dim readerBR As XmlReader = XmlReader.Create(fsbr)
-                    'Dim readerM As XmlReader = XmlReader.Create(fsm)
                     Dim f As frames = OpenReadAndDeserializeXML(asmpath + "\Resources\BlockReplace.xml", FileMode.Open, FileAccess.Read, FileShare.None)
                     Dim m As mappings = OpenReadAndDeserializeXML(asmpath + "\Resources\Mappings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
                     Dim blockscale As Scale3d
                     drawing.oldname = acapp.Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
                     drawing.oldpath = acapp.Application.GetSystemVariable("DWGPREFIX")
 
-                    'f = CType(serializerf.Deserialize(readerBR), frames)
-                    'm = CType(serializerm.Deserialize(readerM), mappings)
-                    'fsbr.Close()
-                    'fsm.Close()
                     If myBrefA.Name.StartsWith("*") Then
                         Dim myBTR As BlockTableRecord = myBrefA.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
                         blockNameA = myBTR.Name
@@ -258,9 +247,7 @@ Namespace BlockReplace
                                                 myBrefA.BlockName, _
                                                 blockPos, _
                                                 ob.newname, _
-                                                myBrefA.ScaleFactors.X, _
-                                                myBrefA.ScaleFactors.Y, _
-                                                myBrefA.ScaleFactors.Z)
+                                                myBrefA.ScaleFactors)
                         myBrefB = selEntID2.GetObject(OpenMode.ForWrite)
                         blockNameB = myBrefB.Name
                         myAttsB = myBrefB.AttributeCollection
@@ -470,14 +457,49 @@ Namespace BlockReplace
                                                        Let pt As Point3d = New Point3d(ln.LineEnd.X + myBrefB.Position.X, ln.LineStart.Y + myBrefB.Position.Y, ln.LineEnd.Z)
                                                        Select pt
                                                        ).SingleOrDefault()
+                        Dim origscalefactor As Scale3d = myBrefA.ScaleFactors
+                        Dim scalefactor As Scale3d
+                        Select Case myBrefB.Name
+                            Case "*A3*"
+                                scalefactor = origscalefactor.MultiplyBy(0.25)
+                            Case "*A2*"
+                                scalefactor = origscalefactor.MultiplyBy(0.5)
+                            Case "*A1*"
+                                scalefactor = origscalefactor.MultiplyBy(0.75)
+                            Case "*A0*"
+                                scalefactor = origscalefactor
+                        End Select
+
                         'then insert it
                         InsertBlock(Active.Database, _
                                     myBrefA.BlockName, _
                                     configblkpos, _
                                     "Under Config Control", _
-                                    myBrefA.ScaleFactors.X, _
-                                    myBrefA.ScaleFactors.Y, _
-                                    myBrefA.ScaleFactors.Z)
+                                    scalefactor)
+                    Else
+                        Dim myBT As BlockTable = Active.Database.BlockTableId.GetObject(OpenMode.ForWrite)
+                        If myBT.Has("SB-IL_996-5.2(block)-Grid") = False Then
+                            'insert DWG file as a Block
+                            Dim myDWG As New IO.FileInfo("C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\SB-IL_996-5.2(block)-Grid.dwg")
+                            If myDWG.Exists = False Then
+                                MsgBox("The file " & myDWG.FullName & " does not exist.")
+                                Exit Sub
+                            End If
+                            'Create a blank Database
+                            Dim dwgDB As New Database(False, True)
+                            'Read a DWG file into the blank database
+                            dwgDB.ReadDwgFile(myDWG.FullName, FileOpenMode.OpenForReadAndAllShare, True, "")
+                            'insert the dwg file into the current file's block table
+                            Active.Database.Insert("SB-IL_996-5.2(block)-Grid", dwgDB, True)
+                            'close/dispose of the previously blank database.
+                            dwgDB.Dispose()
+                        End If
+                        'then insert it
+                        InsertBlock(Active.Database, _
+                                    myBrefA.BlockName, _
+                                    myBrefA.Position, _
+                                    "Under Config Control", _
+                                    myBrefA.ScaleFactors)
                     End If
                     'erase the original block
                     If Not myBrefA.ObjectId = myBrefB.ObjectId Then
@@ -490,33 +512,8 @@ Namespace BlockReplace
                     'Dim fs As FileStream
                     If Not File.Exists("C:\Temp\Drawings.xml") Then
                         SerializeAndWriteXML(d, "C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        'fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None) 'FileShare.None to prevent more than one instance of AutoCAD creating the same file.
-                        'Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        'writer.Formatting = Formatting.Indented
-                        'serializerd.Serialize(writer, d) ' so we include the xml header..?
-                        'writer.Close()
                     Else
-                        'open the existing xml file
-                        'Dim serializernew As New XmlSerializer(GetType(Drawings))
-                        'Dim fsdrawing As FileStream
-                        'Dim readerDrawing As XmlReader
-                        'Dim drawings As Drawings = BlockReplace.Drawings.Deserialize("C:\temp\Drawings.xml")
                         Dim drawings As Drawings = OpenReadAndDeserializeXML("C:\Temp\Drawings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
-                        'Dim r As Drawings
-                        'Dim drawingsXMLfilenotopened As Boolean = True
-                        'While drawingsXMLfilenotopened
-                        '    Dim locked As Boolean = False
-                        '    Try
-                        '        fsdrawing = New FileStream("C:\Temp\Drawings.xml", FileMode.Open, FileAccess.ReadWrite, FileShare.None) 'exclusive access for this thread
-                        '        readerDrawing = XmlReader.Create(fsdrawing)
-                        '        r = CType(serializernew.Deserialize(readerDrawing), Drawings)
-                        '        fsdrawing.Close()
-                        '        readerDrawing = Nothing
-                        '        drawingsXMLfilenotopened = False 'successful open, read and close
-                        '    Catch ex As IOException
-                        '        Threading.Thread.Sleep(1000) 'wait a second and try again.
-                        '    End Try
-                        'End While
                         'overwrite the contents with our updated data.
                         'to cope with re-runs we need to add this:
                         Dim dwg = (From a As DrawingsDrawing In drawings.Drawing
@@ -538,67 +535,14 @@ Namespace BlockReplace
                             drawings.Drawing.Add(drawing)
                         End If
                         SerializeAndWriteXML(drawings, "C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        'drawingsXMLfilenotopened = True
-                        'While drawingsXMLfilenotopened
-                        '    Dim locked As Boolean = False
-                        '    Try
-                        '        fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        '        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        '        writer.Formatting = Formatting.Indented
-                        '        serializerd.Serialize(writer, drawings) 'so we only include our new drawing.
-                        '        writer.Close()
-                        '        fs.Close()
-                        '        drawingsXMLfilenotopened = False 'successful write and close
-                        '    Catch ex As IOException
-                        '        Threading.Thread.Sleep(1000)
-                        '    End Try
-                        'End While
-
                     End If
-                    'Dim serializers As New XmlSerializer(GetType(Snapshots))
                     If Not File.Exists("C:\Temp\Snapshots.xml") Then
                         SerializeAndWriteXML(Snapshots, "C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        'fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        'Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        'writer.Formatting = Formatting.Indented
-                        'serializers.Serialize(writer, Snapshots) ' so we include the xml header..?
-                        'writer.Close()
                     Else
                         'open the existing xml file
-
-                        'Dim serializernew As New XmlSerializer(GetType(Snapshots))
-                        'Dim fsdrawing
-                        'Dim readerDrawing As XmlReader
                         Dim sn As Snapshots = OpenReadAndDeserializeXML("C:\Temp\Snapshots.xml", FileMode.Open, FileAccess.Read, FileShare.None)
-                        'Dim snapshotsXMLfilenotopen As Boolean = True
-                        'While snapshotsXMLfilenotopen
-                        '    Try
-                        '        fsdrawing = New FileStream("C:\Temp\Snapshots.xml", FileMode.Open, FileAccess.ReadWrite, FileShare.None)
-                        '        readerDrawing = XmlReader.Create(fsdrawing)
-                        '        sn = CType(serializernew.Deserialize(readerDrawing), Snapshots)
-                        '        fsdrawing.Close()
-                        '        readerDrawing = Nothing
-                        '        snapshotsXMLfilenotopen = False 'successful read, open and close
-                        '    Catch ex As IOException
-                        '        Threading.Thread.Sleep(1000)
-                        '    End Try
-                        'End While
                         sn.SnapshotDetails.Add(snDetails) 'add the new entry
                         SerializeAndWriteXML(sn, "C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        'snapshotsXMLfilenotopen = True
-                        'While snapshotsXMLfilenotopen
-                        '    Try
-                        '        'overwrite the contents with our updated data.
-                        '        sn.SnapshotDetails.Add(snDetails)
-                        '        fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                        '        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        '        writer.Formatting = Formatting.Indented
-                        '        serializers.Serialize(writer, sn) 'so we only include our new drawing.
-                        '        writer.Close()
-                        '    Catch ex As IOException
-                        '        Threading.Thread.Sleep(1000)
-                        '    End Try
-                        'End While
                     End If
                     myTrans.Commit()
                 End Using
@@ -1770,18 +1714,14 @@ Namespace BlockReplace
         ''' <param name="BTRToAddTo">the BlockTableRecord we're adding this BlockReference to.</param>
         ''' <param name="InsPt">the Point3d insertion point for the new block</param>
         ''' <param name="BlockName">the name of the block to add</param>
-        ''' <param name="XScale">the Xscale of the existing block</param>
-        ''' <param name="YScale">the Yscale of the existing block</param>
-        ''' <param name="ZScale">the Zscale of the existing block</param>
+        ''' <param name="scalefactor">the scale of the block we're inserting</param>
         ''' <returns>returns the objectId of the newly inserted blockreference</returns>
         ''' <remarks></remarks>
         Public Function InsertBlock(ByVal DatabaseIn As Database, _
                         ByVal btrtoaddto As String, _
                         ByVal inspt As Geometry.Point3d, _
                         ByVal blockname As String, _
-                        ByVal xscale As Double, _
-                        ByVal yscale As Double, _
-                        ByVal zscale As Double) As DatabaseServices.ObjectId
+                        ByVal scalefactor As Scale3d) As DatabaseServices.ObjectId
             Using myTrans As Transaction = DatabaseIn.TransactionManager.StartTransaction
                 Dim myBlockTable As BlockTable = DatabaseIn.BlockTableId.GetObject(OpenMode.ForRead)
                 'If the suppplied Block Name is not
@@ -1799,7 +1739,7 @@ Namespace BlockReplace
                 'Create a new BlockReference
                 Dim myBlockRef As New BlockReference(inspt, myBlockDef.Id)
                 'Set the scale factors
-                myBlockRef.ScaleFactors = New Geometry.Scale3d(xscale, yscale, zscale)
+                myBlockRef.ScaleFactors = scalefactor
                 'Add the new BlockReference to the specified BlockTableRecord
                 myBlockTableRecord.AppendEntity(myBlockRef)
                 'Add the BlockReference to the BlockTableRecord.
@@ -2016,11 +1956,18 @@ Namespace BlockReplace
                         'commented out this for now - can return to this later!
                         'Dim regex = New Regex("(?<chngnote>CHANGE NO \d*)\|(?<date>DATE \d*)\|(?<issue>ISSUE \d*)\|(?<dwgnum>DRAWING NUMBER 1)\|(?<shtnum>SHEET NUMBER 1)")
                         Dim AllSearchTerm As Regex = New Regex("(.* )(\d*)")
-                        Dim ChangeNoteSearchTerm As Regex = New Regex("(CHANGE NO \d*)")
-                        Dim DateSearchTerm As Regex = New Regex("(DATE \d*)")
-                        Dim IssueSearchTerm As Regex = New Regex("(ISSUE \d*)")
-                        Dim DrawingNumberSearchTerm As Regex = New Regex("(DRAWING NUMBER 1)")
-                        Dim SheetNumberSearchTerm As Regex = New Regex("(SHEET NUMBER 1)")
+                        Dim regexcoll As List(Of Regex) = New List(Of Regex)
+                        regexcoll.Add(New Regex("(CHANGE NO \d*)"))
+                        regexcoll.Add(New Regex("(DATE \d*)"))
+                        regexcoll.Add(New Regex("(ISSUE \d*)"))
+                        regexcoll.Add(New Regex("(DRAWING NUMBER 1)"))
+                        regexcoll.Add(New Regex("(SHEET NUMBER 1)"))
+                        'Dim ChangeNoteSearchTerm As Regex = New Regex("(CHANGE NO \d*)")
+                        'Dim DateSearchTerm As Regex = New Regex("(DATE \d*)")
+                        'Dim IssueSearchTerm As Regex = New Regex("(ISSUE \d*)")
+                        'Dim DrawingNumberSearchTerm As Regex = New Regex("(DRAWING NUMBER 1)")
+                        'Dim SheetNumberSearchTerm As Regex = New Regex("(SHEET NUMBER 1)")
+                        
                         Dim queryMatchingAll _
                             = From a As ObjectId In attcoll
                               Let b As AttributeReference = a.GetObject(OpenMode.ForRead)
@@ -2032,66 +1979,93 @@ Namespace BlockReplace
                               Into groupName = Group
 
                         For Each gGroup In queryMatchingAll
-                            'Active.WriteMessage(vbLf + "querymatchingall: " + (gGroup.groupKey) + vbLf)
                             Dim rev As New Revision
                             Dim chngNote As AttRef = Nothing
                             Dim issDate As AttRef = Nothing
                             Dim issue As AttRef = Nothing
 
-
-                            'chngNote = GetAttributeReferenceFromQMA(ChangeNoteSearchTerm, gGroup)
-                            'issDate = GetAttributeReferenceFromQMA(DateSearchTerm, gGroup)
-                            'issue = GetAttributeReferenceFromQMA(IssueSearchTerm, gGroup)
-                            'dwgnum = GetAttributeReferenceFromQMA(DrawingNumberSearchTerm, gGroup).attRefText.Replace("/", "-")
-                            'shtnum = GetAttributeReferenceFromQMA(SheetNumberSearchTerm, gGroup).attRefText
-
-                            Dim CN = (From item In gGroup.groupName
-                                                Let matches = ChangeNoteSearchTerm.Matches(item.b.Tag)
+                            For i = 0 To regexcoll.Count - 1
+                                Dim collInt As Integer = i
+                                Dim result = (From item In gGroup.groupName
+                                                Let matches = regexcoll.Item(collInt).Matches(item.b.Tag)
                                                 Where (matches.Count > 0)
                                                 Select item.b).FirstOrDefault()
-                            If Not CN = Nothing Then
-                                chngNote = New AttRef
-                                chngNote.attrefId = CN.ObjectId
-                                chngNote.attRefTag = CN.Tag
-                                chngNote.attRefText = CN.TextString
-                            End If
-                            Dim DT = (From item In gGroup.groupName
-                                      Let matches = DateSearchTerm.Matches(item.b.Tag)
-                                      Where (matches.Count > 0)
-                                      Select item.b).FirstOrDefault()
-                            If Not DT = Nothing Then
-                                issDate = New AttRef
-                                issDate.attrefId = DT.ObjectId
-                                issDate.attRefTag = DT.Tag
-                                issDate.attRefText = DT.TextString
-                            End If
-                            Dim RV = (From item In gGroup.groupName
-                                      Let matches = IssueSearchTerm.Matches(item.b.Tag)
-                                      Where (matches.Count > 0)
-                                      Select item.b).FirstOrDefault()
-                            If Not RV = Nothing Then
-                                issue = New AttRef
-                                issue.attrefId = RV.ObjectId
-                                issue.attRefTag = RV.Tag
-                                issue.attRefText = RV.TextString
-                            End If
-                            Dim dnum = (From item In gGroup.groupName
-                                       Let matches = DrawingNumberSearchTerm.Matches(item.b.Tag)
-                                       Where matches.Count > 0
-                                       Select item.b).FirstOrDefault()
-                            If Not dnum = Nothing Then
-                                dwgnum = dnum.TextString.Replace("/", "-")
-                                If dwgnum.StartsWith("HR-4-") Then
-                                    ChangeLayoutToA3()
+                                If Not result = Nothing Then
+                                    Select Case i
+                                        Case 0 'Change no.
+                                            chngNote = New AttRef
+                                            chngNote.attrefId = result.ObjectId
+                                            chngNote.attRefTag = result.Tag
+                                            chngNote.attRefText = result.TextString
+                                        Case 1 'date
+                                            issDate = New AttRef
+                                            issDate.attrefId = result.ObjectId
+                                            issDate.attRefTag = result.Tag
+                                            issDate.attRefText = result.TextString
+                                        Case 2 'issue
+                                            issue = New AttRef
+                                            issue.attrefId = result.ObjectId
+                                            issue.attRefTag = result.Tag
+                                            issue.attRefText = result.TextString
+                                        Case 3 'drawing number
+                                            dwgnum = result.TextString.Replace("/", "-")
+                                            If dwgnum.StartsWith("HR-4-") Then
+                                                ChangeLayoutToA3()
+                                            End If
+                                        Case 4 'sheet number
+                                            shtnum = result.TextString
+                                    End Select
                                 End If
-                            End If
-                            Dim snum = (From item In gGroup.groupName
-                                       Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
-                                       Where matches.Count > 0
-                                       Select item.b).FirstOrDefault()
-                            If Not snum = Nothing Then
-                                shtnum = snum.TextString
-                            End If
+                            Next
+
+
+                            'Dim CN = (From item In gGroup.groupName
+                            '                    Let matches = ChangeNoteSearchTerm.Matches(item.b.Tag)
+                            '                    Where (matches.Count > 0)
+                            '                    Select item.b).FirstOrDefault()
+                            'If Not CN = Nothing Then
+                            '    chngNote = New AttRef
+                            '    chngNote.attrefId = CN.ObjectId
+                            '    chngNote.attRefTag = CN.Tag
+                            '    chngNote.attRefText = CN.TextString
+                            'End If
+                            'Dim DT = (From item In gGroup.groupName
+                            '          Let matches = DateSearchTerm.Matches(item.b.Tag)
+                            '          Where (matches.Count > 0)
+                            '          Select item.b).FirstOrDefault()
+                            'If Not DT = Nothing Then
+                            '    issDate = New AttRef
+                            '    issDate.attrefId = DT.ObjectId
+                            '    issDate.attRefTag = DT.Tag
+                            '    issDate.attRefText = DT.TextString
+                            'End If
+                            'Dim RV = (From item In gGroup.groupName
+                            '          Let matches = IssueSearchTerm.Matches(item.b.Tag)
+                            '          Where (matches.Count > 0)
+                            '          Select item.b).FirstOrDefault()
+                            'If Not RV = Nothing Then
+                            '    issue = New AttRef
+                            '    issue.attrefId = RV.ObjectId
+                            '    issue.attRefTag = RV.Tag
+                            '    issue.attRefText = RV.TextString
+                            'End If
+                            'Dim dnum = (From item In gGroup.groupName
+                            '           Let matches = DrawingNumberSearchTerm.Matches(item.b.Tag)
+                            '           Where matches.Count > 0
+                            '           Select item.b).FirstOrDefault()
+                            'If Not dnum = Nothing Then
+                            '    dwgnum = dnum.TextString.Replace("/", "-")
+                            '    If dwgnum.StartsWith("HR-4-") Then
+                            '        ChangeLayoutToA3()
+                            '    End If
+                            'End If
+                            'Dim snum = (From item In gGroup.groupName
+                            '           Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
+                            '           Where matches.Count > 0
+                            '           Select item.b).FirstOrDefault()
+                            'If Not snum = Nothing Then
+                            '    shtnum = snum.TextString
+                            'End If
                             If Not chngNote Is Nothing And Not issDate Is Nothing And Not issue Is Nothing Then
                                 rev.RevChangeNote = chngNote
                                 rev.RevDate = issDate
@@ -2099,6 +2073,7 @@ Namespace BlockReplace
                                 revisions.Add(rev)
                             End If
                             'Active.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
+                            regexcoll = Nothing
                             chngNote = Nothing
                             issDate = Nothing
                             issue = Nothing
@@ -2114,7 +2089,6 @@ Namespace BlockReplace
                         Next
                         'And then check for RN###### revisions.
                         Dim RNChngNote As Integer = revisions.FindLastIndex(AddressOf FindLastRNChngNote)
-                        'Dim RNChngNote As Integer = revisions.FindLastIndex(Function(rev As Revision) rev.RevChangeNote.attRefText Like "RN*")
                         If Not RNChngNote = -1 Then 'ie we found a match
                             For i As Integer = RNChngNote + 1 To revisions.Count - 1
                                 revisions.Item(i).RevIssue.attRefText = ""
@@ -2220,12 +2194,12 @@ Namespace BlockReplace
                     'save thumbnail to file & saveas
                     Active.Database.ThumbnailBitmap = Active.Document.CapturePreviewImage(320, 240)
                     Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
-                    Dim serializerd As New XmlSerializer(GetType(Drawings))
-                    Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
-                    Dim readerD As XmlReader = XmlReader.Create(fsd)
-                    Dim drawingreport As Drawings
-                    drawingreport = CType(serializerd.Deserialize(readerD), Drawings)
-                    fsd.Close()
+                    'Dim serializerd As New XmlSerializer(GetType(Drawings))
+                    'Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
+                    'Dim readerD As XmlReader = XmlReader.Create(fsd)
+                    Dim drawingreport As Drawings = OpenReadAndDeserializeXML("C:\temp\drawings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+                    'drawingreport = CType(serializerd.Deserialize(readerD), Drawings)
+                    'fsd.Close()
                     For Each dwg In drawingreport.Drawing
                         If Path.GetFileNameWithoutExtension(dwg.oldname) = Path.GetFileNameWithoutExtension(originalfilename) Then
                             Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(newfilename) & "_After.png"
@@ -2244,11 +2218,12 @@ Namespace BlockReplace
                             Exit For
                         End If
                     Next
-                    fsd = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
-                    Dim writer As New XmlTextWriter(fsd, Encoding.Unicode)
-                    writer.Formatting = Formatting.Indented
-                    serializerd.Serialize(writer, drawingreport)
-                    writer.Close()
+                    SerializeAndWriteXML(drawingreport, "C:\temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                    'fsd = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
+                    'Dim writer As New XmlTextWriter(fsd, Encoding.Unicode)
+                    'writer.Formatting = Formatting.Indented
+                    'serializerd.Serialize(writer, drawingreport)
+                    'writer.Close()
                     Active.Editor.Regen()
                     Active.Editor.UpdateScreen()
                 End Using
@@ -2459,7 +2434,7 @@ Namespace BlockReplace
                         'we want to look for and erase blockreferences that aren't our 5.2 border:
                         Dim br As BlockReference = TryCast(objId.GetObject(OpenMode.ForRead), BlockReference)
                         If br IsNot Nothing Then
-                            If Not br.Name Like "*5.2(block)" And Not br.Name = "3rd ANGLE + SCALE NOTE" And Not br.Name = "Under Config Control" Then
+                            If Not br.Name Like "*5.2(block)" And Not br.Name = "3rd ANGLE + SCALE NOTE" And Not br.Name = "Under Config Control" And Not br.Name = "SB-IL_996-5.2(block)-Grid" Then
                                 br.UpgradeOpen()
                                 br.[Erase]()
                             End If
