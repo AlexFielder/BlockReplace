@@ -628,16 +628,16 @@ Namespace BlockReplace
                     readerDrawing = XmlReader.Create(fsdrawing)
                     Dim deserializer As XmlSerializer
 
-                    If filename.Contains("Drawings") Then
+                    If filename.EndsWith("Drawings.xml", StringComparison.OrdinalIgnoreCase) Then
                         deserializer = New XmlSerializer(GetType(Drawings))
                         serialized = CType(deserializer.Deserialize(readerDrawing), Drawings)
-                    ElseIf filename.Contains("Snapshots") Then
+                    ElseIf filename.EndsWith("Snapshots.xml", StringComparison.OrdinalIgnoreCase) Then
                         deserializer = New XmlSerializer(GetType(Snapshots))
                         serialized = CType(deserializer.Deserialize(readerDrawing), Snapshots)
-                    ElseIf filename.Contains("BlockReplace") Then
+                    ElseIf filename.EndsWith("BlockReplace.xml", StringComparison.OrdinalIgnoreCase) Then
                         deserializer = New XmlSerializer(GetType(frames))
                         serialized = CType(deserializer.Deserialize(readerDrawing), frames)
-                    ElseIf filename.Contains("Mappings") Then
+                    ElseIf filename.EndsWith("Mappings.xml", StringComparison.OrdinalIgnoreCase) Then
                         deserializer = New XmlSerializer(GetType(mappings))
                         serialized = CType(deserializer.Deserialize(readerDrawing), mappings)
                     End If
@@ -1249,7 +1249,7 @@ Namespace BlockReplace
         ''' <param name="intersectionPoints"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetIntersectionPointsFromBlockEntities(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
+        Private Shared Function GetIntersectionPointsFromBlockEntities(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
             Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
                 Dim oc = ent2.ObjectId.ObjectClass
                 If (oc.IsDerivedFrom(RXClass.GetClass(GetType(BlockReference)))) Then
