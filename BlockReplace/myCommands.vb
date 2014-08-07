@@ -16,6 +16,11 @@ Imports Autodesk.AutoCAD.DatabaseServices
 Imports Autodesk.AutoCAD.EditorInput
 Imports Autodesk.AutoCAD.Geometry
 Imports Autodesk.AutoCAD.Runtime
+Imports Autodesk.AutoCAD.ApplicationServices.DocumentExtension
+Imports acapp = Autodesk.AutoCAD.ApplicationServices
+Imports Autodesk.AutoCAD.PlottingServices
+Imports System.Threading.Tasks
+'Imports BlockReplace.BlockReplace.
 
 ' This line is not mandatory, but improves loading performances
 <Assembly: CommandClass(GetType(BlockReplace.MyCommands))> 
@@ -151,9 +156,9 @@ Namespace BlockReplace
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
             'Dim selEntIDs As ObjectId()
             Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-            Dim tmpserializer As New XmlSerializer(GetType(mappings))
-            Dim tmpfs As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
-            Dim tmpreader As XmlReader = XmlReader.Create(tmpfs)
+            'Dim tmpserializer As New XmlSerializer(GetType(mappings))
+            'Dim tmpfs As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
+            'Dim tmpreader As XmlReader = XmlReader.Create(tmpfs)
             'new these objects here.
             snDetails = New SnapshotsSnapshotDetails
             drawing = New DrawingsDrawing
@@ -163,13 +168,15 @@ Namespace BlockReplace
             DrawingID = g.ToString()
             drawing.DrawingID = DrawingID
             Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(originalfilename) & "_Before.png"
-            Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, _
+            Dim ext As Extents3d = If(CShort(acapp.Application.GetSystemVariable("cvport")) = 1, _
                                       New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), _
                                       New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
-            drawing.BeforeImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
-            
-            tmpm = CType(tmpserializer.Deserialize(tmpreader), mappings)
-            tmpfs.Close()
+            drawing.BeforeImgURL = ScreenShotToFile(fn)
+
+            tmpm = OpenReadAndDeserializeXML(asmpath + "\Resources\Mappings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+
+            'tmpm = CType(tmpserializer.Deserialize(tmpreader), mappings)
+            'tmpfs.Close()
             If ss.Count > 1 Then
                 ForEach(Of BlockReference)(Active.Database, AddressOf ProcessBlockReferences)
             Else
@@ -178,38 +185,44 @@ Namespace BlockReplace
             End If
             'we can now choose to drop this part of the tool- if the before & after snapshots are good enough!
             'CreateSnapshotsForAreasOfInterest(ss, asmpath)
-            tmpfs.Dispose()
+            'tmpfs.Dispose()
             Dim selEntID2 As ObjectId '=  Active.editor.GetEntity("Select New block:").ObjectId
             Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
                 Using myTrans As Transaction = Active.Database.TransactionManager.StartTransaction
-                    Dim myBrefA As BlockReference = selEntID.GetObject(OpenMode.ForWrite)
+                    Dim myBrefA As BlockReference = SelEntId.GetObject(OpenMode.ForWrite)
                     Dim myBrefB As BlockReference '= selEntID2.GetObject(OpenMode.ForWrite)
                     Dim myAttsA As AttributeCollection = myBrefA.AttributeCollection
                     Dim myAttsB As AttributeCollection '= myBrefB.AttributeCollection
                     Dim blockNameA As String = ""
                     Dim blockNameB As String = ""
-                    Dim serializerm As New XmlSerializer(GetType(mappings))
-                    Dim serializerf As New XmlSerializer(GetType(frames))
-                    Dim serializerd As New XmlSerializer(GetType(Drawings))
+                    'Dim serializerm As New XmlSerializer(GetType(mappings))
+                    'Dim serializerf As New XmlSerializer(GetType(frames))
+                    'Dim serializerd As New XmlSerializer(GetType(Drawings))
+                    'Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
+                    'Dim fsm As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
+                    'Dim readerBR As XmlReader = XmlReader.Create(fsbr)
+                    'Dim readerM As XmlReader = XmlReader.Create(fsm)
+                    Dim f As frames = OpenReadAndDeserializeXML(asmpath + "\Resources\BlockReplace.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+                    Dim m As mappings = OpenReadAndDeserializeXML(asmpath + "\Resources\Mappings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+                    Dim blockscale As Scale3d
+                    drawing.oldname = acapp.Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
+                    drawing.oldpath = acapp.Application.GetSystemVariable("DWGPREFIX")
 
-                    Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
-                    Dim fsm As New FileStream(asmpath + "\Resources\Mappings.xml", FileMode.Open)
-                    Dim readerBR As XmlReader = XmlReader.Create(fsbr)
-                    Dim readerM As XmlReader = XmlReader.Create(fsm)
-                    Dim f As frames
-                    Dim m As mappings
-                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
-                    drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
-
-                    f = CType(serializerf.Deserialize(readerBR), frames)
-                    m = CType(serializerm.Deserialize(readerM), mappings)
-                    fsbr.Close()
-                    fsm.Close()
+                    'f = CType(serializerf.Deserialize(readerBR), frames)
+                    'm = CType(serializerm.Deserialize(readerM), mappings)
+                    'fsbr.Close()
+                    'fsm.Close()
                     If myBrefA.Name.StartsWith("*") Then
                         Dim myBTR As BlockTableRecord = myBrefA.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
                         blockNameA = myBTR.Name
                     Else
                         blockNameA = myBrefA.Name
+                        'applying scalefactors to the blockreference works, but it messes up the search for text so...?
+                        If Not myBrefA.ScaleFactors.X = 1 Or Not myBrefA.ScaleFactors.Y = 1 Or Not myBrefA.ScaleFactors.Z = 1 Then
+                            blockscale = myBrefA.ScaleFactors
+                        Else
+                            blockscale = New Scale3d(1)
+                        End If
                     End If
                     If Not blockNameA Like "*5.2(block)" Then
 
@@ -262,16 +275,54 @@ Namespace BlockReplace
                                             myAttB.TextString = getCorrectedDrawingNumber(Active.Document, myAtt, myAttB.Tag, blockNameA)
                                             'myAttB.TextString = myAtt.TextString
                                         End If
+                                        'input the newly approved DRAWN, CHECKED, CERTIFIED Values:
+                                        Select Case myAttB.Tag
+                                            Case "DRAWN"
+                                                myAttB.TextString = "A. FIELDER"
+                                            Case "CHECKED"
+                                                myAttB.TextString = "G. HUGHES"
+                                            Case "CERTIFIED"
+                                                myAttB.TextString = "C. STEINBURG"
+                                            Case "SERVICE CODE(S) 1"
+                                                myAttB.TextString = "-"
+                                            Case "BUILDING(S) COVERED 1"
+                                                myAttB.TextString = "A90 HIERSYS"
+                                            Case "COPYRIGHT YEAR"
+                                                If myAttB.TextString = "" Then
+                                                    myAttB.TextString = "2012"
+                                                End If
+                                        End Select
                                     Next
                                 End If
                             Next
                         Next
                     Else ' we have a 5.2 version frame already & should update it to our latest version.
-                        'this doesn't work for whatever reason. reverted to original code for now.
-                        'myBrefB = myTrans.GetObject(ReplaceBlock(myBrefA.ObjectId), OpenMode.ForWrite)
-                        myBrefB = myTrans.GetObject(myBrefA.ObjectId, OpenMode.ForRead)
+                        myBrefB = myTrans.GetObject(ReplaceBlock(myBrefA.ObjectId), OpenMode.ForWrite)
+                        Dim bt As BlockTable = DirectCast(myTrans.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
+                        Dim btr As BlockTableRecord = DirectCast(myTrans.GetObject(bt(myBrefB.Name), OpenMode.ForRead), BlockTableRecord)
+                        btr.AttSync(False, True, False)
                         blockNameB = myBrefB.Name
                         myAttsB = myBrefB.AttributeCollection
+                        For Each myAttBID As ObjectId In myAttsB
+                            Dim myAttB As AttributeReference = myAttBID.GetObject(OpenMode.ForWrite)
+                            'input the newly approved DRAWN, CHECKED, CERTIFIED Values:
+                            Select Case myAttB.Tag
+                                Case "DRAWN"
+                                    myAttB.TextString = "A. FIELDER"
+                                Case "CHECKED"
+                                    myAttB.TextString = "G. HUGHES"
+                                Case "CERTIFIED"
+                                    myAttB.TextString = "C. STEINBURG"
+                                Case "SERVICE CODE(S) 1"
+                                    myAttB.TextString = "-"
+                                Case "BUILDING(S) COVERED 1"
+                                    myAttB.TextString = "A90 HIERSYS"
+                                Case "COPYRIGHT YEAR"
+                                    If myAttB.TextString = "" Then
+                                        myAttB.TextString = "2012"
+                                    End If
+                            End Select
+                        Next
                     End If
                     'open the blockreplace.xml file to grab dumb text from any of the frames
                     'and populate our new drawing frame
@@ -314,7 +365,12 @@ Namespace BlockReplace
                                     tmppntcoll.Add(New Point3d(Pnt3d.X + myBrefB.Position.X, Pnt3d.Y + myBrefB.Position.Y, 0))
                                 Next
                                 Dim linecount As Integer = 0
-                                tmpstr = CollectTextFromArea(tmppntcoll:=tmppntcoll, locName:=att.name, reverseSort:=False, lineCount:=linecount)
+                                tmpstr = CollectTextFromArea(tmppntcoll,
+                                                             att.name,
+                                                             False,
+                                                              linecount,
+                                                               myBrefA.ScaleFactors.X,
+                                                               myBrefA.Position)
                                 Dim attr As AttributeReference = (From tmpatt As ObjectId In myAttsB
                                                                   Let attref As AttributeReference = tmpatt.GetObject(OpenMode.ForWrite)
                                                                   Where attref.Tag = att.AttributeName
@@ -332,13 +388,13 @@ Namespace BlockReplace
                                     End If
                                     PadSnapshotsForAreasOfInterest(att, attr, tmpstr, False)
                                 End If
-                                End If
+                            End If
                         Next
                     End If
 
                     'move text notes out of the way but only for non-Item List drawings.
                     If Not myBrefB.Name Like "*IL*" Then
-                        GroupAndMoveTextNotes(ext, myBrefB.ObjectId)
+                        GroupAndMoveTextNotes(ext, myBrefB.ObjectId, myBrefB.Position)
                     End If
                     'then delete extra lines, text, mtext and blocks which are in the original border.
                     Dim sblines = (From s In f.DrawingFrame
@@ -379,6 +435,7 @@ Namespace BlockReplace
                                 Dim linestart As Point3d = New Point3d(Xline.LineStart.X + myBrefB.Position.X, Xline.LineStart.Y + myBrefB.Position.Y, 0)
                                 Dim lineend As Point3d = New Point3d(Xline.LineEnd.X + myBrefB.Position.X, Xline.LineEnd.Y + myBrefB.Position.Y, 0)
                                 Dim ln = New Line(linestart, lineend)
+                                ln.TransformBy(Matrix3d.Scaling(blockscale.X, myBrefB.Position))
                                 Dim btr = DirectCast(myTrans.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
                                 btr.AppendEntity(ln)
                                 ln.Layer = Xline.Layer
@@ -387,32 +444,82 @@ Namespace BlockReplace
                                 lineend = Nothing
                             End If
                         End If
-
                     Next
+                    'Add the "Under Configuration Control" Block
+                    If Not myBrefB.Name Like "*IL*" Then
+                        Dim myBT As BlockTable = Active.Database.BlockTableId.GetObject(OpenMode.ForWrite)
+                        If myBT.Has("Under Config Control") = False Then
+                            'insert DWG file as a Block
+                            Dim myDWG As New IO.FileInfo("C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\Under Config Control.dwg")
+                            If myDWG.Exists = False Then
+                                MsgBox("The file " & myDWG.FullName & " does not exist.")
+                                Exit Sub
+                            End If
+                            'Create a blank Database
+                            Dim dwgDB As New Database(False, True)
+                            'Read a DWG file into the blank database
+                            dwgDB.ReadDwgFile(myDWG.FullName, FileOpenMode.OpenForReadAndAllShare, True, "")
+                            'insert the dwg file into the current file's block table
+                            Active.Database.Insert("Under Config Control", dwgDB, True)
+                            'close/dispose of the previously blank database.
+                            dwgDB.Dispose()
+                        End If
+                        'get the relevant insert point for our new title block and translate it depending on where the new block needs to be.
+                        Dim configblkpos As Point3d = (From ln In lines
+                                                       Where ln.name = "CAD REF"
+                                                       Let pt As Point3d = New Point3d(ln.LineEnd.X + myBrefB.Position.X, ln.LineStart.Y + myBrefB.Position.Y, ln.LineEnd.Z)
+                                                       Select pt
+                                                       ).SingleOrDefault()
+                        'then insert it
+                        InsertBlock(Active.Database, _
+                                    myBrefA.BlockName, _
+                                    configblkpos, _
+                                    "Under Config Control", _
+                                    myBrefA.ScaleFactors.X, _
+                                    myBrefA.ScaleFactors.Y, _
+                                    myBrefA.ScaleFactors.Z)
+                    End If
+                    'erase the original block
                     If Not myBrefA.ObjectId = myBrefB.ObjectId Then
                         myBrefA.Erase()
                     End If
+                    'Report time
                     d.Drawing.Add(drawing)
                     Snapshots.SnapshotDetails.Add(snDetails)
-                    Dim fs As FileStream
+
+                    'Dim fs As FileStream
                     If Not File.Exists("C:\Temp\Drawings.xml") Then
-                        fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
-                        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        writer.Formatting = Formatting.Indented
-                        serializerd.Serialize(writer, d) ' so we include the xml header..?
-                        writer.Close()
+                        SerializeAndWriteXML(d, "C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        'fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None) 'FileShare.None to prevent more than one instance of AutoCAD creating the same file.
+                        'Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
+                        'writer.Formatting = Formatting.Indented
+                        'serializerd.Serialize(writer, d) ' so we include the xml header..?
+                        'writer.Close()
                     Else
                         'open the existing xml file
-                        Dim serializernew As New XmlSerializer(GetType(Drawings))
-                        Dim fsdrawing As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
-                        Dim readerDrawing As XmlReader = XmlReader.Create(fsdrawing)
-                        Dim r As Drawings
-                        r = CType(serializernew.Deserialize(readerDrawing), Drawings)
-                        fsdrawing.Close()
-                        readerDrawing = Nothing
+                        'Dim serializernew As New XmlSerializer(GetType(Drawings))
+                        'Dim fsdrawing As FileStream
+                        'Dim readerDrawing As XmlReader
+                        'Dim drawings As Drawings = BlockReplace.Drawings.Deserialize("C:\temp\Drawings.xml")
+                        Dim drawings As Drawings = OpenReadAndDeserializeXML("C:\Temp\Drawings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+                        'Dim r As Drawings
+                        'Dim drawingsXMLfilenotopened As Boolean = True
+                        'While drawingsXMLfilenotopened
+                        '    Dim locked As Boolean = False
+                        '    Try
+                        '        fsdrawing = New FileStream("C:\Temp\Drawings.xml", FileMode.Open, FileAccess.ReadWrite, FileShare.None) 'exclusive access for this thread
+                        '        readerDrawing = XmlReader.Create(fsdrawing)
+                        '        r = CType(serializernew.Deserialize(readerDrawing), Drawings)
+                        '        fsdrawing.Close()
+                        '        readerDrawing = Nothing
+                        '        drawingsXMLfilenotopened = False 'successful open, read and close
+                        '    Catch ex As IOException
+                        '        Threading.Thread.Sleep(1000) 'wait a second and try again.
+                        '    End Try
+                        'End While
                         'overwrite the contents with our updated data.
                         'to cope with re-runs we need to add this:
-                        Dim dwg = (From a As DrawingsDrawing In r.Drawing
+                        Dim dwg = (From a As DrawingsDrawing In drawings.Drawing
                                    Where Path.GetFileNameWithoutExtension(a.oldname) = _
                                    Path.GetFileNameWithoutExtension(originalfilename)
                                    Select a).FirstOrDefault()
@@ -428,37 +535,70 @@ Namespace BlockReplace
                             dwg.revisiondatestr = drawing.revisiondatestr
                         Else
                             'otherwise just add the new drawing to the list:
-                            r.Drawing.Add(drawing)
+                            drawings.Drawing.Add(drawing)
                         End If
-                        fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
-                        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        writer.Formatting = Formatting.Indented
-                        serializerd.Serialize(writer, r) 'so we only include our new drawing.
-                        writer.Close()
+                        SerializeAndWriteXML(drawings, "C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        'drawingsXMLfilenotopened = True
+                        'While drawingsXMLfilenotopened
+                        '    Dim locked As Boolean = False
+                        '    Try
+                        '        fs = New FileStream("C:\Temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        '        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
+                        '        writer.Formatting = Formatting.Indented
+                        '        serializerd.Serialize(writer, drawings) 'so we only include our new drawing.
+                        '        writer.Close()
+                        '        fs.Close()
+                        '        drawingsXMLfilenotopened = False 'successful write and close
+                        '    Catch ex As IOException
+                        '        Threading.Thread.Sleep(1000)
+                        '    End Try
+                        'End While
+
                     End If
-                    Dim serializers As New XmlSerializer(GetType(Snapshots))
+                    'Dim serializers As New XmlSerializer(GetType(Snapshots))
                     If Not File.Exists("C:\Temp\Snapshots.xml") Then
-                        fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create)
-                        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        writer.Formatting = Formatting.Indented
-                        serializers.Serialize(writer, Snapshots) ' so we include the xml header..?
-                        writer.Close()
+                        SerializeAndWriteXML(Snapshots, "C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        'fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        'Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
+                        'writer.Formatting = Formatting.Indented
+                        'serializers.Serialize(writer, Snapshots) ' so we include the xml header..?
+                        'writer.Close()
                     Else
                         'open the existing xml file
-                        Dim serializernew As New XmlSerializer(GetType(Snapshots))
-                        Dim fsdrawing As New FileStream("C:\Temp\Snapshots.xml", FileMode.Open)
-                        Dim readerDrawing As XmlReader = XmlReader.Create(fsdrawing)
-                        Dim sn As Snapshots
-                        sn = CType(serializernew.Deserialize(readerDrawing), Snapshots)
-                        fsdrawing.Close()
-                        readerDrawing = Nothing
-                        'overwrite the contents with our updated data.
-                        sn.SnapshotDetails.Add(snDetails)
-                        fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create)
-                        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
-                        writer.Formatting = Formatting.Indented
-                        serializers.Serialize(writer, sn) 'so we only include our new drawing.
-                        writer.Close()
+
+                        'Dim serializernew As New XmlSerializer(GetType(Snapshots))
+                        'Dim fsdrawing
+                        'Dim readerDrawing As XmlReader
+                        Dim sn As Snapshots = OpenReadAndDeserializeXML("C:\Temp\Snapshots.xml", FileMode.Open, FileAccess.Read, FileShare.None)
+                        'Dim snapshotsXMLfilenotopen As Boolean = True
+                        'While snapshotsXMLfilenotopen
+                        '    Try
+                        '        fsdrawing = New FileStream("C:\Temp\Snapshots.xml", FileMode.Open, FileAccess.ReadWrite, FileShare.None)
+                        '        readerDrawing = XmlReader.Create(fsdrawing)
+                        '        sn = CType(serializernew.Deserialize(readerDrawing), Snapshots)
+                        '        fsdrawing.Close()
+                        '        readerDrawing = Nothing
+                        '        snapshotsXMLfilenotopen = False 'successful read, open and close
+                        '    Catch ex As IOException
+                        '        Threading.Thread.Sleep(1000)
+                        '    End Try
+                        'End While
+                        sn.SnapshotDetails.Add(snDetails) 'add the new entry
+                        SerializeAndWriteXML(sn, "C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        'snapshotsXMLfilenotopen = True
+                        'While snapshotsXMLfilenotopen
+                        '    Try
+                        '        'overwrite the contents with our updated data.
+                        '        sn.SnapshotDetails.Add(snDetails)
+                        '        fs = New FileStream("C:\Temp\Snapshots.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
+                        '        Dim writer As New XmlTextWriter(fs, Encoding.Unicode)
+                        '        writer.Formatting = Formatting.Indented
+                        '        serializers.Serialize(writer, sn) 'so we only include our new drawing.
+                        '        writer.Close()
+                        '    Catch ex As IOException
+                        '        Threading.Thread.Sleep(1000)
+                        '    End Try
+                        'End While
                     End If
                     myTrans.Commit()
                 End Using
@@ -466,6 +606,82 @@ Namespace BlockReplace
             'cleanup some things between drawings or FAIL.
             drawing = Nothing
             snDetails = Nothing
+        End Sub
+
+        ''' <summary>
+        ''' Provides a method to open, read and deserialize any given xml file whose schema we know about.
+        ''' </summary>
+        ''' <param name="filename">the file to open</param>
+        ''' <param name="fileMode">the filemode to use</param>
+        ''' <param name="fileAccess">the kind of access we need</param>
+        ''' <param name="fileShare">share the file or not</param>
+        ''' <returns>Returns and object matching the schema we need based on the filename passed to it.</returns>
+        ''' <remarks></remarks>
+        Private Shared Function OpenReadAndDeserializeXML(filename As String, fileMode As FileMode, fileAccess As FileAccess, fileShare As FileShare)
+            Dim fsdrawing As FileStream
+            Dim readerDrawing As XmlReader
+            Dim drawingsXMLfilenotopened As Boolean = True
+            Dim serialized As Object = Nothing
+            While drawingsXMLfilenotopened
+                Try
+                    fsdrawing = New FileStream(filename, fileMode, fileAccess, fileShare) 'exclusive access for this thread
+                    readerDrawing = XmlReader.Create(fsdrawing)
+                    Dim deserializer As XmlSerializer
+
+                    If filename.Contains("Drawings") Then
+                        deserializer = New XmlSerializer(GetType(Drawings))
+                        serialized = CType(deserializer.Deserialize(readerDrawing), Drawings)
+                    ElseIf filename.Contains("Snapshots") Then
+                        deserializer = New XmlSerializer(GetType(Snapshots))
+                        serialized = CType(deserializer.Deserialize(readerDrawing), Snapshots)
+                    ElseIf filename.Contains("BlockReplace") Then
+                        deserializer = New XmlSerializer(GetType(frames))
+                        serialized = CType(deserializer.Deserialize(readerDrawing), frames)
+                    ElseIf filename.Contains("Mappings") Then
+                        deserializer = New XmlSerializer(GetType(mappings))
+                        serialized = CType(deserializer.Deserialize(readerDrawing), mappings)
+                    End If
+                    fsdrawing.Close()
+                    readerDrawing = Nothing
+                    drawingsXMLfilenotopened = False 'successful open, read and close
+                Catch ex As IOException
+                    Threading.Thread.Sleep(1000) 'wait a second and try again.
+                End Try
+            End While
+            Return serialized
+        End Function
+
+        ''' <summary>
+        ''' Provides a method to write an xml file of known schema
+        ''' </summary>
+        ''' <param name="drawings">the object we're writing to xml</param>
+        ''' <param name="filename">the filename</param>
+        ''' <param name="fileMode">the filemode of the file we're writing</param>
+        ''' <param name="fileAccess">read/write access</param>
+        ''' <param name="fileShare">share or not.</param>
+        ''' <remarks></remarks>
+        Private Shared Sub SerializeAndWriteXML(drawings As Object, filename As String, fileMode As FileMode, fileAccess As FileAccess, fileShare As FileShare)
+            Dim fsdrawing As FileStream
+            Dim serializer As XmlSerializer
+            If filename.Contains("Drawings") Then
+                serializer = New XmlSerializer(GetType(Drawings))
+            Else
+                serializer = New XmlSerializer(GetType(Snapshots))
+            End If
+            Dim drawingsXMLfilenotopened As Boolean = True
+            While drawingsXMLfilenotopened
+                Try
+                    fsdrawing = New FileStream(filename, fileMode, fileAccess, fileShare)
+                    Dim writer As New XmlTextWriter(fsdrawing, Encoding.Unicode)
+                    writer.Formatting = Formatting.Indented
+                    serializer.Serialize(writer, drawings) 'so we only include our new drawing.
+                    writer.Close()
+                    fsdrawing.Close()
+                    drawingsXMLfilenotopened = False 'successful write and close
+                Catch ex As IOException
+                    Threading.Thread.Sleep(1000)
+                End Try
+            End While
         End Sub
 
         ''' <summary>
@@ -528,8 +744,8 @@ Namespace BlockReplace
             Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
                 If Not SelEntId = Nothing Then
                     'capture a screenshot of each existing area where text might be located:
-                    drawing.oldname = Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
-                    drawing.oldpath = Application.GetSystemVariable("DWGPREFIX")
+                    drawing.oldname = acapp.Application.GetSystemVariable("DWGNAME") 'Active.Database.Filename
+                    drawing.oldpath = acapp.Application.GetSystemVariable("DWGPREFIX")
                     Dim serializerf As New XmlSerializer(GetType(frames))
                     Dim fsbr As New FileStream(asmpath + "\Resources\BlockReplace.xml", FileMode.Open)
                     Dim readerBR As XmlReader = XmlReader.Create(fsbr)
@@ -641,6 +857,26 @@ Namespace BlockReplace
         End Sub
 
         ''' <summary>
+        ''' an extremely simple method using the DocumentExtension method CapturePreviewImage
+        ''' </summary>
+        ''' <param name="filename">the filename to save</param>
+        ''' <returns>the filename saved</returns>
+        ''' <remarks></remarks>
+        Private Function ScreenShotToFile(filename As String) As String
+            Active.Editor.Regen()
+            Active.Editor.UpdateScreen()
+            Dim processed As Bitmap = Active.Document.CapturePreviewImage(1920 * 2, 1080 * 2)
+            If filename IsNot Nothing AndAlso filename <> "" Then
+                processed.Save(filename, ImageFormat.Png)
+                Active.WriteMessage(vbCrLf & "Image captured and saved to ""{0}"".", filename)
+            End If
+            'cleanup
+            processed.Dispose()
+            Return filename
+        End Function
+
+        ''' <summary>
+        ''' **Deprecated in favour of the above**
         ''' Creates a screenshot of each area we are interested in.
         ''' </summary>
         ''' <param name="pt1">Point3d origin</param>
@@ -650,7 +886,7 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         Private Shared Function ScreenShotToFile(pt1 As Point3d, pt2 As Point3d, filename As String) As String
             'Dim ed As Editor = Active.Editor
-            Dim cvport = CShort(Application.GetSystemVariable("CVPORT"))
+            Dim cvport = CShort(acapp.Application.GetSystemVariable("CVPORT"))
             Dim img As System.Drawing.Image
             Dim view As ViewTableRecord = Active.Editor.GetCurrentView()
             'start transaction
@@ -666,9 +902,9 @@ Namespace BlockReplace
                 Active.Editor.SetCurrentView(view)
                 trans.Commit()
             End Using
-            Using tr As Transaction = Active.document.TransactionManager.StartTransaction()
+            Using tr As Transaction = Active.Document.TransactionManager.StartTransaction()
                 Dim vst As GraphicsInterface.VisualStyleType = GraphicsInterface.VisualStyleType.Basic
-                Dim gsm As GraphicsSystem.Manager = Active.document.GraphicsManager
+                Dim gsm As GraphicsSystem.Manager = Active.Document.GraphicsManager
                 Using gfxview As GraphicsSystem.View = New GraphicsSystem.View
                     gsm.SetViewFromViewport(gfxview, cvport)
                     gfxview.VisualStyle = New GraphicsInterface.VisualStyle(vst)
@@ -681,7 +917,7 @@ Namespace BlockReplace
                         dev.Add(gfxview)
                         dev.Update()
                         Using model As GraphicsSystem.Model = gsm.CreateAutoCADModel
-                            Using trans As Transaction = Active.document.TransactionManager.StartTransaction()
+                            Using trans As Transaction = Active.Document.TransactionManager.StartTransaction()
                                 Dim btr As BlockTableRecord = trans.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForRead)
                                 gfxview.Add(btr, model)
                                 trans.Commit()
@@ -698,6 +934,7 @@ Namespace BlockReplace
                             img = gfxview.GetSnapshot(view_rect)
 
                             Dim processed As Bitmap = img
+                            processed = Active.Document.CapturePreviewImage(1920, 1080)
                             If filename IsNot Nothing AndAlso filename <> "" Then
                                 processed.Save(filename, ImageFormat.Png)
 
@@ -746,7 +983,7 @@ Namespace BlockReplace
                         Dim tmpentity As Entity = DirectCast(id.GetObject(OpenMode.ForRead), Entity)
                         ent2.IntersectWith(tmpentity, Intersect.OnBothOperands, points, IntPtr.Zero, IntPtr.Zero)
                         If points.Count > 0 Then ' we have an overlap?
-                            obIdList.Add(tmpEntity.ObjectId)
+                            obIdList.Add(tmpentity.ObjectId)
                         End If
                     End If
                 Next
@@ -799,7 +1036,7 @@ Namespace BlockReplace
             Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
             Try
                 Dim mtxt As MText = DirectCast(objectid.GetObject(OpenMode.ForWrite), MText)
-                Dim ext As Extents3d = mtxt.GeometricExtents
+                'Dim ext As Extents3d = mtxt.GeometricExtents
                 Dim pnt As Point3d
                 'Dim pmtSelRes As PromptSelectionResult = Nothing
                 'Dim acTypValAr As TypedValue() = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
@@ -897,7 +1134,7 @@ Namespace BlockReplace
         ''' <param name="objectId"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetEntity(objectId As ObjectId) As Entity
+        Private Shared Function GetEntity(objectId As ObjectId) As Entity
             Dim ent As Entity
             Using tr As Transaction = Active.Database.TransactionManager.StartTransaction()
                 ent = DirectCast(tr.GetObject(objectId, OpenMode.ForRead), Entity)
@@ -915,8 +1152,8 @@ Namespace BlockReplace
         ''' <param name="clash"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function GetIntersectionPointsOf(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
-            
+        Private Shared Function GetIntersectionPointsOf(ent1 As Entity, ent2 As Entity, ByRef intersectionPoints As Point3dCollection, ByRef clash As Boolean) As Short
+
             Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
                 Dim oc1 = ent1.ObjectId.ObjectClass
                 Dim oc2 = ent2.ObjectId.ObjectClass
@@ -1081,7 +1318,7 @@ Namespace BlockReplace
             End If
             Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
             Dim asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)
-            Dim tmpblkname As String = ""
+            Dim blkname As String = ""
             Dim selEntID As ObjectId
             Dim selEntIDs As ObjectId()
             Using tmptrans As Transaction = Active.Database.TransactionManager.StartTransaction
@@ -1095,10 +1332,10 @@ Namespace BlockReplace
                         End If
                         If tmpblkref.Name.StartsWith("*") Then 'dynamic block
                             Dim tmpbtr As BlockTableRecord = tmpblkref.DynamicBlockTableRecord.GetObject(OpenMode.ForRead)
-                            tmpblkname = tmpbtr.Name
+                            blkname = tmpbtr.Name
                             selEntID = id
                         Else 'normal block
-                            tmpblkname = tmpblkref.Name
+                            blkname = tmpblkref.Name
                             selEntID = id
                         End If
                     Next
@@ -1106,7 +1343,7 @@ Namespace BlockReplace
                     selEntIDs = ss.GetObjectIds() 'currently this doesn't play nice if there happens to be a second attributed block in the drawing!
                     selEntID = selEntIDs(0)
                     Dim tmpblkref As BlockReference = selEntID.GetObject(OpenMode.ForRead)
-                    tmpblkname = tmpblkref.Name
+                    blkname = tmpblkref.Name
                     If Not tmpblkref.Position = Point3d.Origin Then
                         Active.WriteMessage("This tool only works correctly if the block was inserted @ 0,0,0 coordinates!" & _
                                           vbCrLf & "Move the block to 0,0,0 and try again!")
@@ -1239,7 +1476,7 @@ Namespace BlockReplace
                                         attref.AttributeName = "DIMS IN"
                                     Case "SUBCONTRACTOR"
                                         attref.name = "SUBCONTRACTOR"
-                                        If tmpblkname = "SB-IL_996-5.2(block)" Then attref.AttributeName = "SUB CONTRACTOR"
+                                        If blkname = "SB-IL_996-5.2(block)" Then attref.AttributeName = "SUB CONTRACTOR"
                                         attref.AttributeName = "SUB-CONTRACTOR"
                                     Case Else
                                         attref.name = pStrAttRefRes.StringResult
@@ -1261,7 +1498,7 @@ Namespace BlockReplace
                                 KeepAddingAttRefs = False
                             End If
                         Loop
-                        If tmpblkname Like "*5.2(block)" Then
+                        If blkname Like "*5.2(block)" Then
                             KeepAddingCrossingLines = False
                             Do Until KeepAddingCrossingLines
                                 pko = New PromptKeywordOptions("Add Crossing Box Lines?")
@@ -1314,7 +1551,7 @@ Namespace BlockReplace
                                         Case "SURFACETEXTURE"
                                             line.name = "SURFACE TEXTURE"
                                         Case "SUBCONTRACTOR"
-                                            If tmpblkname = "SB-IL_996-5.2(block)" Then line.name = "SUB CONTRACTOR"
+                                            If blkname = "SB-IL_996-5.2(block)" Then line.name = "SUB CONTRACTOR"
                                             line.name = "SUB-CONTRACTOR"
                                         Case "PROTECTIVEFINISH"
                                             line.name = "PROTECTIVE FINISH"
@@ -1336,7 +1573,7 @@ Namespace BlockReplace
                         End If
 
                         'Application.ShowAlertDialog("The name entered was: " & pStrRes.StringResult)
-                        frame.name = tmpblkname
+                        frame.name = blkname
                         f.DrawingFrame.Add(frame)
                         'f.SaveToFile(asmpath & "\Resources\test.xml")
                         Active.WriteMessage(f.ToString)
@@ -1580,6 +1817,7 @@ Namespace BlockReplace
                         myTrans.AddNewlyCreatedDBObject(myAttRef, True)
                     End If
                 Next
+                myBlockRef.Layer = "0" 'move new blocks to Layer 0
                 myTrans.Commit()
                 Return myBlockRef.Id
             End Using
@@ -1593,31 +1831,58 @@ Namespace BlockReplace
         ''' <returns></returns>
         ''' <remarks></remarks>
         Private Function ReplaceBlock(objectId As ObjectId) As ObjectId
-            Dim Tx As Transaction = Active.Database.TransactionManager.StartTransaction()
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction
             Dim blkDb As Database = New Database(False, True)
             Try
-                Dim tmpblkref As BlockReference = Tx.GetObject(objectId, OpenMode.ForRead)
+                Dim tmpblkref As BlockReference = tr.GetObject(objectId, OpenMode.ForRead)
                 blkDb.ReadDwgFile("C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\DRAWING FRAMES\" & tmpblkref.Name & ".dwg", System.IO.FileShare.Read, True, "")
-                Dim blockTable As BlockTable = Tx.GetObject(Active.Database.BlockTableId, OpenMode.ForRead, False, True)
+                Dim blockTable As BlockTable = tr.GetObject(Active.Database.BlockTableId, OpenMode.ForRead, False, True)
                 Dim btrId As ObjectId = Active.Database.Insert(tmpblkref.Name, blkDb, True)
                 If btrId <> objectId.Null Then
-                    Dim btr As BlockTableRecord = Tx.GetObject(btrId, OpenMode.ForRead, False, True)
+                    Dim btr As BlockTableRecord = tr.GetObject(btrId, OpenMode.ForRead, False, True)
                     Dim brefIds As ObjectIdCollection = btr.GetBlockReferenceIds(False, True)
                     For Each id As ObjectId In brefIds
-                        Dim bref As BlockReference =
-                        Tx.GetObject(id, OpenMode.ForWrite, False, True)
+                        'should only be one blockreference for each
+                        Dim bref As BlockReference = tr.GetObject(id, OpenMode.ForWrite, False, True)
                         bref.RecordGraphicsModified(True)
+                        Return id
                     Next
                 End If
             Catch ex As Exception
-                Tx.Dispose()
+                tr.Dispose()
                 blkDb.Dispose()
             Finally
-                Tx.Commit()
-                Tx.Dispose()
+                tr.Commit()
+                tr.Dispose()
                 blkDb.Dispose()
             End Try
         End Function
+
+        <CommandMethod("MySync", CommandFlags.Modal)> _
+        Public Sub MySync()
+            Dim types As TypedValue() = New TypedValue() {New TypedValue(CInt(DxfCode.Start), "INSERT")}
+            Dim sf As New SelectionFilter(types)
+            Dim pso As New PromptSelectionOptions()
+            pso.MessageForAdding = "Select block reference"
+            pso.SingleOnly = True
+            pso.AllowDuplicates = False
+
+            Dim psr As PromptSelectionResult = Active.Editor.GetSelection(pso, sf)
+            '*******************************
+            If psr.Status = PromptStatus.OK Then
+                Using t As Transaction = Active.Database.TransactionManager.StartTransaction()
+                    Dim bt As BlockTable = DirectCast(t.GetObject(Active.Database.BlockTableId, OpenMode.ForRead), BlockTable)
+                    Dim br As BlockReference = DirectCast(t.GetObject(psr.Value(0).ObjectId, OpenMode.ForRead), BlockReference)
+                    Dim btr As BlockTableRecord = DirectCast(t.GetObject(bt(br.Name), OpenMode.ForRead), BlockTableRecord)
+                    btr.AttSync(False, True, False)
+                    t.Commit()
+                End Using
+            Else
+                Active.Editor.WriteMessage("Bad selectionа." & vbLf)
+            End If
+            '********************************
+        End Sub
+
 
         ''' <summary>
         ''' The "Manual" Command for SortRevisions
@@ -1667,7 +1932,7 @@ Namespace BlockReplace
         ''' The Lisp-only version of SortRevisions.
         ''' </summary>
         ''' <param name="args">Expects at least one object in a selectionset</param>
-        ''' <remarks>requires the arguments of RN###### & a release date in dd-MMM-yy format</remarks>
+        ''' <remarks>requires the arguments of "RN######" and a release date in dd-MMM-yy format</remarks>
         <LispFunction("SortRevs")> _
         Public Sub SortRevs(args As ResultBuffer)
             Try
@@ -1694,8 +1959,8 @@ Namespace BlockReplace
                 Dim ss As SelectionSet = DirectCast(values(0).Value, SelectionSet)
                 Dim ReleaseNote As String = DirectCast(values(1).Value, String)
                 Dim ReleaseDate As String = DirectCast(values(2).Value, String)
-                Dim strdrawingfilename As String = Application.GetSystemVariable("DWGNAME")
-                Dim drawingpath As String = Application.GetSystemVariable("DWGPREFIX")
+                Dim strdrawingfilename As String = acapp.Application.GetSystemVariable("DWGNAME")
+                Dim drawingpath As String = acapp.Application.GetSystemVariable("DWGPREFIX")
                 Dim supercededPath As String
                 If Not drawingpath.ToUpper.Contains("CURRENT") Then 'file is in the root of the folder and we need to create the correct folders for it.
                     IO.Directory.CreateDirectory(drawingpath & "CURRENT\")
@@ -1712,7 +1977,7 @@ Namespace BlockReplace
                 Dim selEntID As ObjectId = Nothing
                 Dim selEntIDs As ObjectId()
                 Dim tmpblkname As String
-                Dim ext As Extents3d = If(CShort(Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
+                Dim ext As Extents3d = If(CShort(acapp.Application.GetSystemVariable("cvport")) = 1, New Extents3d(Active.Database.Pextmin, Active.Database.Pextmax), New Extents3d(Active.Database.Extmin, Active.Database.Extmax))
                 Using doclock As DocumentLock = Active.Document.LockDocument 'lock the document whilst we edit it.
                     Using tr As Transaction = Active.Database.TransactionManager.StartTransaction
                         If ss.Count > 1 Then
@@ -1816,6 +2081,9 @@ Namespace BlockReplace
                                        Select item.b).FirstOrDefault()
                             If Not dnum = Nothing Then
                                 dwgnum = dnum.TextString.Replace("/", "-")
+                                If dwgnum.StartsWith("HR-4-") Then
+                                    ChangeLayoutToA3()
+                                End If
                             End If
                             Dim snum = (From item In gGroup.groupName
                                        Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
@@ -1940,7 +2208,17 @@ Namespace BlockReplace
                     'naming format is: {Drawing-Number}_{sht-###}_{iss-##X}-00.dwg
                     '3DT-957840_sht-001_iss-00b-00.dwg
                     Dim pad As Char = "0"c
-                    Dim newfilename As String = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                    Dim newfilename As String = String.Empty
+                    If originalfilename.Contains("-PL-") Or originalfilename.Contains("ILIST") Then
+                        newfilename = drawingpath & "4IL-" & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                    Else
+                        newfilename = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                    End If
+                    'update screen
+                    Active.Editor.Regen()
+                    Active.Editor.UpdateScreen()
+                    'save thumbnail to file & saveas
+                    Active.Database.ThumbnailBitmap = Active.Document.CapturePreviewImage(320, 240)
                     Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
                     Dim serializerd As New XmlSerializer(GetType(Drawings))
                     Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
@@ -1957,11 +2235,12 @@ Namespace BlockReplace
                             pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MaxPoint.Y, ext.MaxPoint.Z))
                             pntcoll.Add(New Point3d(ext.MaxPoint.X, ext.MinPoint.Y, ext.MinPoint.Z))
                             DeleteMySelection(pntcoll, True)
-                            dwg.AfterImgURL = ScreenShotToFile(ext.MinPoint, ext.MaxPoint, fn)
+                            dwg.AfterImgURL = ScreenShotToFile(fn)
                             dwg.name = dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
                             dwg.path = drawingpath
                             dwg.revisiondatestr = ReleaseDate
                             dwg.revision = IssueChar
+                            dwg.oldpath = supercededPath & strdrawingfilename
                             Exit For
                         End If
                     Next
@@ -1986,6 +2265,50 @@ Namespace BlockReplace
                 Active.WriteMessage(vbLf & "The error was: " & ex.Message)
                 revisions = Nothing
             End Try
+        End Sub
+
+        Public Sub ChangeLayoutToA3()
+            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
+            Try
+                Dim lmgr As LayoutManager = LayoutManager.Current
+                Dim lt As Layout = tr.GetObject(lmgr.GetLayoutId(lmgr.CurrentLayout), OpenMode.ForWrite)
+                'output the current plot device:
+                Active.Editor.WriteMessage(vbLf & "Current Device Name: " & lt.PlotConfigurationName)
+                'begin configuring plot settings
+                Dim plotinf As New PlotInfo()
+                plotinf.Layout = lt.ObjectId
+                Dim plotset As New PlotSettings(lt.ModelType)
+                plotset.CopyFrom(lt)
+                Dim plotsetvdr As PlotSettingsValidator = PlotSettingsValidator.Current
+                Dim plotvdr As New PlotInfoValidator()
+
+                'Plotterused = GetPlotter(Visprop)
+                'Papersize = GetPaper(Visprop)
+                'the next line errors - probably because I don't have the relevant .pc3 file?
+                plotsetvdr.SetPlotConfigurationName(plotset, "KONICA MINOLTA C252/C252P VXL", "A3")
+                plotsetvdr.SetPlotType(plotset, Autodesk.AutoCAD.DatabaseServices.PlotType.Extents)
+                plotsetvdr.SetUseStandardScale(plotset, True)
+                plotsetvdr.SetPlotRotation(plotset, PlotRotation.Degrees090)
+                plotsetvdr.SetPlotPaperUnits(plotset, PlotPaperUnit.Millimeters)
+                plotsetvdr.SetPlotCentered(plotset, True)
+                Dim offset As New Point2d(0, 0)
+                plotsetvdr.SetPlotOrigin(plotset, offset)
+                'override the current settings?
+                plotinf.OverrideSettings = plotset
+                'validate the new settings
+                plotvdr.Validate(plotinf)
+                'sets the layout plot settings
+                lt.CopyFrom(plotset)
+                'not sure if the next line is necessary.
+                'lt.DowngradeOpen()
+                Active.Editor.Regen()
+            Catch ex As Exception
+            Finally
+                tr.Commit()
+                tr.Dispose()
+            End Try
+
+
         End Sub
 
         ''' <summary>
@@ -2036,25 +2359,12 @@ Namespace BlockReplace
         End Function
 
         ''' <summary>
-        ''' Gets the relevant AttributeReference we need based on a regex passed to it.
-        ''' </summary>
-        ''' <param name="ChangeNoteSearchTerm"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        'Private Function GetAttributeReferenceFromQMA(SearchTerm As Regex, gGroup As Object) As AttRef
-        '    Return (From item In gGroup.groupName
-        '              Let matches = SearchTerm.Matches(item.b.Tag)
-        '              Where (matches.Count > 0)
-        '              Select item.b).FirstOrDefault()
-        'End Function
-
-        ''' <summary>
         ''' Groups a selection of text/mtext entities together and moves them away from our new border.
         ''' </summary>
         ''' <param name="ext">the area to search.</param>
         ''' <param name="blockId">the ObjectId of our new drawing frame.</param>
         ''' <remarks></remarks>
-        Private Sub GroupAndMoveTextNotes(ext As Extents3d, blockId As ObjectId)
+        Private Sub GroupAndMoveTextNotes(ext As Extents3d, blockId As ObjectId, pos As Point3d)
             'determine the centerpoint of our view.
             Dim extents As Point3d = New Point3d(
                                     ext.MinPoint.X + ((ext.MaxPoint.X - ext.MinPoint.X) / 2.0), _
@@ -2066,17 +2376,18 @@ Namespace BlockReplace
             Dim mtxt As MText = New MText
             pnts.Add(ext.MinPoint)
             pnts.Add(extents)
-            Dim str As String = CollectTextFromArea(tmppntcoll:=pnts, _
-                                                    locName:="NOTES", _
-                                                    NotesInsertPnt:=notesinsertpnt, _
-                                                     mtxt:=mtxt)
+            Dim str As String = CollectTextFromArea(tmppntcoll:=pnts,
+                                                    locName:="NOTES",
+                                                    NotesInsertPnt:=notesinsertpnt,
+                                                     mtxt:=mtxt,
+                                                     blkpos:=pos)
             If Not str = "" Then 'And Not str.StartsWith("CABLES AND COLOURS") Then
                 Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
                 Try
                     '' Open the Block table for read
-                    Dim acBlkTbl As BlockTable
-                    acBlkTbl = tr.GetObject(Active.Database.BlockTableId, _
-                                                 OpenMode.ForRead)
+                    'Dim acBlkTbl As BlockTable
+                    'acBlkTbl = tr.GetObject(Active.Database.BlockTableId, _
+                    '                             OpenMode.ForRead)
 
                     '' Open the Block table record current space for write
                     Dim acBlkTblRec As BlockTableRecord
@@ -2148,7 +2459,7 @@ Namespace BlockReplace
                         'we want to look for and erase blockreferences that aren't our 5.2 border:
                         Dim br As BlockReference = TryCast(objId.GetObject(OpenMode.ForRead), BlockReference)
                         If br IsNot Nothing Then
-                            If Not br.Name Like "*5.2(block)" And Not br.Name = "3rd ANGLE + SCALE NOTE" Then
+                            If Not br.Name Like "*5.2(block)" And Not br.Name = "3rd ANGLE + SCALE NOTE" And Not br.Name = "Under Config Control" Then
                                 br.UpgradeOpen()
                                 br.[Erase]()
                             End If
@@ -2324,13 +2635,14 @@ Namespace BlockReplace
         ''' <param name="reverseSort"></param>
         ''' <returns>String value found with tmppntcoll boundary</returns>
         ''' <remarks></remarks>
-        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection, _
-                                            locName As String, _
-                                            ByRef NotesInsertPnt As Point3d, _
-                                            ByRef mtxt As MText, _
-                                            Optional reverseSort As Boolean = False, _
-                                            Optional ByRef lineCount As Integer = 0 _
-                                            ) As String
+        Public Function CollectTextFromArea(tmppntcoll As Point3dCollection,
+                                            locName As String,
+                                            ByRef NotesInsertPnt As Point3d,
+                                            ByRef mtxt As MText,
+                                            blkpos As Point3d,
+                                            Optional reverseSort As Boolean = False,
+                                            Optional ByRef lineCount As Integer = 0,
+                                            Optional ScaleFactor As Double = 1) As String
             Dim tmpstr As String = String.Empty
             'Dim pts As Point3dCollection = New Point3dCollection()
             Dim numOfEntsFound As Integer = 0
@@ -2339,21 +2651,34 @@ Namespace BlockReplace
                 Dim pmtSelRes As PromptSelectionResult = Nothing
                 'Dim acTypValAr() As TypedValue = New TypedValue() {New TypedValue(DxfCode.Start, "ATTDEF,TEXT,MTEXT")}
                 Dim acTypValAr() As TypedValue = New TypedValue() {New TypedValue(DxfCode.Start, "*")}
-
+                Dim btr As BlockTableRecord = DirectCast(tr.GetObject(Active.Database.CurrentSpaceId, OpenMode.ForWrite), BlockTableRecord)
                 ' in case you want to see what the filter looks like
                 'For Each tv As TypedValue In acTypValAr
                 '   Active.WriteMessage(String.Format("\nFilter Pair: {0}", tv.ToString()))
                 'Next
                 Dim pnt1, pnt2, pnt3, pnt4 As Point3d
-                'these are here out of curiousity!
                 pnt1 = tmppntcoll.Item(0)
                 pnt2 = tmppntcoll.Item(1)
                 Dim selFilter As New SelectionFilter(acTypValAr)
                 If locName = "NOTES" Then
                     pmtSelRes = Active.Editor.SelectCrossingWindow(pnt1, pnt2, selFilter)
                 Else
-                    pnt3 = tmppntcoll.Item(2)
-                    pnt4 = tmppntcoll.Item(3)
+                    If Not ScaleFactor = 1 Then
+                        Dim acPoly As Polyline = New Polyline()
+                        acPoly.SetDatabaseDefaults()
+                        acPoly.AddVertexAt(0, New Point2d(tmppntcoll.Item(0).X, tmppntcoll.Item(0).Y), 0, 0, 0)
+                        acPoly.AddVertexAt(0, New Point2d(tmppntcoll.Item(1).X, tmppntcoll.Item(1).Y), 0, 0, 0)
+                        acPoly.AddVertexAt(0, New Point2d(tmppntcoll.Item(2).X, tmppntcoll.Item(2).Y), 0, 0, 0)
+                        acPoly.AddVertexAt(0, New Point2d(tmppntcoll.Item(3).X, tmppntcoll.Item(3).Y), 0, 0, 0)
+                        acPoly.Closed = True
+                        acPoly.TransformBy(Matrix3d.Scaling(ScaleFactor, Point3d.Origin)) 'scale from the origin- should really be from the blockreference location but still...
+                        Dim tmpext As Extents3d = acPoly.GeometricExtents
+                        pnt1 = tmpext.MinPoint
+                        pnt3 = tmpext.MaxPoint
+                    Else
+                        pnt3 = tmppntcoll.Item(2)
+                        pnt4 = tmppntcoll.Item(3)
+                    End If
                     pmtSelRes = Active.Editor.SelectCrossingWindow(pnt1, pnt3, selFilter)
                 End If
                 If pmtSelRes.Status = PromptStatus.OK Then
@@ -2516,10 +2841,21 @@ Namespace BlockReplace
         ''' <param name="lineCount"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Private Function CollectTextFromArea(tmppntcoll As Point3dCollection, locName As String, reverseSort As Boolean, ByRef lineCount As Integer) As String
+        Private Function CollectTextFromArea(tmppntcoll As Point3dCollection,
+                                             locName As String,
+                                             reverseSort As Boolean,
+                                             ByRef lineCount As Integer,
+                                             ByRef scaleFactors As Double,
+                                             blkpos As Point3d) As String
             Dim pnt As Point3d = Point3d.Origin
             Dim mtxt As MText = New MText
-            Return CollectTextFromArea(tmppntcoll:=tmppntcoll, locName:=locName, NotesInsertPnt:=pnt, lineCount:=lineCount, reverseSort:=reverseSort, mtxt:=mtxt)
+            Return CollectTextFromArea(tmppntcoll:=tmppntcoll,
+                                       locName:=locName,
+                                       NotesInsertPnt:=pnt,
+                                       lineCount:=lineCount,
+                                       reverseSort:=reverseSort,
+                                       mtxt:=mtxt,
+                                       ScaleFactor:=scaleFactors, blkpos:=blkpos)
         End Function
 
         ''' <summary>
@@ -2789,7 +3125,7 @@ Namespace BlockReplace
         ''' <summary>
         ''' Checks whether the drawing number is just "C"
         ''' </summary>
-        ''' <param name="tmpstr"></param>
+        ''' <param name="InputString"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function ContainsJustC(InputString As String) As Boolean
@@ -3056,6 +3392,7 @@ Namespace BlockReplace
                 Return acedSetCurrentColors64(colorSettings)
             End If
         End Function
+
         ''' <summary>
         ''' Command to capture the main and active drawing windows or a user-selected portion of a drawing
         ''' </summary>
@@ -3063,7 +3400,6 @@ Namespace BlockReplace
         ''' <param name="pnt2"></param>
         ''' <param name="filename"></param>
         ''' <remarks></remarks>
-        '<CommandMethod("ADNPLUGINS", "SCREENSHOT", CommandFlags.Modal)> _
         Public Shared Function CaptureSnapShot(ByVal pnt1 As Point3d, ByVal pnt2 As Point3d, ByVal filename As String) As String
             ' Retrieve our application settings (or create new ones)
 
@@ -3085,7 +3421,7 @@ Namespace BlockReplace
 
                 ' First we get the viewport number
 
-                Dim vp As Short = CShort(Application.GetSystemVariable("CVPORT"))
+                Dim vp As Short = CShort(acapp.Application.GetSystemVariable("CVPORT"))
 
                 ' Then the handle to the current drawing window
 
@@ -3176,15 +3512,9 @@ Namespace BlockReplace
                     End Using
                 End Using
                 If ad.WhiteBackground Then
-                    'If vtrId <> ObjectId.Null OrElse sbId <> ObjectId.Null Then
-                    '    Remove3DBackground(db, tr, vtrId, sbId)
-                    'Else
-                    '    If gotSettings Then
                     acedSetCurrentColors(ocs)
                     Active.WriteMessage(vbLf)
                     Active.Editor.Regen()
-                    'End If
-                    'End If
                     Active.Editor.UpdateScreen()
                 End If
                 tr.Commit()
@@ -3248,13 +3578,12 @@ Namespace BlockReplace
             End Using
         End Sub
 #End Region
-
-        
-
-        
-
     End Class
 
+    ''' <summary>
+    ''' 
+    ''' </summary>
+    ''' <remarks></remarks>
     Public Class AppData
         Inherits ApplicationSettingsBase
         <UserScopedSetting> _
@@ -3279,6 +3608,7 @@ Namespace BlockReplace
         End Property
 
     End Class
+
     ''' <summary>
     ''' Defines each Revision.
     ''' </summary>
@@ -3453,7 +3783,7 @@ Namespace BlockReplace
                   ByVal minPoint As Point3d, _
                   ByVal maxPoint As Point3d)
             'get the current view
-            Dim view As ViewTableRecord = Active.editor.GetCurrentView()
+            Dim view As ViewTableRecord = Active.Editor.GetCurrentView()
             'start transaction
             Using trans As Transaction = Active.Database. _
               TransactionManager.StartTransaction()
@@ -3492,7 +3822,7 @@ Namespace BlockReplace
         ''' </summary>
         Public Shared ReadOnly Property Document() As Document
             Get
-                Return Application.DocumentManager.MdiActiveDocument
+                Return acapp.Application.DocumentManager.MdiActiveDocument
             End Get
         End Property
 
@@ -3522,6 +3852,4 @@ Namespace BlockReplace
             Editor.WriteMessage(message, parameter)
         End Sub
     End Class
-
-
 End Namespace
