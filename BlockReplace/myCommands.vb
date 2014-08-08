@@ -378,11 +378,11 @@ Namespace BlockReplace
                             End If
                         Next
                     End If
-
+                    'COMMENTED OUT FOR NOW AS IT CAUSES MORE WORK THAN NOT DOING IT!
                     'move text notes out of the way but only for non-Item List drawings.
-                    If Not myBrefB.Name Like "*IL*" Then
-                        GroupAndMoveTextNotes(ext, myBrefB.ObjectId, myBrefB.Position)
-                    End If
+                    'If Not myBrefB.Name Like "*IL*" Then
+                    '    GroupAndMoveTextNotes(ext, myBrefB.ObjectId, myBrefB.Position)
+                    'End If
                     'then delete extra lines, text, mtext and blocks which are in the original border.
                     Dim sblines = (From s In f.DrawingFrame
                               Where s.name = blockNameA
@@ -460,13 +460,13 @@ Namespace BlockReplace
                         Dim origscalefactor As Scale3d = myBrefA.ScaleFactors
                         Dim scalefactor As Scale3d
                         Select Case myBrefB.Name
-                            Case "*A3*"
+                            Case "SB-A3_993-5.2(block)"
                                 scalefactor = origscalefactor.MultiplyBy(0.25)
-                            Case "*A2*"
+                            Case "SB-A2_992-5.2(block)"
                                 scalefactor = origscalefactor.MultiplyBy(0.5)
-                            Case "*A1*"
+                            Case "SB-A1_991-5.2(block)"
                                 scalefactor = origscalefactor.MultiplyBy(0.75)
-                            Case "*A0*"
+                            Case "SB-A0_990-5.2(block)"
                                 scalefactor = origscalefactor
                         End Select
 
@@ -498,7 +498,7 @@ Namespace BlockReplace
                         InsertBlock(Active.Database, _
                                     myBrefA.BlockName, _
                                     myBrefA.Position, _
-                                    "Under Config Control", _
+                                    "SB-IL_996-5.2(block)-Grid", _
                                     myBrefA.ScaleFactors)
                     End If
                     'erase the original block
@@ -589,7 +589,7 @@ Namespace BlockReplace
                     readerDrawing = Nothing
                     drawingsXMLfilenotopened = False 'successful open, read and close
                 Catch ex As IOException
-                    Threading.Thread.Sleep(1000) 'wait a second and try again.
+                    Threading.Thread.Sleep(250) 'wait and then try again.
                 End Try
             End While
             Return serialized
@@ -623,7 +623,7 @@ Namespace BlockReplace
                     fsdrawing.Close()
                     drawingsXMLfilenotopened = False 'successful write and close
                 Catch ex As IOException
-                    Threading.Thread.Sleep(1000)
+                    Threading.Thread.Sleep(250)
                 End Try
             End While
         End Sub
@@ -2073,11 +2073,11 @@ Namespace BlockReplace
                                 revisions.Add(rev)
                             End If
                             'Active.WriteMessage("Captured: " + revisions.Count.ToString() + " revision rows!")
-                            regexcoll = Nothing
                             chngNote = Nothing
                             issDate = Nothing
                             issue = Nothing
                         Next
+                        regexcoll = Nothing
                         queryMatchingAll = Nothing
                         'First check for non-standard revisions.
                         For i As Integer = 0 To revisions.Count - 1
