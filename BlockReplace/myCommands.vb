@@ -308,6 +308,8 @@ Namespace BlockReplace
                                     If myAttB.TextString = "" Then
                                         myAttB.TextString = "2012"
                                     End If
+                                Case "DRAWING NUMBER 1"
+                                    myAttB.TextString = getCorrectedDrawingNumber(Active.Document, myAttB, myAttB.Tag, blockNameA)
                             End Select
                         Next
                     End If
@@ -461,13 +463,13 @@ Namespace BlockReplace
                         Dim scalefactor As Scale3d
                         Select Case myBrefB.Name
                             Case "SB-A3_993-5.2(block)"
-                                scalefactor = origscalefactor.MultiplyBy(0.25)
-                            Case "SB-A2_992-5.2(block)"
                                 scalefactor = origscalefactor.MultiplyBy(0.5)
+                            Case "SB-A2_992-5.2(block)"
+                                scalefactor = origscalefactor.MultiplyBy(0.6)
                             Case "SB-A1_991-5.2(block)"
-                                scalefactor = origscalefactor.MultiplyBy(0.75)
+                                scalefactor = origscalefactor.MultiplyBy(0.7)
                             Case "SB-A0_990-5.2(block)"
-                                scalefactor = origscalefactor
+                                scalefactor = origscalefactor.MultiplyBy(0.8)
                         End Select
 
                         'then insert it
@@ -2184,7 +2186,11 @@ Namespace BlockReplace
                     Dim pad As Char = "0"c
                     Dim newfilename As String = String.Empty
                     If originalfilename.Contains("-PL-") Or originalfilename.Contains("ILIST") Then
-                        newfilename = drawingpath & "4IL-" & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                        If Not dwgnum.StartsWith("4IL-") Then
+                            newfilename = drawingpath & "4IL-" & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                        Else
+                            newfilename = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
+                        End If
                     Else
                         newfilename = drawingpath & dwgnum & "_sht-" & shtnum.PadLeft(3, pad) & "_iss-" & IssueChar.PadLeft(3, pad) & "-00.dwg"
                     End If
@@ -3122,37 +3128,43 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         Private Function getCorrectedDrawingNumber(mydoc As Document, myAtt As AttributeReference, tag As String, blockname As String) As String
             Dim tmpstr As String = myAtt.TextString
-            If blockname Like "Border*" Then
-                If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
-                    If ContainsStars(tmpstr) Then 'there's something weird about the drawing number
-                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
-                    ElseIf ContainsJustC(tmpstr) And tmpstr.Length = 1 Then
-                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
-                    ElseIf tmpstr.Length = 0 Then
-                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
-                    End If
-                    If blockname = "Border" Then
-                        tmpstr = "HR/3/" & tmpstr
-                    ElseIf blockname = "Border A0" Then
-                        tmpstr = "HR/0/" & tmpstr
-                    ElseIf blockname = "Border A1" Then
-                        tmpstr = "HR/1/" & tmpstr
-                    ElseIf blockname = "Border A2" Then
-                        tmpstr = "HR/2/" & tmpstr
-                    ElseIf blockname = "Border A3" Then
-                        tmpstr = "HR/3/" & tmpstr
-                    ElseIf blockname = "Border A4" Then
-                        tmpstr = "HR/4/" & tmpstr
-                    End If
-                Else
-                    Return tmpstr
-                    Exit Function
+            'If blockname Like "Border*" Then
+            If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
+                If ContainsStars(tmpstr) Then 'there's something weird about the drawing number
+                    tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                ElseIf ContainsJustC(tmpstr) And tmpstr.Length = 1 Then
+                    tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                ElseIf tmpstr.Length = 0 Then
+                    tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                 End If
-            ElseIf blockname = "A3BORD" Then
-                If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
+                If blockname = "Border" Then
                     tmpstr = "HR/3/" & tmpstr
+                ElseIf blockname = "Border A0" Then
+                    tmpstr = "HR/0/" & tmpstr
+                ElseIf blockname = "Border A1" Then
+                    tmpstr = "HR/1/" & tmpstr
+                ElseIf blockname = "Border A2" Then
+                    tmpstr = "HR/2/" & tmpstr
+                ElseIf blockname = "Border A3" Then
+                    tmpstr = "HR/3/" & tmpstr
+                ElseIf blockname = "Border A4" Then
+                    tmpstr = "HR/4/" & tmpstr
+                ElseIf blockname = "HR-IL_806-7.1(block)" Then
+                    tmpstr = "4IL-" & GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                ElseIf blockname = "A3BORD" Then
+                    tmpstr = "HR/3/" & tmpstr
+                ElseIf blockname = "SB-IL_996-5.2(block)" Then
+                    tmpstr = "4IL-" & GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                 End If
+            Else
+                Return tmpstr
+                Exit Function
             End If
+            'ElseIf blockname = "A3BORD" Then
+            'If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
+            '    tmpstr = "HR/3/" & tmpstr
+            'End If
+            'End If
             Return tmpstr
         End Function
 
