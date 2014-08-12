@@ -99,6 +99,7 @@ Namespace BlockReplace
         Dim SelEntId As ObjectId
         Dim SelEntIds As ObjectId()
         Dim tmpblkname As String = String.Empty
+        Dim dwgnum1 As String = String.Empty
         Dim tmpm As New mappings
         Dim d As New Drawings
         Dim drawing As DrawingsDrawing
@@ -676,7 +677,6 @@ Namespace BlockReplace
                 tr.Commit()
                 tr.Dispose()
             End Try
-
         End Function
 
         ''' <summary>
@@ -783,23 +783,21 @@ Namespace BlockReplace
                 snapshot.tag = attr.Tag
                 snapshot.textstring = attr.TextString
             End If
-            'snapshot = (From sn As SnapshotsSnapshotDetailsSnapshot In snDetails.snapshot
-            '            Where sn.name = att.name
-            '            Select sn).SingleOrDefault()
-            'If snapshot Is Nothing Or Not snapshot.tag = "" Then 'assume we already have a USED ON 01 - PREFIX
-            '    snapshot = New SnapshotsSnapshotDetailsSnapshot
-            '    snapshot.ImgUrl = UsedOnImgUrl
-            '    snapshot.name = tmpstr
-            '    snapshot.tag = attr.Tag
-            '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-            '    snapshot.textstring = attr.TextString
-            '    snDetails.snapshot.Add(snapshot)
-            'Else
-            '    snapshot.objectIdAsString = attr.ObjectId.ToString()
-            '    snapshot.tag = attr.Tag
-            '    snapshot.textstring = attr.TextString
-            '    'snDetails.snapshot.Add(snapshot)
-            'End If
+        End Sub
+
+        ''' <summary>
+        ''' Allows us to output an updated screenshot from AutoCAD.
+        ''' </summary>
+        ''' <param name="Filename">the file to create.</param>
+        ''' <remarks></remarks>
+        <CommandMethod("SSTF")> _
+        Public Sub ManualScreenshotToFile()
+            Dim pso As PromptStringOptions = New PromptStringOptions("Input full filepath for output as screenshot")
+            Dim res = Active.Editor.GetString(pso)
+            If res.Status = PromptStatus.OK Then
+                Active.WriteMessage("Screenshot written to: " & ScreenShotToFile(res.StringResult))
+            End If
+            'Dim res As promptstring
         End Sub
 
         ''' <summary>
@@ -1820,7 +1818,7 @@ Namespace BlockReplace
                     t.Commit()
                 End Using
             Else
-                Active.Editor.WriteMessage("Bad selectionа." & vbLf)
+                Active.Editor.WriteMessage("Bad selection." & vbLf)
             End If
             '********************************
         End Sub
@@ -1955,8 +1953,6 @@ Namespace BlockReplace
                             Exit Sub
                         End If
                         Dim attcoll As AttributeCollection = blkref.AttributeCollection
-                        'commented out this for now - can return to this later!
-                        'Dim regex = New Regex("(?<chngnote>CHANGE NO \d*)\|(?<date>DATE \d*)\|(?<issue>ISSUE \d*)\|(?<dwgnum>DRAWING NUMBER 1)\|(?<shtnum>SHEET NUMBER 1)")
                         Dim AllSearchTerm As Regex = New Regex("(.* )(\d*)")
                         Dim regexcoll As List(Of Regex) = New List(Of Regex)
                         regexcoll.Add(New Regex("(CHANGE NO \d*)"))
@@ -1964,12 +1960,7 @@ Namespace BlockReplace
                         regexcoll.Add(New Regex("(ISSUE \d*)"))
                         regexcoll.Add(New Regex("(DRAWING NUMBER 1)"))
                         regexcoll.Add(New Regex("(SHEET NUMBER 1)"))
-                        'Dim ChangeNoteSearchTerm As Regex = New Regex("(CHANGE NO \d*)")
-                        'Dim DateSearchTerm As Regex = New Regex("(DATE \d*)")
-                        'Dim IssueSearchTerm As Regex = New Regex("(ISSUE \d*)")
-                        'Dim DrawingNumberSearchTerm As Regex = New Regex("(DRAWING NUMBER 1)")
-                        'Dim SheetNumberSearchTerm As Regex = New Regex("(SHEET NUMBER 1)")
-                        
+
                         Dim queryMatchingAll _
                             = From a As ObjectId In attcoll
                               Let b As AttributeReference = a.GetObject(OpenMode.ForRead)
@@ -2020,54 +2011,6 @@ Namespace BlockReplace
                                 End If
                             Next
 
-
-                            'Dim CN = (From item In gGroup.groupName
-                            '                    Let matches = ChangeNoteSearchTerm.Matches(item.b.Tag)
-                            '                    Where (matches.Count > 0)
-                            '                    Select item.b).FirstOrDefault()
-                            'If Not CN = Nothing Then
-                            '    chngNote = New AttRef
-                            '    chngNote.attrefId = CN.ObjectId
-                            '    chngNote.attRefTag = CN.Tag
-                            '    chngNote.attRefText = CN.TextString
-                            'End If
-                            'Dim DT = (From item In gGroup.groupName
-                            '          Let matches = DateSearchTerm.Matches(item.b.Tag)
-                            '          Where (matches.Count > 0)
-                            '          Select item.b).FirstOrDefault()
-                            'If Not DT = Nothing Then
-                            '    issDate = New AttRef
-                            '    issDate.attrefId = DT.ObjectId
-                            '    issDate.attRefTag = DT.Tag
-                            '    issDate.attRefText = DT.TextString
-                            'End If
-                            'Dim RV = (From item In gGroup.groupName
-                            '          Let matches = IssueSearchTerm.Matches(item.b.Tag)
-                            '          Where (matches.Count > 0)
-                            '          Select item.b).FirstOrDefault()
-                            'If Not RV = Nothing Then
-                            '    issue = New AttRef
-                            '    issue.attrefId = RV.ObjectId
-                            '    issue.attRefTag = RV.Tag
-                            '    issue.attRefText = RV.TextString
-                            'End If
-                            'Dim dnum = (From item In gGroup.groupName
-                            '           Let matches = DrawingNumberSearchTerm.Matches(item.b.Tag)
-                            '           Where matches.Count > 0
-                            '           Select item.b).FirstOrDefault()
-                            'If Not dnum = Nothing Then
-                            '    dwgnum = dnum.TextString.Replace("/", "-")
-                            '    If dwgnum.StartsWith("HR-4-") Then
-                            '        ChangeLayoutToA3()
-                            '    End If
-                            'End If
-                            'Dim snum = (From item In gGroup.groupName
-                            '           Let matches = SheetNumberSearchTerm.Matches(item.b.Tag)
-                            '           Where matches.Count > 0
-                            '           Select item.b).FirstOrDefault()
-                            'If Not snum = Nothing Then
-                            '    shtnum = snum.TextString
-                            'End If
                             If Not chngNote Is Nothing And Not issDate Is Nothing And Not issue Is Nothing Then
                                 rev.RevChangeNote = chngNote
                                 rev.RevDate = issDate
@@ -2182,7 +2125,7 @@ Namespace BlockReplace
                     'a bit of cleanup between runs!
                     revisions = Nothing
                     'naming format is: {Drawing-Number}_{sht-###}_{iss-##X}-00.dwg
-                    '3DT-957840_sht-001_iss-00b-00.dwg
+                    'e.g. 3DT-123456_sht-001_iss-00b-00.dwg
                     Dim pad As Char = "0"c
                     Dim newfilename As String = String.Empty
                     If originalfilename.Contains("-PL-") Or originalfilename.Contains("ILIST") Then
@@ -2200,12 +2143,7 @@ Namespace BlockReplace
                     'save thumbnail to file & saveas
                     Active.Database.ThumbnailBitmap = Active.Document.CapturePreviewImage(320, 240)
                     Active.Database.SaveAs(newfilename, True, DwgVersion.AC1024, Active.Database.SecurityParameters)
-                    'Dim serializerd As New XmlSerializer(GetType(Drawings))
-                    'Dim fsd As New FileStream("C:\Temp\Drawings.xml", FileMode.Open)
-                    'Dim readerD As XmlReader = XmlReader.Create(fsd)
                     Dim drawingreport As Drawings = OpenReadAndDeserializeXML("C:\temp\drawings.xml", FileMode.Open, FileAccess.Read, FileShare.None)
-                    'drawingreport = CType(serializerd.Deserialize(readerD), Drawings)
-                    'fsd.Close()
                     For Each dwg In drawingreport.Drawing
                         If Path.GetFileNameWithoutExtension(dwg.oldname) = Path.GetFileNameWithoutExtension(originalfilename) Then
                             Dim fn As String = "C:\temp\" & Path.GetFileNameWithoutExtension(newfilename) & "_After.png"
@@ -2225,11 +2163,6 @@ Namespace BlockReplace
                         End If
                     Next
                     SerializeAndWriteXML(drawingreport, "C:\temp\Drawings.xml", FileMode.Create, FileAccess.ReadWrite, FileShare.None)
-                    'fsd = New FileStream("C:\Temp\Drawings.xml", FileMode.Create)
-                    'Dim writer As New XmlTextWriter(fsd, Encoding.Unicode)
-                    'writer.Formatting = Formatting.Indented
-                    'serializerd.Serialize(writer, drawingreport)
-                    'writer.Close()
                     Active.Editor.Regen()
                     Active.Editor.UpdateScreen()
                 End Using
@@ -3128,12 +3061,17 @@ Namespace BlockReplace
         ''' <remarks></remarks>
         Private Function getCorrectedDrawingNumber(mydoc As Document, myAtt As AttributeReference, tag As String, blockname As String) As String
             Dim tmpstr As String = myAtt.TextString
-            'If blockname Like "Border*" Then
             If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
                 If ContainsStars(tmpstr) Then 'there's something weird about the drawing number
                     tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                 ElseIf ContainsJustC(tmpstr) And tmpstr.Length = 1 Then
-                    tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                    If dwgnum1 = String.Empty And tag = "DRAWING NUMBER 2" Then
+                        tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
+                    Else
+                        tmpstr = dwgnum1
+                        dwgnum1 = String.Empty
+                        Return tmpstr
+                    End If
                 ElseIf tmpstr.Length = 0 Then
                     tmpstr = GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                 End If
@@ -3156,15 +3094,11 @@ Namespace BlockReplace
                 ElseIf blockname = "SB-IL_996-5.2(block)" Then
                     tmpstr = "4IL-" & GetCNumberFromFileName(Path.GetFileNameWithoutExtension(mydoc.Database.Filename))
                 End If
+                dwgnum1 = tmpstr
             Else
                 Return tmpstr
                 Exit Function
             End If
-            'ElseIf blockname = "A3BORD" Then
-            'If tag = "DRAWING NUMBER 1" Or tag = "DRAWING NUMBER 2" Then
-            '    tmpstr = "HR/3/" & tmpstr
-            'End If
-            'End If
             Return tmpstr
         End Function
 
@@ -3231,285 +3165,6 @@ Namespace BlockReplace
         End Sub
 #End Region
 
-#Region "Kean's Modelspace snapshot code"
-
-        Public Structure AcColorSettings
-            'UInt32
-            Public dwGfxModelBkColor As UInt32
-            Public dwGfxLayoutBkColor As UInt32
-            Public dwParallelBkColor As UInt32
-            Public dwBEditBkColor As UInt32
-            Public dwCmdLineBkColor As UInt32
-            Public dwPlotPrevBkColor As UInt32
-            Public dwSkyGradientZenithColor As UInt32
-            Public dwSkyGradientHorizonColor As UInt32
-            Public dwGroundGradientOriginColor As UInt32
-            Public dwGroundGradientHorizonColor As UInt32
-            Public dwEarthGradientAzimuthColor As UInt32
-            Public dwEarthGradientHorizonColor As UInt32
-            Public dwModelCrossHairColor As UInt32
-            Public dwLayoutCrossHairColor As UInt32
-            Public dwParallelCrossHairColor As UInt32
-            Public dwPerspectiveCrossHairColor As UInt32
-            Public dwBEditCrossHairColor As UInt32
-            Public dwParallelGridMajorLines As UInt32
-            Public dwPerspectiveGridMajorLines As UInt32
-            Public dwParallelGridMinorLines As UInt32
-            Public dwPerspectiveGridMinorLines As UInt32
-            Public dwParallelGridAxisLines As UInt32
-            Public dwPerspectiveGridAxisLines As UInt32
-            Public dwTextForeColor As UInt32, dwTextBkColor As UInt32
-            Public dwCmdLineForeColor As UInt32
-            Public dwCmdLineTempPromptBkColor As UInt32
-            Public dwCmdLineTempPromptTextColor As UInt32
-            Public dwCmdLineCmdOptKeywordColor As UInt32
-            Public dwCmdLineCmdOptBkColor As UInt32
-            Public dwCmdLineCmdOptHighlightedColor As UInt32
-            Public dwAutoTrackingVecColor As UInt32
-            Public dwLayoutATrackVecColor As UInt32
-            Public dwParallelATrackVecColor As UInt32
-            Public dwPerspectiveATrackVecColor As UInt32
-            Public dwBEditATrackVecColor As UInt32
-            Public dwModelASnapMarkerColor As UInt32
-            Public dwLayoutASnapMarkerColor As UInt32
-            Public dwParallelASnapMarkerColor As UInt32
-            Public dwPerspectiveASnapMarkerColor As UInt32
-            Public dwBEditASnapMarkerColor As UInt32
-            Public dwModelDftingTooltipColor As UInt32
-            Public dwLayoutDftingTooltipColor As UInt32
-            Public dwParallelDftingTooltipColor As UInt32
-            Public dwPerspectiveDftingTooltipColor As UInt32
-            Public dwBEditDftingTooltipColor As UInt32
-            Public dwModelDftingTooltipBkColor As UInt32
-            Public dwLayoutDftingTooltipBkColor As UInt32
-            Public dwParallelDftingTooltipBkColor As UInt32
-            Public dwPerspectiveDftingTooltipBkColor As UInt32
-            Public dwBEditDftingTooltipBkColor As UInt32
-            Public dwModelLightGlyphs As UInt32
-            Public dwLayoutLightGlyphs As UInt32
-            Public dwParallelLightGlyphs As UInt32
-            Public dwPerspectiveLightGlyphs As UInt32
-            Public dwBEditLightGlyphs As UInt32
-            Public dwModelLightHotspot As UInt32
-            Public dwLayoutLightHotspot As UInt32
-            Public dwParallelLightHotspot As UInt32
-            Public dwPerspectiveLightHotspot As UInt32
-            Public dwBEditLightHotspot As UInt32
-            Public dwModelLightFalloff As UInt32
-            Public dwLayoutLightFalloff As UInt32
-            Public dwParallelLightFalloff As UInt32
-            Public dwPerspectiveLightFalloff As UInt32
-            Public dwBEditLightFalloff As UInt32
-            Public dwModelLightStartLimit As UInt32
-            Public dwLayoutLightStartLimit As UInt32
-            Public dwParallelLightStartLimit As UInt32
-            Public dwPerspectiveLightStartLimit As UInt32
-            Public dwBEditLightStartLimit As UInt32
-            Public dwModelLightEndLimit As UInt32
-            Public dwLayoutLightEndLimit As UInt32
-            Public dwParallelLightEndLimit As UInt32
-            Public dwPerspectiveLightEndLimit As UInt32
-            Public dwBEditLightEndLimit As UInt32
-            Public dwModelCameraGlyphs As UInt32
-            Public dwLayoutCameraGlyphs As UInt32
-            Public dwParallelCameraGlyphs As UInt32
-            Public dwPerspectiveCameraGlyphs As UInt32
-            Public dwModelCameraFrustrum As UInt32
-            Public dwLayoutCameraFrustrum As UInt32
-            Public dwParallelCameraFrustrum As UInt32
-            Public dwPerspectiveCameraFrustrum As UInt32
-            Public dwModelCameraClipping As UInt32
-            Public dwLayoutCameraClipping As UInt32
-            Public dwParallelCameraClipping As UInt32
-            Public dwPerspectiveCameraClipping As UInt32
-            Public nModelCrosshairUseTintXYZ As Integer
-            Public nLayoutCrosshairUseTintXYZ As Integer
-            Public nParallelCrosshairUseTintXYZ As Integer
-            Public nPerspectiveCrosshairUseTintXYZ As Integer
-            Public nBEditCrossHairUseTintXYZ As Integer
-            Public nModelATrackVecUseTintXYZ As Integer
-            Public nLayoutATrackVecUseTintXYZ As Integer
-            Public nParallelATrackVecUseTintXYZ As Integer
-            Public nPerspectiveATrackVecUseTintXYZ As Integer
-            Public nBEditATrackVecUseTintXYZ As Integer
-            Public nModelDftingTooltipBkUseTintXYZ As Integer
-            Public nLayoutDftingTooltipBkUseTintXYZ As Integer
-            Public nParallelDftingTooltipBkUseTintXYZ As Integer
-            Public nPerspectiveDftingTooltipBkUseTintXYZ As Integer
-            Public nBEditDftingTooltipBkUseTintXYZ As Integer
-            Public nParallelGridMajorLineTintXYZ As Integer
-            Public nPerspectiveGridMajorLineTintXYZ As Integer
-            Public nParallelGridMinorLineTintXYZ As Integer
-            Public nPerspectiveGridMinorLineTintXYZ As Integer
-            Public nParallelGridAxisLineTintXYZ As Integer
-            Public nPerspectiveGridAxisLineTintXYZ As Integer
-        End Structure
-
-        ' For the coordinate tranformation we need...  
-
-        ' A Win32 function:
-
-        <DllImport("user32.dll")> _
-        Private Shared Function ClientToScreen(hWnd As IntPtr, ByRef pt As Point) As Boolean
-        End Function
-
-        ' And to access the colours in AutoCAD, we need ObjectARX...
-
-        ' 64 bit, AutoCAD 2013
-        <DllImport("accore.dll", CallingConvention:=CallingConvention.Cdecl, EntryPoint:="?acedGetCurrentColors@@YAHPEAUAcColorSettings@@@Z")> _
-        Private Shared Function acedGetCurrentColors64(ByRef colorSettings As AcColorSettings) As Boolean
-        End Function
-
-        ' 64 bit, AutoCAD 2013
-        <DllImport("accore.dll", CallingConvention:=CallingConvention.Cdecl, EntryPoint:="?acedSetCurrentColors@@YAHPEAUAcColorSettings@@@Z")> _
-        Private Shared Function acedSetCurrentColors64(ByRef colorSettings As AcColorSettings) As Boolean
-        End Function
-
-        ' Helper functions that call automatically to 32- or 64-bit
-        ' versions, as appropriate
-
-        Private Shared Function acedGetCurrentColors(ByRef colorSettings As AcColorSettings) As Boolean
-            If IntPtr.Size > 4 Then
-                Return acedGetCurrentColors64(colorSettings)
-            End If
-        End Function
-
-        Private Shared Function acedSetCurrentColors(ByRef colorSettings As AcColorSettings) As Boolean
-            If IntPtr.Size > 4 Then
-                Return acedSetCurrentColors64(colorSettings)
-            End If
-        End Function
-
-        ''' <summary>
-        ''' Command to capture the main and active drawing windows or a user-selected portion of a drawing
-        ''' </summary>
-        ''' <param name="pnt1"></param>
-        ''' <param name="pnt2"></param>
-        ''' <param name="filename"></param>
-        ''' <remarks></remarks>
-        Public Shared Function CaptureSnapShot(ByVal pnt1 As Point3d, ByVal pnt2 As Point3d, ByVal filename As String) As String
-            ' Retrieve our application settings (or create new ones)
-
-            Dim ad As New AppData()
-            ad.Reload()
-
-            If ad IsNot Nothing Then
-                'always set our background to white!
-                ad.WhiteBackground = True
-                ad.Save()
-
-                Dim first As Point3d = pnt1
-                Dim second As Point3d = pnt2
-
-                ' Generate screen coordinate points based on the
-                ' drawing points selected
-
-                Dim pt1 As Point, pt2 As Point
-
-                ' First we get the viewport number
-
-                Dim vp As Short = CShort(acapp.Application.GetSystemVariable("CVPORT"))
-
-                ' Then the handle to the current drawing window
-
-                Dim hWnd As IntPtr = Active.Document.Window.Handle
-
-                ' Now calculate the selected corners in screen coordinates
-
-                pt1 = ScreenFromDrawingPoint(Active.Editor, hWnd, first, vp, True)
-                pt2 = ScreenFromDrawingPoint(Active.Editor, hWnd, second, vp, True)
-
-                ' Now save this portion of our screen as a raster image
-                Return ScreenShotToFile(pt1, pt2, filename, ad)
-            End If
-            Return filename
-        End Function
-
-        Private Shared Function ScreenFromDrawingPoint(ed As Editor, hWnd As IntPtr, pt As Point3d, vpNum As Short, useUcs As Boolean) As Point
-            ' Transform from UCS to WCS, if needed
-
-            Dim wcsPt As Point3d = (If(useUcs, pt.TransformBy(ed.CurrentUserCoordinateSystem), pt))
-
-            Dim winPt As System.Windows.Point = Active.Editor.PointToScreen(wcsPt, vpNum)
-            Dim s As System.Windows.Vector = Autodesk.AutoCAD.Windows.Window.GetDeviceIndependentScale(IntPtr.Zero)
-            Dim res As New Point(CInt(winPt.X * s.X), CInt(winPt.Y * s.Y))
-            ClientToScreen(hWnd, res)
-            Return res
-        End Function
-
-
-
-        Private Shared Function ScreenShotToFile(pt1 As Point, pt2 As Point, filename As String, ad As AppData) As String
-            ' Create the top left corner from the two corners
-            ' provided (by taking the min of both X and Y values)
-
-            Dim pt As New Point(Math.Min(pt1.X, pt2.X), Math.Min(pt1.Y, pt2.Y))
-
-            ' Determine the size by subtracting X & Y values and
-            ' taking the absolute value of each
-
-            Dim sz As New Size(Math.Abs(pt1.X - pt2.X), Math.Abs(pt1.Y - pt2.Y))
-            Dim tr As Transaction = Active.Database.TransactionManager.StartTransaction()
-            Using tr
-                Dim ocs As New AcColorSettings()
-
-                If ad.WhiteBackground Then
-                    ' Get the current system colours
-
-                    acedGetCurrentColors(ocs)
-
-                    ' Take a copy - we'll leave the original to reset
-                    ' the values later on, once we've finished
-
-                    Dim cs As AcColorSettings = ocs
-
-                    ' Make both background colours white (the 3D
-                    ' background isn't currently being picked up)
-
-                    cs.dwGfxModelBkColor = 16777215
-                    cs.dwGfxLayoutBkColor = 16777215
-                    ' Set the modified colours
-                    acedSetCurrentColors(cs)
-                    Active.WriteMessage(vbLf)
-                    Active.Editor.Regen()
-                    Active.Editor.UpdateScreen()
-                End If
-
-                ' Set the bitmap object to the size of the window
-
-                Dim bmp As New Bitmap(sz.Width, sz.Height, PixelFormat.Format32bppArgb)
-                Using bmp
-                    ' Create a graphics object from the bitmap
-
-                    Using gfx As Graphics = Graphics.FromImage(bmp)
-                        ' Take a screenshot of our window
-
-                        gfx.CopyFromScreen(pt.X, pt.Y, 0, 0, sz, CopyPixelOperation.SourceCopy)
-
-                        Dim processed As Bitmap
-
-                        processed = bmp
-
-                        If filename IsNot Nothing AndAlso filename <> "" Then
-                            processed.Save(filename, ImageFormat.Png)
-
-                            Active.WriteMessage("Image captured and saved to ""{0}"".", filename)
-                        End If
-                        processed.Dispose()
-                    End Using
-                End Using
-                If ad.WhiteBackground Then
-                    acedSetCurrentColors(ocs)
-                    Active.WriteMessage(vbLf)
-                    Active.Editor.Regen()
-                    Active.Editor.UpdateScreen()
-                End If
-                tr.Commit()
-            End Using
-            Return filename
-        End Function
-
-#End Region
 #Region "Using Helper Functions"
         ''' <summary>
         ''' Using Transaction helper function

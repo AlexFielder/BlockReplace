@@ -173,11 +173,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="A0_%28block%29.7z" />
     <None Include="BlockReplace.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="IL_Test.7z" />
     <None Include="MappingsExample.xlsx" />
     <None Include="MatrixPrecision BlockReplace.pfx" />
     <None Include="My Project\Application.myapp">
