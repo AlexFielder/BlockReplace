@@ -788,14 +788,13 @@ Namespace BlockReplace
         ''' <summary>
         ''' Allows us to output an updated screenshot from AutoCAD.
         ''' </summary>
-        ''' <param name="Filename">the file to create.</param>
         ''' <remarks></remarks>
         <CommandMethod("SSTF")> _
         Public Sub ManualScreenshotToFile()
             Dim pso As PromptStringOptions = New PromptStringOptions("Input full filepath for output as screenshot")
             Dim res = Active.Editor.GetString(pso)
             If res.Status = PromptStatus.OK Then
-                Active.WriteMessage("Screenshot written to: " & ScreenShotToFile(res.StringResult))
+                Active.WriteMessage("Screenshot written to: " & ScreenShotToFile("C:\Temp\" & Path.GetFileNameWithoutExtension(Active.Document.Database.Filename) & "_After.png"))
             End If
             'Dim res As promptstring
         End Sub
