@@ -6,6 +6,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+using Microsoft.Reporting.WinForms;
 
 namespace BlockReplaceReportViewer
 {
@@ -18,14 +21,19 @@ namespace BlockReplaceReportViewer
 
         private void Form1_Load_1(object sender, EventArgs e)
         {
+            string asmpath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string exeFolder = Path.GetDirectoryName(Application.ExecutablePath);
             DataSet ds = new DataSet();
-            ds.ReadXml(@"C:\temp\Drawings.xml");
-            ds.WriteXmlSchema(@"C:\temp\Drawings.xsd");
+            ds.ReadXml(asmpath + @"\temp\Drawings.xml");
+            ds.WriteXmlSchema(asmpath + @"\temp\Drawings.xsd");
             //ds = null;
             DataSet snds = new DataSet();
-            snds.ReadXml(@"C:\temp\Snapshots.xml");
-            snds.WriteXmlSchema(@"C:\temp\Snapshots.xsd");
+            snds.ReadXml(asmpath + @"\temp\Snapshots.xml");
+            snds.WriteXmlSchema(asmpath + @"\temp\Snapshots.xsd");
             DrawingBindingSource.DataSource = ds;
+            this.reportViewer1.LocalReport.EnableExternalImages = true;
+            ReportParameter AppPath = new ReportParameter("AppPath", exeFolder);
+            this.reportViewer1.LocalReport.SetParameters(AppPath);
             //snapshotsBindingSource.DataSource = snds;
             //reportViewer1.LocalReport.SubreportProcessing += new Microsoft.Reporting.WinForms.SubreportProcessingEventHandler(SetSubDataSource);
             //SnapshotBindingSource.DataSource = ds.Tables["snapshot"];

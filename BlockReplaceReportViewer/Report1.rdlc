@@ -119,7 +119,7 @@
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!path.Value &amp; Fields!name.Value</Hyperlink>
+                                <Hyperlink>="File:///" &amp; Parameters!AppPath.Value &amp; Fields!path.Value &amp; Fields!name.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -135,6 +135,7 @@
                             <WritingMode>Rotate270</WritingMode>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -159,7 +160,7 @@
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!path.Value</Hyperlink>
+                                <Hyperlink>="File://" &amp; Parameters!AppPath.Value &amp; Fields!path.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -265,7 +266,7 @@
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!oldpath.Value</Hyperlink>
+                                <Hyperlink>="File://" &amp; Fields!oldpath.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -281,7 +282,6 @@
                             <WritingMode>Rotate270</WritingMode>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -293,7 +293,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!oldpath.Value</Value>
+                                  <Value>=Parameters!AppPath.Value &amp; Fields!oldpath.Value</Value>
                                   <Style>
                                     <FontSize>9pt</FontSize>
                                   </Style>
@@ -306,7 +306,7 @@
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!oldpath.Value</Hyperlink>
+                                <Hyperlink>="File://" &amp; Parameters!AppPath.Value &amp; Fields!oldpath.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -328,12 +328,12 @@
                       <CellContents>
                         <Image Name="Image1">
                           <Source>External</Source>
-                          <Value>="file:" &amp; Fields!BeforeImgURL.Value</Value>
+                          <Value>="file:" &amp; Parameters!AppPath.Value &amp; Fields!BeforeImgURL.Value</Value>
                           <Sizing>FitProportional</Sizing>
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!BeforeImgURL.Value</Hyperlink>
+                                <Hyperlink>=Parameters!AppPath.Value &amp; Fields!BeforeImgURL.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -349,12 +349,12 @@
                       <CellContents>
                         <Image Name="Image2">
                           <Source>External</Source>
-                          <Value>="file:" &amp; Fields!AfterImgURL.Value</Value>
+                          <Value>="file:" &amp; Parameters!AppPath.Value &amp; Fields!AfterImgURL.Value</Value>
                           <Sizing>FitProportional</Sizing>
                           <ActionInfo>
                             <Actions>
                               <Action>
-                                <Hyperlink>=Fields!AfterImgURL.Value</Hyperlink>
+                                <Hyperlink>=Parameters!AppPath.Value &amp; Fields!AfterImgURL.Value</Hyperlink>
                               </Action>
                             </Actions>
                           </ActionInfo>
@@ -766,6 +766,12 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="AppPath">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+  </ReportParameters>
   <EmbeddedImages>
     <EmbeddedImage Name="MatrixTiny">
       <MIMEType>image/png</MIMEType>

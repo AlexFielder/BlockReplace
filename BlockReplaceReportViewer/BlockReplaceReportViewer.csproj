@@ -78,9 +78,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Report1.rdlc" />
-    <EmbeddedResource Include="Report3.rdlc">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <None Include="Drawings.xsc">
       <DependentUpon>Drawings.xsd</DependentUpon>
     </None>
@@ -114,6 +111,12 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /y "$(TargetDir)BlockReplaceReportViewer.exe" "C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\"
+xcopy /y "$(TargetDir)BlockReplaceReportViewer.pdb" "C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\"
+xcopy /y "$(TargetDir)BlockReplaceReportViewer.vshost.exe" "C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\"
+xcopy /y "$(TargetDir)BlockReplaceReportViewer.vshost.exe.manifest" "C:\LEGACY VAULT WORKING FOLDER\Designs\FSTF\"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
